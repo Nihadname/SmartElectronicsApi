@@ -8,10 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // Add services to the container
-builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<SmartElectronicsDbContext>(options =>
-    options.UseSqlServer(config.GetConnectionString("AppConnectionString"))
-);
 
 // Register custom services
 builder.Services.Register(config);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SmartElectronicsApi.DataAccess.Data;
 using System;
 
@@ -10,8 +11,8 @@ namespace SmartElectronicsApi.Api
         {
             services.AddControllersWithViews();
             services.AddDbContext<SmartElectronicsDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("AppConnectionString"))
-            );
+              options.UseSqlServer(configuration.GetConnectionString("AppConnectionString"))
+          );
         }
     }
 }
