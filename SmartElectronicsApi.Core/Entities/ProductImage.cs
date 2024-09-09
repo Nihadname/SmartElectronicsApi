@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Core.Entities
 {
-    public class Color:BaseEntity
+    public class ProductImage:BaseEntity
     {
         public string Name { get; set; }
-        public string Code { get; set; }
-        public ICollection<ProductVariationColor> productVariationColors { get; set; }
-        public ICollection<ProductColor> productColorColors { get; set; }
+        public bool IsMain { get; set; }
+        public int ProductId { get; set; }
+        public Product product { get; set; }
     }
 }

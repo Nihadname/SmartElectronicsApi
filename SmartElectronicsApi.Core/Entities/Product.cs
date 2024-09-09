@@ -27,6 +27,7 @@ namespace SmartElectronicsApi.Core.Entities
         public int BrandId  { get; set; }
         public Brand Brand { get; set; }
         public ICollection<ProductVariation> Variations { get; set; }
+        public ICollection<ProductColor> productColors { get; set; }
 
     }
 }

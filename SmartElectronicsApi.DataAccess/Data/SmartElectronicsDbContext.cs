@@ -19,6 +19,12 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<Brand> brands { get; set; }
         public DbSet<ProductVariation> ProductVariations { get; set; }
         public DbSet<VariantOption> variantOptions { get; set; }
+        public DbSet<Color> colors { get; set; }
+        public DbSet<Product> products { get; set; }
+        public DbSet<ProductColor> productColors    { get; set; }
+        public DbSet<ProductImage> productImages { get; set; }
+        public DbSet<ProductVariationColor> productVariationColors { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

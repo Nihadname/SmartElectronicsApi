@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartElectronicsApi.Core.Entities.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Core.Entities
 {
-    public class VariantOption
+    public class VariantOption:BaseEntity
     {
         public string optionType { get; set; }
         public string optionValue { get; set; } 
