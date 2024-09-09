@@ -18,4 +18,8 @@
     <ProjectReference Include="..\SmartElectronicsApi.Core\SmartElectronicsApi.Core.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Data\Configurations\" />
+	</ItemGroup>
+
 </Project>

@@ -17,7 +17,8 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<Category> categories { get; set; }
         public DbSet<SubCategory> subcategories { get; set; }
         public DbSet<Brand> brands { get; set; }
-     
+        public DbSet<ProductVariation> ProductVariations { get; set; }
+        public DbSet<VariantOption> variantOptions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
