@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240910144322_ProductImageAdding")]
+    partial class ProductImageAdding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,83 +141,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("colors");
-                });
-
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductVariationId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductVariationId");
-
-                    b.ToTable("parametrGroups");
-                });
-
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrValue", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ParametrGroupId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParametrGroupId");
-
-                    b.ToTable("parametrValues");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Product", b =>
@@ -495,6 +421,44 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.ToTable("subcategories");
                 });
 
+            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.VariantOption", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeletedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductVariationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("optionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("optionValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductVariationId");
+
+                    b.ToTable("variantOptions");
+                });
+
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Brand", b =>
                 {
                     b.HasOne("SmartElectronicsApi.Core.Entities.SubCategory", "SubCategory")
@@ -502,36 +466,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasForeignKey("SubCategoryId");
 
                     b.Navigation("SubCategory");
-                });
-
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrGroup", b =>
-                {
-                    b.HasOne("SmartElectronicsApi.Core.Entities.Product", "Product")
-                        .WithMany("parametricGroups")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartElectronicsApi.Core.Entities.ProductVariation", "ProductVariation")
-                        .WithMany("productParametrGroups")
-                        .HasForeignKey("ProductVariationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductVariation");
-                });
-
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrValue", b =>
-                {
-                    b.HasOne("SmartElectronicsApi.Core.Entities.ParametrGroup", "ParametrGroup")
-                        .WithMany("parametrValues")
-                        .HasForeignKey("ParametrGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ParametrGroup");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Product", b =>
@@ -640,6 +574,17 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.VariantOption", b =>
+                {
+                    b.HasOne("SmartElectronicsApi.Core.Entities.ProductVariation", "productVariation")
+                        .WithMany("variantOptions")
+                        .HasForeignKey("ProductVariationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("productVariation");
+                });
+
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Brand", b =>
                 {
                     b.Navigation("Products");
@@ -659,16 +604,9 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Navigation("productVariationColors");
                 });
 
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrGroup", b =>
-                {
-                    b.Navigation("parametrValues");
-                });
-
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Product", b =>
                 {
                     b.Navigation("Variations");
-
-                    b.Navigation("parametricGroups");
 
                     b.Navigation("productColors");
 
@@ -679,9 +617,9 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                 {
                     b.Navigation("productImages");
 
-                    b.Navigation("productParametrGroups");
-
                     b.Navigation("productVariationColors");
+
+                    b.Navigation("variantOptions");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.SubCategory", b =>

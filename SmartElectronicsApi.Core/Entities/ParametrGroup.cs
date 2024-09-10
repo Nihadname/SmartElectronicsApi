@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Core.Entities
 {
-    public class ProductImage:BaseEntity
+    public class ParametrGroup:BaseEntity
     {
-        public string Name { get; set; }
-        public bool IsMain { get; set; }
+public string   Name { get; set; }
+        public ICollection<ParametrValue> parametrValues { get; set; }
         public int ProductId { get; set; }
-        public Product product { get; set; }
+        public Product Product { get; set; }
         public int ProductVariationId { get; set; }
-        public ProductVariation productVariation { get; set; }
+        public ProductVariation ProductVariation { get; set; }
     }
 }

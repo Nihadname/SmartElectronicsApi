@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SmartElectronicsApi.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.DataAccess.Data
 {
-    public class SmartElectronicsDbContext:DbContext
+    public class SmartElectronicsDbContext:IdentityDbContext<AppUser>
     {
         public SmartElectronicsDbContext(DbContextOptions options) : base(options)
         {
@@ -18,8 +19,9 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<SubCategory> subcategories { get; set; }
         public DbSet<Brand> brands { get; set; }
         public DbSet<ProductVariation> ProductVariations { get; set; }
-        public DbSet<VariantOption> variantOptions { get; set; }
         public DbSet<Color> colors { get; set; }
+        public DbSet<ParametrGroup> parametrGroups { get; set; }
+        public DbSet<ParametrValue> parametrValues { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<ProductColor> productColors    { get; set; }
         public DbSet<ProductImage> productImages { get; set; }

@@ -28,6 +28,8 @@ namespace SmartElectronicsApi.Core.Entities
         public Brand Brand { get; set; }
         public ICollection<ProductVariation> Variations { get; set; }
         public ICollection<ProductColor> productColors { get; set; }
+        public ICollection<ProductImage> productImages { get; set; }
+        public ICollection<ParametrGroup> parametricGroups { get; set; }
 
     }
 }
