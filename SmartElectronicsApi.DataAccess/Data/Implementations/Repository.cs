@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.DataAccess.Data.Implementations
 {
-    public class Repository<T> : IRepository<T> where T : BaseEntity
+    public class Repository<T> : IRepository<T> where T : class
     {
         private readonly SmartElectronicsDbContext _context;
         private readonly DbSet<T> _table;
@@ -66,44 +66,54 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             }
         }
 
-        public async Task<List<T>> GetAll(Expression<Func<T, bool>> predicate = null, params string[] includes)
+        public async Task<List<T>> GetAll(
+      Expression<Func<T, bool>> predicate = null,
+      params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             try
             {
                 IQueryable<T> query = _table;
-                if (includes.Length > 0)
+
+                if (includes != null)
                 {
-                    query = GetAllIncludes(includes);
+                    foreach (var include in includes)
+                    {
+                        query = include(query);
+                    }
                 }
+
                 return predicate == null ? await query.ToListAsync() : await query.Where(predicate).ToListAsync();
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.Message);
             }
         }
 
-        public async Task<T> GetEntity(Expression<Func<T, bool>> predicate = null, params string[] includes)
+        public async Task<T> GetEntity(
+            Expression<Func<T, bool>> predicate = null,
+            params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             try
             {
                 IQueryable<T> query = _table;
-                if (includes.Length > 0)
+
+                if (includes != null)
                 {
-                    query = GetAllIncludes(includes);
+                    foreach (var include in includes)
+                    {
+                        query = include(query);
+                    }
                 }
 
-                var a = predicate == null ? await query.FirstOrDefaultAsync() : await query.FirstOrDefaultAsync(predicate);
-
-                return a;
+                return predicate == null ? await query.FirstOrDefaultAsync() : await query.FirstOrDefaultAsync(predicate);
             }
             catch (Exception ex)
             {
-
                 throw new Exception(ex.Message);
             }
         }
+
 
         public async Task<bool> isExists(Expression<Func<T, bool>> predicate = null)
         {
@@ -124,23 +134,6 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             {
                 var result = _context.Entry(entity);
                 result.State = EntityState.Modified;
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.Message);
-            }
-        }
-        private IQueryable<T> GetAllIncludes(params string[] includes)
-        {
-            try
-            {
-                IQueryable<T> query = _table;
-                foreach (var include in includes)
-                {
-                    query = query.Include(include);
-                }
-                return query;
             }
             catch (Exception ex)
             {
