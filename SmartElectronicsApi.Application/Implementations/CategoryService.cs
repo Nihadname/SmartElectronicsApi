@@ -1,8 +1,8 @@
-﻿using SmartElectronicsApi.Api.Interfaces;
+﻿using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.Core.Repositories;
 
-namespace SmartElectronicsApi.Api.Implementations
+namespace SmartElectronicsApi.Application.Implementations
 {
     public class CategoryService : ICategoryService
     {

@@ -1,6 +1,6 @@
 ﻿using SmartElectronicsApi.Core.Entities;
 
-namespace SmartElectronicsApi.Api.Interfaces
+namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface ICategoryService
     {

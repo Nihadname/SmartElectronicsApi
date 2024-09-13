@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SmartElectronicsApi.Api.Implementations;
-using SmartElectronicsApi.Api.Interfaces;
+using SmartElectronicsApi.Application.Implementations;
+using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Repositories;
 using SmartElectronicsApi.DataAccess.Data;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
@@ -15,7 +16,27 @@ namespace SmartElectronicsApi.Api
     {
         public static void Register(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .ConfigureApiBehaviorOptions(opt =>
+            {
+                opt.InvalidModelStateResponseFactory = context =>
+                {
+                    // Convert validation errors to a consistent dictionary format
+                    var errors = context.ModelState
+                        .Where(e => e.Value?.Errors.Count() > 0)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.Value.Errors.First().ErrorMessage
+                        );
+
+                    // Return a consistent response format with an empty message
+                    return new BadRequestObjectResult(new
+                    {
+                        message = "",
+                        errors
+                    });
+                };
+            });
             services.AddDbContext<SmartElectronicsDbContext>(options =>
               options.UseSqlServer(configuration.GetConnectionString("AppConnectionString"))
           );

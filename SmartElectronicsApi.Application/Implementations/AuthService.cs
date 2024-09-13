@@ -1,6 +1,6 @@
-﻿using SmartElectronicsApi.Api.Interfaces;
+﻿using SmartElectronicsApi.Application.Interfaces;
 
-namespace SmartElectronicsApi.Api.Implementations
+namespace SmartElectronicsApi.Application.Implementations
 {
     public class AuthService : IAuthService
     {

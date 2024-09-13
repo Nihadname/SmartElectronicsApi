@@ -1,4 +1,4 @@
-﻿namespace SmartElectronicsApi.Api.Interfaces
+﻿namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IAuthService
     {
