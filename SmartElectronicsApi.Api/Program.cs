@@ -3,6 +3,7 @@ using SmartElectronicsApi.DataAccess.Data;
 using SmartElectronicsApi.Api;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using SmartElectronicsApi.Api.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,7 @@ app.UseRouting();
 
 app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
+app.UseMiddleware<CustomExceptionMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 

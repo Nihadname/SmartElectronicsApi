@@ -1,10 +1,16 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Implementations;
 using SmartElectronicsApi.Application.Interfaces;
+using SmartElectronicsApi.Application.Profiles;
+using SmartElectronicsApi.Application.Validators.UserValidators;
 using SmartElectronicsApi.Core.Repositories;
 using SmartElectronicsApi.DataAccess.Data;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
@@ -37,6 +43,15 @@ namespace SmartElectronicsApi.Api
                     });
                 };
             });
+          services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters()
+    .AddValidatorsFromAssemblyContaining<RegisterValidator>();
+            services.AddHttpContextAccessor();
+            services.AddAutoMapper(opt =>
+            {
+                opt.AddProfile(new MapperProfile(new HttpContextAccessor()));
+            });
+            services.AddFluentValidationRulesToSwagger();
             services.AddDbContext<SmartElectronicsDbContext>(options =>
               options.UseSqlServer(configuration.GetConnectionString("AppConnectionString"))
           );
