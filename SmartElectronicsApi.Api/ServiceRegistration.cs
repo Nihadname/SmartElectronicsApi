@@ -35,6 +35,9 @@ namespace SmartElectronicsApi.Api
     options.ClientId = configuration["Authentication:Google:ClientId"];
     options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
     options.CallbackPath = "/signin-google"; // Ensure this matches the redirect URI set in Google Cloud
+    options.SaveTokens = true;
+    options.Scope.Add("email");
+    options.Scope.Add("profile");
 });
         }
     }

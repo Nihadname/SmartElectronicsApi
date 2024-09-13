@@ -28,15 +28,19 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseCors("AllowAllOrigins");
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
+app.UseRouting();
+// Configure the HTTP request pipeline
+
+app.UseCors("AllowAllOrigins");
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
