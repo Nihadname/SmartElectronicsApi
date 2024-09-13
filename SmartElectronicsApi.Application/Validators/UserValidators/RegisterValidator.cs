@@ -19,7 +19,7 @@ namespace SmartElectronicsApi.Application.Validators.UserValidators
                 .MaximumLength(150).WithMessage("max is 150");
 
             RuleFor(s => s.Email).NotEmpty().WithMessage("not empty")
-                .MaximumLength(100).WithMessage("max is 100")
+                .MaximumLength(200).WithMessage("max is 200")
                 .EmailAddress().WithMessage("should be in email format");
             RuleFor(s => s.Password).NotEmpty().WithMessage("not empty")
                 .MinimumLength(8)

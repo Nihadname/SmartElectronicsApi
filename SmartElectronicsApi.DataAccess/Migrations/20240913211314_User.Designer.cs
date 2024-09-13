@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240913211314_User")]
+    partial class User
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,10 +176,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("GoogleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .IsRequired()

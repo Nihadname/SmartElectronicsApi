@@ -8,6 +8,8 @@ namespace SmartElectronicsApi.DataAccess.Migrations
     /// <inheritdoc />
     public partial class AppUser : Migration
     {
+        public string UserName { get; set; }
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
