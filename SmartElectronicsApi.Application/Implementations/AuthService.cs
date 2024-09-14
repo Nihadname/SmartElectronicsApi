@@ -19,6 +19,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using SmartElectronicsApi.Application.Settings;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -192,6 +193,40 @@ namespace SmartElectronicsApi.Application.Implementations
             return _tokenService.GetToken(SecretKey, Audience, Issuer, user, roles);
         }
 
+        public async Task<string> ResetPasswordSendEmail(string email)
+        {
+            AppUser appUser = await _userManager.FindByEmailAsync(email);
+            if (appUser is null) throw new CustomException(404, "User is null");
+   var token=await _userManager.GeneratePasswordResetTokenAsync(appUser);
+            string link = _linkGenerator.GetUriByAction(
+                   httpContext: _contextAccessor.HttpContext,
+                   action: "ResetPassword",
+                   controller: "Auth",
+                   values: new { email = appUser.Email, token = token },
+                   scheme: _contextAccessor.HttpContext.Request.Scheme,
+                   host: _contextAccessor.HttpContext.Request.Host
+               );
+            string body;
+            using (StreamReader sr = new StreamReader("wwwroot/Template/ForgetPassword.html"))
+            {
+                body = sr.ReadToEnd();
+            }
+            body = body.Replace("{{link}}", link).Replace("{{UserName}}", appUser.UserName);
+
+            _emailService.SendEmail(
+                from: "nihadmi@code.edu.az\r\n",
+                to: appUser.Email,
+                subject: "Verify Email",
+                body: body,
+                smtpHost: "smtp.gmail.com",
+                smtpPort: 587,
+                enableSsl: true,
+                smtpUser: "nihadmi@code.edu.az\r\n",
+                smtpPass: "zrhu njzc qeqr koux\r\n"
+            );
+
+            return "email sent succesfully";
+        }
 
     }
 }

@@ -12,5 +12,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         public Task<UserGetDto> Register(RegisterDto registerDto);
         Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId);
         Task<bool> VerifyEmail(string email, string token);
+        Task<string> ResetPasswordSendEmail(string email);
     }
 }
