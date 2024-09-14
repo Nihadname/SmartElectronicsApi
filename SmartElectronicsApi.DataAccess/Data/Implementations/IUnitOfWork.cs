@@ -9,7 +9,6 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
 {
     public interface IUnitOfWork
     {
-        public IAuthRepository authRepository { get; }
         public ICategoryRepository   categoryRepository { get; }
     }
 }

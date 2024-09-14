@@ -1,5 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos.Auth;
+using SmartElectronicsApi.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +17,8 @@ namespace SmartElectronicsApi.Application.Profiles
 
         public MapperProfile(IHttpContextAccessor contextAccessor)
         {
+            CreateMap<AppUser, UserGetDto>();
+
             _contextAccessor = contextAccessor;
         }
     }

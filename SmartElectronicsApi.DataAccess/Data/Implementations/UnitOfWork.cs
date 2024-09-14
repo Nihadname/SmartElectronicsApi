@@ -10,12 +10,10 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
     public class UnitOfWork : IUnitOfWork
     {
         private readonly SmartElectronicsDbContext _smartElectronicsDbContext;
-        public IAuthRepository authRepository { get; private set; }
 
         public ICategoryRepository categoryRepository { get; private set; }
         public UnitOfWork(SmartElectronicsDbContext smartElectronicsDbContext)
         {
-            authRepository= new AuthRepository(smartElectronicsDbContext);
             categoryRepository= new CategoryRepository(smartElectronicsDbContext);
             _smartElectronicsDbContext = smartElectronicsDbContext;
         }

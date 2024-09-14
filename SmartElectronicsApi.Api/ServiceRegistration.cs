@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -53,6 +54,7 @@ namespace SmartElectronicsApi.Api
     .AddFluentValidationClientsideAdapters()
     .AddValidatorsFromAssemblyContaining<RegisterValidator>();
             services.AddHttpContextAccessor();
+            services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
             services.AddAutoMapper(opt =>
             {
                 opt.AddProfile(new MapperProfile(new HttpContextAccessor()));
@@ -64,7 +66,6 @@ namespace SmartElectronicsApi.Api
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddIdentity<AppUser, IdentityRole>(options =>
             {

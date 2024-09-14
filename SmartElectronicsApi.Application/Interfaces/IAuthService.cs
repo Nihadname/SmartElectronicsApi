@@ -1,12 +1,15 @@
-﻿using SmartElectronicsApi.DataAccess.Migrations;
+﻿using Microsoft.AspNetCore.Mvc;
+using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos.Auth;
+using SmartElectronicsApi.Core.Entities;
 
 namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IAuthService
     {
-        public string SignInWithGoogle();
+        public Task<GoogleGetDto> GoogleResponse();
         public string Login();
-        public void Register();
+        public Task<UserGetDto> Register(RegisterDto registerDto);
         Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId);
 
     }

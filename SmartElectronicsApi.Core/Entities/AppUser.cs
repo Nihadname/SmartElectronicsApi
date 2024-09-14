@@ -10,8 +10,8 @@ namespace SmartElectronicsApi.Core.Entities
     public class AppUser: IdentityUser
     {
         public string fullName { get; set; }
-        public string GoogleId { get; set; }
-        public string Image {  get; set; }
+        public string? GoogleId { get; set; }
+        public string? Image {  get; set; }
 
     }
 }
