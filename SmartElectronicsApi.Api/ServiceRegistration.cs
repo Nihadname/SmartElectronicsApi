@@ -54,7 +54,6 @@ namespace SmartElectronicsApi.Api
     .AddFluentValidationClientsideAdapters()
     .AddValidatorsFromAssemblyContaining<RegisterValidator>();
             services.AddHttpContextAccessor();
-            services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
             services.AddAutoMapper(opt =>
             {
                 opt.AddProfile(new MapperProfile(new HttpContextAccessor()));
@@ -64,6 +63,7 @@ namespace SmartElectronicsApi.Api
               options.UseSqlServer(configuration.GetConnectionString("AppConnectionString"))
           );
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -7,6 +7,7 @@ using System.Security.Claims;
 using SmartElectronicsApi.DataAccess.Migrations;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 {
@@ -15,10 +16,12 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, RoleManager<IdentityRole> roleManager)
         {
             _authService = authService;
+            _roleManager = roleManager;
         }
 
         [HttpGet("SignInWithGoogle")]
@@ -39,6 +42,24 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             return Ok(await _authService.Register(registerDto));
+        }
+        [HttpPost("AddRole")]
+        public async Task<IActionResult> AddRole()
+        {
+            if (!await _roleManager.RoleExistsAsync("Admin"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
+            }
+          
+            if (!await _roleManager.RoleExistsAsync("Member"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole() { Name = "Member" });
+            }
+            if (!await _roleManager.RoleExistsAsync("Delivery"))
+            {
+                await _roleManager.CreateAsync(new IdentityRole() { Name = "Delivery" });
+            }
+            return Content("roles are added");
         }
     }
 }

@@ -25,21 +25,20 @@ namespace SmartElectronicsApi.Application.Implementations
         private UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
-        private readonly IUrlHelper _urlHelper;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public AuthService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IUrlHelperFactory urlHelperFactory, IHttpContextAccessor httpContextAccessor, IHttpContextAccessor contextAccessor)
+        public AuthService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper,  IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
-            _urlHelper = urlHelperFactory.GetUrlHelper(new ActionContext
-            {
-                HttpContext = httpContextAccessor.HttpContext,
-                RouteData = httpContextAccessor.HttpContext.GetRouteData(),
-                ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor()
-            });
+            //_urlHelper = urlHelperFactory.GetUrlHelper(new ActionContext
+            //{
+            //    HttpContext = httpContextAccessor.HttpContext,
+            //    RouteData = httpContextAccessor.HttpContext.GetRouteData(),
+            //    ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor()
+            //});
             _contextAccessor = contextAccessor;
         }
 
@@ -68,8 +67,23 @@ namespace SmartElectronicsApi.Application.Implementations
 
         }
 
-        public string Login()
+        public async string Login(LoginDto loginDto)
         {
+            var User = await _userManager.FindByEmailAsync(loginDto.UserNameOrGmail);
+            if (User == null)
+            {
+                User = await _userManager.FindByNameAsync(loginDto.UserNameOrGmail);
+                if (User == null)
+                {
+                    throw new CustomException(400, "UserNameOrGmail", "userName or email is wrong\"");
+                }
+            }
+            var result= await _userManager.CheckPasswordAsync(User, loginDto.Password);
+            if (!result)
+            {
+                throw new CustomException(400, "Password", "userName or email is wrong\"");
+            }
+
             throw new NotImplementedException();
         }
 
@@ -89,6 +103,7 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 var result = await _userManager.CreateAsync(appUser, registerDto.Password);
                 if (!result.Succeeded) throw new CustomException(400, result.Errors.ToString());
+
                 var MappedUser=_mapper.Map<UserGetDto>(appUser);
                 return MappedUser; 
             }
