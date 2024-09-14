@@ -32,8 +32,9 @@ namespace SmartElectronicsApi.Application.Implementations
         private readonly JwtSettings _jwtSettings;
         private readonly IEmailService _emailService;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly LinkGenerator _linkGenerator;
 
-        public AuthService(IOptions<JwtSettings> jwtSettings, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService, IEmailService emailService, SignInManager<AppUser> signInManager)
+        public AuthService(IOptions<JwtSettings> jwtSettings, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService, IEmailService emailService, SignInManager<AppUser> signInManager, LinkGenerator linkGenerator)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -44,6 +45,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _jwtSettings = jwtSettings.Value;
             _emailService = emailService;
             _signInManager = signInManager;
+            _linkGenerator = linkGenerator;
         }
 
         public async Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId)
@@ -118,10 +120,14 @@ namespace SmartElectronicsApi.Application.Implementations
                 if (!result.Succeeded) throw new CustomException(400, result.Errors.ToString());
                 await _userManager.AddToRoleAsync(appUser, RolesEnum.Member.ToString());
                 string token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
-                var actionContext = new ActionContext(_contextAccessor.HttpContext, _contextAccessor.HttpContext.GetRouteData(), new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor());
-                var urlHelper = new UrlHelper(actionContext);
-                string link = urlHelper.Action(nameof(VerifyEmail), "Account", new { email = appUser.Email, token }, _contextAccessor.HttpContext.Request.Scheme, _contextAccessor.HttpContext.Request.Host.ToString());
-
+                string link = _linkGenerator.GetUriByAction(
+                    httpContext: _contextAccessor.HttpContext,
+                    action: "VerifyEmail",
+                    controller: "Auth",
+                    values: new { email = appUser.Email, token = token },
+                    scheme: _contextAccessor.HttpContext.Request.Scheme,
+                    host: _contextAccessor.HttpContext.Request.Host
+                );
                 string body;
                 using (StreamReader sr = new StreamReader("wwwroot/Template/emailConfirm.html"))
                 {
@@ -130,15 +136,15 @@ namespace SmartElectronicsApi.Application.Implementations
                 body = body.Replace("{{link}}", link).Replace("{{UserName}}", appUser.UserName);
 
                 _emailService.SendEmail(
-                    from: "noreply@youremail.com",
+                    from: "nihadmi@code.edu.az\r\n",
                     to: appUser.Email,
                     subject: "Verify Email",
                     body: body,
                     smtpHost: "smtp.gmail.com",
                     smtpPort: 587,
                     enableSsl: true,
-                    smtpUser: "your-email@gmail.com",
-                    smtpPass: "your-password"
+                    smtpUser: "nihadmi@code.edu.az\r\n",
+                    smtpPass: "zrhu njzc qeqr koux\r\n"
                 );
                 var MappedUser =_mapper.Map<UserGetDto>(appUser);
                 return MappedUser; 
@@ -152,15 +158,13 @@ namespace SmartElectronicsApi.Application.Implementations
 
         }
 
-        public async Task<IActionResult> VerifyEmail(string email, string token)
+        public async Task<string> VerifyEmail(string email, string token)
         { 
             AppUser appUser = await _userManager.FindByEmailAsync(email);
             if (appUser is null) throw new CustomException(404, "User is null");
             await _userManager.ConfirmEmailAsync(appUser, token);
-            await _signInManager.SignInAsync(appUser, true);
-            var actionContext = new ActionContext(_contextAccessor.HttpContext, _contextAccessor.HttpContext.GetRouteData(), new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor());
-            var urlHelper = new UrlHelper(actionContext);
-            return urlHelper.Action("Index", "Home");
+            // await _signInManager.SignInAsync(appUser, true);
+            return "https://github.com/Nihadname";
         }
 
         public async Task<string> GoogleResponse()

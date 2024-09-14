@@ -45,7 +45,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
             return Ok(await _authService.Register(registerDto));
         }
         [HttpPost("Login")]
-
+        
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
           return  Ok(await _authService.Login(loginDto));
@@ -67,6 +67,11 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
                 await _roleManager.CreateAsync(new IdentityRole() { Name = "Delivery" });
             }
             return Content("roles are added");
+        }
+        [HttpGet("VerifyEmail")]
+        public async Task<IActionResult> VerifyEmail(string token, string email)
+        {
+            return Redirect(await _authService.VerifyEmail(email,token));
         }
     }
 }
