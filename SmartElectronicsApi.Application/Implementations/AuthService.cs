@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using System.Security.Claims;
 using Microsoft.Extensions.Options;
 using SmartElectronicsApi.Application.Settings;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -158,13 +159,13 @@ namespace SmartElectronicsApi.Application.Implementations
 
         }
 
-        public async Task<string> VerifyEmail(string email, string token)
+        public async Task<bool> VerifyEmail(string email, string token)
         { 
             AppUser appUser = await _userManager.FindByEmailAsync(email);
             if (appUser is null) throw new CustomException(404, "User is null");
-            await _userManager.ConfirmEmailAsync(appUser, token);
+         var result=   await _userManager.ConfirmEmailAsync(appUser, token);
             // await _signInManager.SignInAsync(appUser, true);
-            return "https://github.com/Nihadname";
+            return result.Succeeded;
         }
 
         public async Task<string> GoogleResponse()
@@ -190,5 +191,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
             return _tokenService.GetToken(SecretKey, Audience, Issuer, user, roles);
         }
+
+
     }
 }

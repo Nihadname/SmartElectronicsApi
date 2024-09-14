@@ -71,7 +71,15 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         [HttpGet("VerifyEmail")]
         public async Task<IActionResult> VerifyEmail(string token, string email)
         {
-            return Redirect(await _authService.VerifyEmail(email,token));
+            bool isVerified = await _authService.VerifyEmail(email, token);
+            if (isVerified)
+            {
+                return Ok(new { message = "Email verified successfully" });
+            }
+            else
+            {
+                return BadRequest(new { error = "Email verification failed" });
+            }
         }
     }
 }
