@@ -8,6 +8,7 @@ using SmartElectronicsApi.DataAccess.Migrations;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using SmartElectronicsApi.Application.Dtos.Auth;
 
 namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 {
@@ -42,6 +43,12 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         public async Task<IActionResult> Register(RegisterDto registerDto)
         {
             return Ok(await _authService.Register(registerDto));
+        }
+        [HttpPost("Login")]
+
+        public async Task<IActionResult> Login(LoginDto loginDto)
+        {
+          return  Ok(await _authService.Login(loginDto));
         }
         [HttpPost("AddRole")]
         public async Task<IActionResult> AddRole()

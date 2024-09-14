@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Authentication.Google;
 using System.Security.Claims;
+using Microsoft.Extensions.Options;
+using SmartElectronicsApi.Application.Settings;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -26,8 +28,10 @@ namespace SmartElectronicsApi.Application.Implementations
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ITokenService _tokenService;
+        private readonly JwtSettings _jwtSettings;
 
-        public AuthService(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper,  IHttpContextAccessor contextAccessor)
+        public AuthService(IOptions<JwtSettings> jwtSettings,IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -40,6 +44,9 @@ namespace SmartElectronicsApi.Application.Implementations
             //    ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor()
             //});
             _contextAccessor = contextAccessor;
+            _tokenService = tokenService;
+            _jwtSettings = jwtSettings.Value;
+
         }
 
         public async Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId)
@@ -67,7 +74,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
         }
 
-        public async string Login(LoginDto loginDto)
+        public async Task<string> Login(LoginDto loginDto)
         {
             var User = await _userManager.FindByEmailAsync(loginDto.UserNameOrGmail);
             if (User == null)
@@ -83,8 +90,11 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 throw new CustomException(400, "Password", "userName or email is wrong\"");
             }
-
-            throw new NotImplementedException();
+            IList<string> roles = await _userManager.GetRolesAsync(User);
+            var Audience = _jwtSettings.Audience;
+            var SecretKey = _jwtSettings.secretKey;
+            var Issuer = _jwtSettings.Issuer;
+            return _tokenService.GetToken(SecretKey, Audience, Issuer, User, roles);
         }
 
         public async Task<UserGetDto> Register(RegisterDto registerDto)
@@ -103,8 +113,9 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 var result = await _userManager.CreateAsync(appUser, registerDto.Password);
                 if (!result.Succeeded) throw new CustomException(400, result.Errors.ToString());
+                await _userManager.AddToRoleAsync(appUser, RolesEnum.Member.ToString());
 
-                var MappedUser=_mapper.Map<UserGetDto>(appUser);
+                var MappedUser =_mapper.Map<UserGetDto>(appUser);
                 return MappedUser; 
             }
             catch (Exception ex)

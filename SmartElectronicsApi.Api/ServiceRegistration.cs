@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
-using SmartElectronicsApi.Api.Settings;
 using SmartElectronicsApi.Application.Implementations;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Application.Profiles;
@@ -22,6 +21,7 @@ using SmartElectronicsApi.DataAccess.Data;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
 using System;
 using System.Text;
+using SmartElectronicsApi.Application.Settings;
 
 namespace SmartElectronicsApi.Api
 {

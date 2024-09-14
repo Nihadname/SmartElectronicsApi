@@ -1,4 +1,4 @@
-﻿namespace SmartElectronicsApi.Api.Settings
+﻿namespace SmartElectronicsApi.Application.Settings
 {
     public class JwtSettings
     {
