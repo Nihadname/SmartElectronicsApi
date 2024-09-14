@@ -7,7 +7,7 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IAuthService
     {
-        public Task<GoogleGetDto> GoogleResponse();
+        public Task<string> GoogleResponse();
         public Task<string> Login(LoginDto loginDto);
         public Task<UserGetDto> Register(RegisterDto registerDto);
         Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId);

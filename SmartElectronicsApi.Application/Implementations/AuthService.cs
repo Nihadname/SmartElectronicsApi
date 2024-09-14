@@ -30,23 +30,20 @@ namespace SmartElectronicsApi.Application.Implementations
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly ITokenService _tokenService;
         private readonly JwtSettings _jwtSettings;
+        private readonly IEmailService _emailService;
+        private readonly SignInManager<AppUser> _signInManager;
 
-        public AuthService(IOptions<JwtSettings> jwtSettings,IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService)
+        public AuthService(IOptions<JwtSettings> jwtSettings, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService, IEmailService emailService, SignInManager<AppUser> signInManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
-            //_urlHelper = urlHelperFactory.GetUrlHelper(new ActionContext
-            //{
-            //    HttpContext = httpContextAccessor.HttpContext,
-            //    RouteData = httpContextAccessor.HttpContext.GetRouteData(),
-            //    ActionDescriptor = new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor()
-            //});
             _contextAccessor = contextAccessor;
             _tokenService = tokenService;
             _jwtSettings = jwtSettings.Value;
-
+            _emailService = emailService;
+            _signInManager = signInManager;
         }
 
         public async Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId)
@@ -86,9 +83,15 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
             }
             var result= await _userManager.CheckPasswordAsync(User, loginDto.Password);
+           
             if (!result)
             {
                 throw new CustomException(400, "Password", "userName or email is wrong\"");
+            }
+            if (!User.EmailConfirmed)
+            {
+                throw new CustomException(400, "UserNameOrGmail", "email not confirmed");
+
             }
             IList<string> roles = await _userManager.GetRolesAsync(User);
             var Audience = _jwtSettings.Audience;
@@ -114,7 +117,29 @@ namespace SmartElectronicsApi.Application.Implementations
                 var result = await _userManager.CreateAsync(appUser, registerDto.Password);
                 if (!result.Succeeded) throw new CustomException(400, result.Errors.ToString());
                 await _userManager.AddToRoleAsync(appUser, RolesEnum.Member.ToString());
+                string token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
+                var actionContext = new ActionContext(_contextAccessor.HttpContext, _contextAccessor.HttpContext.GetRouteData(), new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor());
+                var urlHelper = new UrlHelper(actionContext);
+                string link = urlHelper.Action(nameof(VerifyEmail), "Account", new { email = appUser.Email, token }, _contextAccessor.HttpContext.Request.Scheme, _contextAccessor.HttpContext.Request.Host.ToString());
 
+                string body;
+                using (StreamReader sr = new StreamReader("wwwroot/Template/emailConfirm.html"))
+                {
+                    body = sr.ReadToEnd();
+                }
+                body = body.Replace("{{link}}", link).Replace("{{UserName}}", appUser.UserName);
+
+                _emailService.SendEmail(
+                    from: "noreply@youremail.com",
+                    to: appUser.Email,
+                    subject: "Verify Email",
+                    body: body,
+                    smtpHost: "smtp.gmail.com",
+                    smtpPort: 587,
+                    enableSsl: true,
+                    smtpUser: "your-email@gmail.com",
+                    smtpPass: "your-password"
+                );
                 var MappedUser =_mapper.Map<UserGetDto>(appUser);
                 return MappedUser; 
             }
@@ -127,9 +152,18 @@ namespace SmartElectronicsApi.Application.Implementations
 
         }
 
-        
+        public async Task<IActionResult> VerifyEmail(string email, string token)
+        { 
+            AppUser appUser = await _userManager.FindByEmailAsync(email);
+            if (appUser is null) throw new CustomException(404, "User is null");
+            await _userManager.ConfirmEmailAsync(appUser, token);
+            await _signInManager.SignInAsync(appUser, true);
+            var actionContext = new ActionContext(_contextAccessor.HttpContext, _contextAccessor.HttpContext.GetRouteData(), new Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor());
+            var urlHelper = new UrlHelper(actionContext);
+            return urlHelper.Action("Index", "Home");
+        }
 
-        public async Task<GoogleGetDto> GoogleResponse()
+        public async Task<string> GoogleResponse()
         {
             var result = await _contextAccessor.HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
             if (!result.Succeeded) throw new CustomException(400, "Authentication failed!");
@@ -138,12 +172,19 @@ namespace SmartElectronicsApi.Application.Implementations
             var userName = claims?.FirstOrDefault(s => s.Type == ClaimTypes.Name)?.Value;
             var Id = claims?.FirstOrDefault(s => s.Type == ClaimTypes.NameIdentifier)?.Value;
             var GivenName = claims?.FirstOrDefault(s => s.Type == ClaimTypes.GivenName)?.Value;
-            GoogleGetDto googleGetDto = new GoogleGetDto();
-            googleGetDto.userName = userName;
-            googleGetDto.GivenName = GivenName;
-            googleGetDto.Email = email;
-            googleGetDto.Id = Id;
-            return googleGetDto;    
+            var user =await FindOrCreateUserAsync(email, userName, Id);
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            var Audience = _jwtSettings.Audience;
+            var SecretKey = _jwtSettings.secretKey;
+            var Issuer = _jwtSettings.Issuer;
+
+            //GoogleGetDto googleGetDto = new GoogleGetDto();
+            //googleGetDto.userName = userName;
+            //googleGetDto.GivenName = GivenName;
+            //googleGetDto.Email = email;
+            //googleGetDto.Id = Id;
+
+            return _tokenService.GetToken(SecretKey, Audience, Issuer, user, roles);
         }
     }
 }
