@@ -20,6 +20,7 @@ using Microsoft.Extensions.Options;
 using SmartElectronicsApi.Application.Settings;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
+using System.Web;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -90,7 +91,7 @@ namespace SmartElectronicsApi.Application.Implementations
            
             if (!result)
             {
-                throw new CustomException(400, "Password", "userName or email is wrong\"");
+                throw new CustomException(400, "Password", "Password is wrong\"");
             }
             if (!User.EmailConfirmed)
             {
@@ -116,10 +117,14 @@ namespace SmartElectronicsApi.Application.Implementations
             appUser.fullName = registerDto.FullName;
             appUser.GoogleId = null;
             appUser.Image=null;
-            try
-            {
+         
                 var result = await _userManager.CreateAsync(appUser, registerDto.Password);
-                if (!result.Succeeded) throw new CustomException(400, result.Errors.ToString());
+            if (!result.Succeeded)
+            {
+                var errorMessages = result.Errors.ToDictionary(e => e.Code, e => e.Description);
+
+                throw new CustomException(400, errorMessages);
+            }
                 await _userManager.AddToRoleAsync(appUser, RolesEnum.Member.ToString());
                 string token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
                 string link = _linkGenerator.GetUriByAction(
@@ -150,13 +155,8 @@ namespace SmartElectronicsApi.Application.Implementations
                 );
                 var MappedUser =_mapper.Map<UserGetDto>(appUser);
                 return MappedUser; 
-            }
-            catch (Exception ex)
-            {
-                var errorMessage = ex.Message;
-                var innerExceptionMessage = ex.InnerException?.Message;
-                throw new CustomException(500, $"error Bas Verib {errorMessage}, Inner Exception occured : {innerExceptionMessage}");
-            }
+            
+            
 
         }
 
@@ -226,6 +226,16 @@ namespace SmartElectronicsApi.Application.Implementations
             );
 
             return "email sent succesfully";
+        }
+        public async Task<string> ResetPassword(string email, string token,ResetPasswordDto resetPasswordDto)
+        {
+            token=HttpUtility.UrlDecode(token);
+           var existedUser=await _userManager.FindByEmailAsync(email);
+            if (existedUser == null) throw new CustomException(404, "User is null or empty");
+            var result = await _userManager.ResetPasswordAsync(existedUser, token, resetPasswordDto.Password);
+            if(!result.Succeeded) throw new CustomException(400,result.Errors.ToString());
+            await _userManager.UpdateSecurityStampAsync(existedUser);
+            return "password Reseted";
         }
 
     }

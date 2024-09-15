@@ -13,5 +13,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId);
         Task<bool> VerifyEmail(string email, string token);
         Task<string> ResetPasswordSendEmail(string email);
+        Task<string> ResetPassword(string email, string token, ResetPasswordDto resetPasswordDto);
     }
 }

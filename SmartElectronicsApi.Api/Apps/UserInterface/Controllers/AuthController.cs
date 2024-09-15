@@ -81,5 +81,15 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
                 return BadRequest(new { error = "Email verification failed" });
             }
         }
+        [HttpPost("ResetPasswordSendEmail")]
+        public async Task<IActionResult> ResetPasswordSendEmail(string email)
+        {
+           return Ok(await _authService.ResetPasswordSendEmail(email));
+        }
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(string email, string token, [FromBody]ResetPasswordDto resetPasswordDto)
+        {
+            return Ok(await _authService.ResetPassword(email, token, resetPasswordDto));
+        }
     }
 }
