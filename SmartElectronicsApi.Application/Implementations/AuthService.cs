@@ -264,8 +264,6 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400,errorMessages);
             }
             return result.ToString();
-
-
         }
     }
 }
