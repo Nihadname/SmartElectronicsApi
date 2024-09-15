@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartElectronicsApi.Api", "SmartElectronicsApi.Api\SmartElectronicsApi.Api.csproj", "{417AE38D-688F-4E0F-8D38-CBF027D65E7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartElectronicsApi.Api", "SmartElectronicsApi.Api\SmartElectronicsApi.Api.csproj", "{417AE38D-688F-4E0F-8D38-CBF027D65E7D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartElectronicsApi.Application", "SmartElectronicsApi.Application\SmartElectronicsApi.Application.csproj", "{B25B1669-4662-4827-AF06-DEBE68D33BCE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartElectronicsApi.Application", "SmartElectronicsApi.Application\SmartElectronicsApi.Application.csproj", "{B25B1669-4662-4827-AF06-DEBE68D33BCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartElectronicsApi.Core", "SmartElectronicsApi.Core\SmartElectronicsApi.Core.csproj", "{1FA4650A-4E83-4AA4-9417-9D939F1209FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartElectronicsApi.Core", "SmartElectronicsApi.Core\SmartElectronicsApi.Core.csproj", "{1FA4650A-4E83-4AA4-9417-9D939F1209FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartElectronicsApi.DataAccess", "SmartElectronicsApi.DataAccess\SmartElectronicsApi.DataAccess.csproj", "{5E5EDC18-30A4-48E8-BD79-7EEFED3101C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartElectronicsApi.DataAccess", "SmartElectronicsApi.DataAccess\SmartElectronicsApi.DataAccess.csproj", "{5E5EDC18-30A4-48E8-BD79-7EEFED3101C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartElectronicsApi.Mvc", "SmartElectronicsApi.Mvc\SmartElectronicsApi.Mvc.csproj", "{04E17C90-7CE6-4902-A392-FC85CB4D25CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{5E5EDC18-30A4-48E8-BD79-7EEFED3101C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E5EDC18-30A4-48E8-BD79-7EEFED3101C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E5EDC18-30A4-48E8-BD79-7EEFED3101C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04E17C90-7CE6-4902-A392-FC85CB4D25CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04E17C90-7CE6-4902-A392-FC85CB4D25CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04E17C90-7CE6-4902-A392-FC85CB4D25CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04E17C90-7CE6-4902-A392-FC85CB4D25CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -91,5 +91,15 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _authService.ResetPassword(email, token, resetPasswordDto));
         }
+        [HttpGet("CheckExperySutiationOfToken")]
+        public async Task<IActionResult> CheckExperySutiationOfToken(string email,string token)
+        {
+            return Ok(await _authService.CheckExperySutiationOfToken(email, token));
+        }
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(string userName,ChangePasswordDto changePasswordDto)
+        {
+            return Ok(await _authService.ChangePassword(userName, changePasswordDto));
+        }
     }
 }

@@ -30,27 +30,29 @@ namespace SmartElectronicsApi.Api
         public static void Register(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddControllersWithViews()
-                .ConfigureApiBehaviorOptions(opt =>
-            {
-                opt.InvalidModelStateResponseFactory = context =>
-                {
-                    // Convert validation errors to a consistent dictionary format
-                    var errors = context.ModelState
-                        .Where(e => e.Value?.Errors.Count() > 0)
-                        .ToDictionary(
-                            x => x.Key,
-                            x => x.Value.Errors.First().ErrorMessage
-                        );
+     .ConfigureApiBehaviorOptions(opt =>
+     {
+         opt.InvalidModelStateResponseFactory = context =>
+         {
+             var errors = context.ModelState
+                 .Where(e => e.Value?.Errors.Count > 0)
+                 .ToDictionary(
+                     x => x.Key,
+                     x => x.Value.Errors.First().ErrorMessage
+                 );
 
-                    // Return a consistent response format with an empty message
-                    return new BadRequestObjectResult(new
-                    {
-                        message = "",
-                        errors
-                    });
-                };
-            });
-          services.AddFluentValidationAutoValidation()
+             // Return a consistent response format with an empty message
+             var response = new
+             {
+                 message = "Validation errors occurred.",
+                 errors
+             };
+
+             return new BadRequestObjectResult(response);
+         };
+     });
+
+            services.AddFluentValidationAutoValidation()
     .AddFluentValidationClientsideAdapters()
     .AddValidatorsFromAssemblyContaining<RegisterValidator>();
             services.AddHttpContextAccessor();

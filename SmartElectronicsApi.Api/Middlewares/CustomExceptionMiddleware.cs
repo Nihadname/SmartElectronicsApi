@@ -4,33 +4,42 @@ namespace SmartElectronicsApi.Api.Middlewares
 {
     public class CustomExceptionMiddleware
     {
-        private readonly RequestDelegate _Next;
+        private readonly RequestDelegate _next;
 
         public CustomExceptionMiddleware(RequestDelegate next)
         {
-            _Next = next;
+            _next = next;
         }
+
         public async Task InvokeAsync(HttpContext httpContext)
         {
             try
             {
-                await _Next.Invoke(httpContext);
+                await _next(httpContext);
             }
             catch (Exception ex)
             {
-                var message = ex.Message;
-                var errors = new Dictionary<string, string>();
-                httpContext.Response.StatusCode = 500;
-                if (ex is CustomException custom)
+                var response = new
                 {
-                    message = custom.Message;
-                    errors = custom.Errors;
-                    httpContext.Response.StatusCode = custom.Code;
+                    message = ex.Message,
+                    errors = new Dictionary<string, string>()
+                };
 
+                httpContext.Response.ContentType = "application/json";
+                httpContext.Response.StatusCode = ex is CustomException custom
+                    ? custom.Code
+                    : StatusCodes.Status500InternalServerError;
+
+                if (ex is CustomException customException)
+                {
+                    response = new
+                    {
+                        message = customException.Message,
+                        errors = customException.Errors
+                    };
                 }
-                await httpContext.Response.WriteAsJsonAsync(new { message, errors });
 
-
+                await httpContext.Response.WriteAsJsonAsync(response);
             }
         }
     }

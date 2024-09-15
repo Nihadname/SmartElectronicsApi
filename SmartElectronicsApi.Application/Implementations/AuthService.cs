@@ -237,6 +237,35 @@ namespace SmartElectronicsApi.Application.Implementations
             await _userManager.UpdateSecurityStampAsync(existedUser);
             return "password Reseted";
         }
+        public async Task<string> CheckExperySutiationOfToken(string email, string token)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new CustomException(400, "Email is required.");
+            if (string.IsNullOrEmpty(token))
+                throw new CustomException(400, "Token is required.");
+            var existUser = await _userManager.FindByEmailAsync(email);
+            if (existUser == null) throw new CustomException(404, "User is null or empty");
+            bool result = await _userManager
+               .VerifyUserTokenAsync(existUser, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
+            if (!result)
+                throw new CustomException(400, "The token is either invalid or has expired.");
+            return "hasnt still expired";
+          
 
+        }
+        public async Task<string> ChangePassword(string UserName,ChangePasswordDto changePasswordDto)
+        {
+            if (string.IsNullOrEmpty(UserName)) throw new CustomException(400, "userName cant be empty");
+            var user = await _userManager.FindByNameAsync(UserName);
+            if (user is null) throw new CustomException(404, "this user doesnt exist");
+            var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
+            if (!result.Succeeded){
+                var errorMessages = result.Errors.ToDictionary(e => e.Code, e => e.Description);
+                throw new CustomException(400,errorMessages);
+            }
+            return result.ToString();
+
+
+        }
     }
 }
