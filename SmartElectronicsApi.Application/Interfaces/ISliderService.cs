@@ -13,8 +13,8 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<List<SliderListItemDto>> GetAll();
         Task<SliderReturnDto> GetById(int? id);
          Task<Slider> Create();
-        Task<Slider> Delete(int? id);
-        Task<Slider> Update();
+        Task<int> Delete(int? id);
+            Task<Slider> Update();
 
 
 

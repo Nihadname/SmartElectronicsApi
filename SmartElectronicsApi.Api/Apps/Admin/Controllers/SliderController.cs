@@ -26,5 +26,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _sliderService.GetById(Id));
         }
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> Delete(int? Id)
+        {
+            return Ok(await _sliderService.Delete(Id));
+        }
     }
 }

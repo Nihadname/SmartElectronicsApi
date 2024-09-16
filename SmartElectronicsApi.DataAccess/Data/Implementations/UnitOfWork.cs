@@ -20,6 +20,13 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 
-       
+        public void Commit()
+        {
+            _smartElectronicsDbContext.SaveChanges();
+        }
+        public void Dispose()
+        {
+            _smartElectronicsDbContext.Dispose();
+        }
     }
 }

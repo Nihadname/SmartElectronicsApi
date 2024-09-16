@@ -27,11 +27,14 @@ namespace SmartElectronicsApi.Application.Implementations
             throw new NotImplementedException();
         }
 
-        public Task<Slider> Delete(int? id)
+        public async Task<int> Delete(int? id)
         {
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
-
-            throw new NotImplementedException();
+            var Slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
+            if (Slider is null) throw new CustomException(404, "Not found");
+            await _unitOfWork.sliderRepository.Delete(Slider);
+             _unitOfWork.Commit();
+            return Slider.Id;
         }
 
         public async Task<List<SliderListItemDto>> GetAll()
