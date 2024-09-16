@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240916210855_AddingSlider")]
+    partial class AddingSlider
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -240,9 +243,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
@@ -258,9 +259,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("nvarchar(80)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -271,9 +270,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -291,9 +288,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
@@ -309,9 +304,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("nvarchar(80)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -319,9 +312,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("nvarchar(80)");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -341,26 +332,20 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -459,9 +444,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
@@ -480,9 +463,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsFeatured")
                         .HasColumnType("bit");
@@ -505,9 +486,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ViewCount")
                         .HasColumnType("int");
@@ -570,17 +549,13 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsMain")
                         .HasColumnType("bit");
@@ -596,9 +571,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -618,9 +591,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
@@ -632,9 +603,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18, 2)");
@@ -650,9 +619,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("VariationName")
                         .IsRequired()
@@ -709,9 +676,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
@@ -721,14 +686,10 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -747,9 +708,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
@@ -760,9 +719,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -770,9 +727,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

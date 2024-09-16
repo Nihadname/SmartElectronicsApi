@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace SmartElectronicsApi.Application.Profiles
         public MapperProfile(IHttpContextAccessor contextAccessor)
         {
             CreateMap<AppUser, UserGetDto>();
+            CreateMap<Slider, SliderReturnDto>();
+            CreateMap<Slider,SliderListItemDto>();
 
             _contextAccessor = contextAccessor;
         }

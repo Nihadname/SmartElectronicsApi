@@ -17,6 +17,10 @@ namespace SmartElectronicsApi.DataAccess.Data.Configurations
             {
                 builder.Property(property.Name).IsRequired().HasMaxLength(80);
             }
+            builder.Property(s => s.IsDeleted).HasDefaultValue(false);
+            builder.Property(s => s.CreatedTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(s => s.UpdatedTime).HasDefaultValueSql("GETDATE()");
+            builder.HasKey(e => e.Id);
         }
     }
 }

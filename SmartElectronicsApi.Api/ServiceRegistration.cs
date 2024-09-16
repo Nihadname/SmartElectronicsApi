@@ -70,6 +70,8 @@ namespace SmartElectronicsApi.Api
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ISliderRepository, SliderRepository>();
+            services.AddScoped<ISliderService, SliderService>();
             services.AddIdentity<AppUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 8;

@@ -10,5 +10,6 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
     public interface IUnitOfWork
     {
         public ICategoryRepository   categoryRepository { get; }
+        public ISliderRepository sliderRepository { get; }
     }
 }

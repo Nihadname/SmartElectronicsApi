@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SmartElectronicsApi.Core.Entities;
+using SmartElectronicsApi.DataAccess.Data.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<ProductColor> productColors    { get; set; }
         public DbSet<ProductImage> productImages { get; set; }
         public DbSet<ProductVariationColor> productVariationColors { get; set; }
-
+        public DbSet<Slider> sliders { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
