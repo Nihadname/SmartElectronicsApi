@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Exceptions;
+using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
@@ -22,9 +23,13 @@ namespace SmartElectronicsApi.Application.Implementations
             _mapper = mapper;
         }
 
-        public Task<Slider> Create()
+        public async Task<Slider> Create(SliderCreateDto sliderCreateDto)
         {
-            throw new NotImplementedException();
+            var Slider = _mapper.Map<Slider>(sliderCreateDto);
+
+           await _unitOfWork.sliderRepository.Create(Slider);
+            _unitOfWork.Commit();
+            return Slider;
         }
 
         public async Task<int> Delete(int? id)

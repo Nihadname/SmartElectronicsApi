@@ -25,4 +25,8 @@
     <ProjectReference Include="..\SmartElectronicsApi.Application\SmartElectronicsApi.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\" />
+  </ItemGroup>
+
 </Project>

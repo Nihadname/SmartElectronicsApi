@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Implementations;
 using SmartElectronicsApi.Application.Interfaces;
 
@@ -30,6 +31,11 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         public async Task<IActionResult> Delete(int? Id)
         {
             return Ok(await _sliderService.Delete(Id));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create( SliderCreateDto sliderCreateDto)
+        {
+            return Ok(await _sliderService.Create(sliderCreateDto));
         }
     }
 }

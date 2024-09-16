@@ -17,20 +17,31 @@ namespace SmartElectronicsApi.Application.Extensions
         {
             return file.Length <= size * 1024;
         }
-        public static async Task<string> SaveFile(this IFormFile file, string FolderName = null)
+        public static string Save(this IFormFile file, string root, string folder)
         {
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", FolderName ?? string.Empty, fileName);
+            if (file == null || string.IsNullOrEmpty(root) || string.IsNullOrEmpty(folder))
+                throw new ArgumentException("Invalid arguments for file saving.");
 
+            string newFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string directoryPath = Path.Combine(root, "wwwroot", folder);
+
+            // Ensure directory exists
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+
+            string path = Path.Combine(directoryPath, newFileName);
             using (FileStream fileStream = new FileStream(path, FileMode.Create))
             {
-                await file.CopyToAsync(fileStream);
+                file.CopyTo(fileStream);
             }
-            return fileName;
+
+            return newFileName;
         }
-        public static void DeleteFile(this string fileName, string folderName = null)
+        public static void DeleteFile(this string fileName)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", folderName ?? string.Empty, fileName);
+            string path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img",  fileName);
             if (File.Exists(path))
             {
                 File.Delete(path);
