@@ -11,17 +11,17 @@ namespace SmartElectronicsApi.Mvc.Controllers
     public class HomeController : Controller
     {
     
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int skip=0, int take = 0)
         {
             using var client=new HttpClient();
-            using HttpResponseMessage httpResponseMessage = await client.GetAsync("http://localhost:5246/api/Slider/GetSliderForUi");
+            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Slider/GetSliderForUi/{skip}/{take}");
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 string  ContentStream=await httpResponseMessage.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<List<SliderListItemVm>>(ContentStream);
                HomeViewModel homeViewModel = new HomeViewModel();
                 homeViewModel.Sliders = data;
-                View(homeViewModel);
+               return View(homeViewModel);
             }
             return View();
         }

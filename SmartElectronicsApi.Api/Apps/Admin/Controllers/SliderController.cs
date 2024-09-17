@@ -16,7 +16,7 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             _sliderService = sliderService;
         }
-        [HttpGet]
+        [HttpGet("{skip}/{take}")]
         public async Task<IActionResult> Get(int skip, int take)
         {
             return Ok(await _sliderService.GetAll(skip,take));

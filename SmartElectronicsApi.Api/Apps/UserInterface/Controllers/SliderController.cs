@@ -14,7 +14,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             _sliderService = sliderService;
         }
-        [HttpGet("GetSliderForUi")]   
+        [HttpGet("GetSliderForUi/{skip}/{take}")]
         public async Task<IActionResult> GetSliderForUi(int skip, int take)
         {
         return Ok(await _sliderService.GetAll(skip, take));
