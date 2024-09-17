@@ -26,10 +26,16 @@ namespace SmartElectronicsApi.Application.Profiles
                             , _contextAccessor.HttpContext.Request.Host.Port.Value);
             var url = uriBuilder.Uri.AbsoluteUri;
             CreateMap<AppUser, UserGetDto>();
-            CreateMap<Slider, SliderReturnDto>();
-            CreateMap<Slider, SliderListItemDto>();
+            CreateMap<Slider, SliderReturnDto>()
+                      .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image));
+            CreateMap<Slider, SliderListItemDto>()
+                .ForMember(s=>s.Image,map=>map.MapFrom(d=> url+ "img/"+d.Image));
             CreateMap<SliderCreateDto, Slider>()
-                .ForMember(s => s.Image, map => map.MapFrom(d =>url+"img/" +d.Image.Save(Directory.GetCurrentDirectory(), "img")));
+                .ForMember(s => s.Image, map => map.MapFrom(d =>d.Image.Save(Directory.GetCurrentDirectory(), "img")));
+            CreateMap<SliderUpdateDto, Slider>()
+      .ForMember(s => s.Image, map => map.MapFrom(d => d.Image.Save(Directory.GetCurrentDirectory(), "img")));
+
+
         }
     }
 }

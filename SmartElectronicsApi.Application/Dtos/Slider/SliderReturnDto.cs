@@ -8,6 +8,8 @@ namespace SmartElectronicsApi.Application.Dtos.Slider
 {
     public class SliderReturnDto
     {
+        public int Id { get; set; }
+
         public string Image {  get; set; }
     }
 }

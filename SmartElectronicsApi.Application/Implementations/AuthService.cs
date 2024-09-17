@@ -178,6 +178,7 @@ namespace SmartElectronicsApi.Application.Implementations
             var userName = claims?.FirstOrDefault(s => s.Type == ClaimTypes.Name)?.Value;
             var Id = claims?.FirstOrDefault(s => s.Type == ClaimTypes.NameIdentifier)?.Value;
             var GivenName = claims?.FirstOrDefault(s => s.Type == ClaimTypes.GivenName)?.Value;
+
             var user =await FindOrCreateUserAsync(email, userName, Id);
             IList<string> roles = await _userManager.GetRolesAsync(user);
             var Audience = _jwtSettings.Audience;

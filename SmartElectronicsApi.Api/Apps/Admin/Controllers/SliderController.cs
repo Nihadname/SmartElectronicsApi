@@ -37,5 +37,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _sliderService.Create(sliderCreateDto));
         }
+        [HttpPut("{Id}")]
+        public async Task<IActionResult> Update(int? Id,SliderUpdateDto sliderUpdateDto)
+        {
+            return Ok(await _sliderService.Update(Id, sliderUpdateDto));
+        }
     }
 }

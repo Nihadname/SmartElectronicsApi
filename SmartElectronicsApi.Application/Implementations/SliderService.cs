@@ -13,54 +13,80 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
-    public class SliderService : ISliderService
-    {
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        public SliderService(IUnitOfWork unitOfWork, IMapper mapper)
+  
+        public class SliderService : ISliderService
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-        }
+            private readonly IUnitOfWork _unitOfWork;
+            private readonly IMapper _mapper;
+            public SliderService(IUnitOfWork unitOfWork, IMapper mapper)
+            {
+                _unitOfWork = unitOfWork;
+                _mapper = mapper;
+            }
 
-        public async Task<Slider> Create(SliderCreateDto sliderCreateDto)
-        {
-            var Slider = _mapper.Map<Slider>(sliderCreateDto);
+            public async Task<Slider> Create(SliderCreateDto sliderCreateDto)
+            {
+                var Slider = _mapper.Map<Slider>(sliderCreateDto);
 
-           await _unitOfWork.sliderRepository.Create(Slider);
-            _unitOfWork.Commit();
-            return Slider;
-        }
+                await _unitOfWork.sliderRepository.Create(Slider);
+                _unitOfWork.Commit();
+                return Slider;
+            }
 
-        public async Task<int> Delete(int? id)
-        {
-            if (id is null) throw new CustomException(400, "Id", "id cant be null");
-            var Slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
-            if (Slider is null) throw new CustomException(404, "Not found");
-            await _unitOfWork.sliderRepository.Delete(Slider);
-             _unitOfWork.Commit();
-            return Slider.Id;
-        }
+            public async Task<int> Delete(int? id)
+            {
+                if (id is null) throw new CustomException(400, "Id", "id cant be null");
+                var Slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
+                if (Slider is null) throw new CustomException(404, "Not found");
+                await _unitOfWork.sliderRepository.Delete(Slider);
+                _unitOfWork.Commit();
+                return Slider.Id;
+            }
 
-        public async Task<List<SliderListItemDto>> GetAll()
-        {
-            var sliders = await _unitOfWork.sliderRepository.GetAll();
-            var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); // Correctly map the list
-            return sliderItemDto;
-        }
+            public async Task<List<SliderListItemDto>> GetAll()
+            {
+                var sliders = await _unitOfWork.sliderRepository.GetAll();
+                var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); // Correctly map the list
+                return sliderItemDto;
+            }
 
-        public async Task<SliderReturnDto> GetById(int? id)
-        {
-            if (id is null) throw new CustomException(400, "Id", "id cant be null");
-            var Slider=await _unitOfWork.sliderRepository.GetEntity(s=>s.Id==id);
-            if (Slider is null) throw new CustomException(404, "Not found");
-            var slider=_mapper.Map<SliderReturnDto>(Slider);
-            return slider;
-        }
+            public async Task<SliderReturnDto> GetById(int? id)
+            {
+                if (id is null) throw new CustomException(400, "Id", "id cant be null");
+                var Slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
+                if (Slider is null) throw new CustomException(404, "Not found");
+                var slider = _mapper.Map<SliderReturnDto>(Slider);
+                return slider;
+            }
 
-        public Task<Slider> Update()
-        {
-            throw new NotImplementedException();
+            public async Task<int> Update(int? id, SliderUpdateDto sliderUpdateDto)
+            {
+                if (id is null) throw new CustomException(400, "Id", "id can't be null");
+
+                var slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
+                if (slider is null) throw new CustomException(404, "Slider not found");
+
+                if (sliderUpdateDto.Image != null)
+                {
+                    if (!string.IsNullOrEmpty(slider.Image))
+                    {
+                        slider.Image.DeleteFile();
+                    }
+                    var newImagePath = sliderUpdateDto.Image.Save(Directory.GetCurrentDirectory(), "img");
+                    slider.Image = newImagePath;
+                   var UpdatedSlider= _mapper.Map(sliderUpdateDto, slider);
+
+                    _unitOfWork.sliderRepository.Update(UpdatedSlider);
+                     _unitOfWork.Commit();
+
+                    return UpdatedSlider.Id;
+                }
+                else
+                {
+                    return 0;
+                }
+
+                
+            }
         }
     }
-}

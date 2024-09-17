@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Dtos.Slider
 {
-    public class SliderListItemDto
+    public class SliderUpdateDto
     {
-        public int Id { get; set; }
-        public string Image {  get; set; }
+        public IFormFile? Image {  get; set; }
     }
 }

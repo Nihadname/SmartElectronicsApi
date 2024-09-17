@@ -14,8 +14,7 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<SliderReturnDto> GetById(int? id);
          Task<Slider> Create(SliderCreateDto sliderCreateDto);
         Task<int> Delete(int? id);
-            Task<Slider> Update();
-
+        Task<int> Update(int? id, SliderUpdateDto sliderUpdateDto);
 
 
 
