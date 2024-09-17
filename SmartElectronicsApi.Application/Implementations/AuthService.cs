@@ -51,7 +51,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _linkGenerator = linkGenerator;
         }
 
-        public async Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId)
+        public async Task<AppUser> FindOrCreateUserAsync(string email,string googleId,string GivenName)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -59,16 +59,19 @@ namespace SmartElectronicsApi.Application.Implementations
                 user = new AppUser();
                 user.GoogleId = googleId;
                 user.Email = email;
-                user.UserName = userName;
+                user.UserName = email.Split('@')[0];
+                user.fullName = GivenName;
+                user.Image = null;
+              user.EmailConfirmed=true;
+                var result=await _userManager.CreateAsync(user, "User_@" + Guid.NewGuid().ToString().Substring(0, 14));
 
-              
-                var result=await _userManager.CreateAsync(user);
-             
                 if (!result.Succeeded)
                 {
-                    throw new CustomException(400,"There is an issue with Register ");
+                    var errorMessages = result.Errors.ToDictionary(e => e.Code, e => e.Description);
+
+                    throw new CustomException(400, errorMessages);
                 }
-                
+
                 await _userManager.AddToRoleAsync(user, nameof(RolesEnum.Member));
                
             }
@@ -172,14 +175,17 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<string> GoogleResponse()
         {
             var result = await _contextAccessor.HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-            if (!result.Succeeded) throw new CustomException(400, "Authentication failed!");
+            if (!result.Succeeded|| result.Principal == null) throw new CustomException(400, "Authentication failed!");
             var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
             var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
             var userName = claims?.FirstOrDefault(s => s.Type == ClaimTypes.Name)?.Value;
             var Id = claims?.FirstOrDefault(s => s.Type == ClaimTypes.NameIdentifier)?.Value;
             var GivenName = claims?.FirstOrDefault(s => s.Type == ClaimTypes.GivenName)?.Value;
-
-            var user =await FindOrCreateUserAsync(email, userName, Id);
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(Id))
+            {
+                throw new CustomException(400, "Failed to retrieve user information from Google.");
+            }
+            var user =await FindOrCreateUserAsync(email, Id, GivenName);
             IList<string> roles = await _userManager.GetRolesAsync(user);
             var Audience = _jwtSettings.Audience;
             var SecretKey = _jwtSettings.secretKey;
@@ -190,9 +196,8 @@ namespace SmartElectronicsApi.Application.Implementations
             //googleGetDto.GivenName = GivenName;
             //googleGetDto.Email = email;
             //googleGetDto.Id = Id;
-
-            return _tokenService.GetToken(SecretKey, Audience, Issuer, user, roles);
-        }
+                return _tokenService.GetToken(SecretKey, Audience, Issuer, user, roles);
+           }
 
         public async Task<string> ResetPasswordSendEmail(string email)
         {

@@ -43,9 +43,9 @@ namespace SmartElectronicsApi.Application.Implementations
                 return Slider.Id;
             }
 
-            public async Task<List<SliderListItemDto>> GetAll()
+            public async Task<List<SliderListItemDto>> GetAll(int take , int skip)
             {
-                var sliders = await _unitOfWork.sliderRepository.GetAll();
+                var sliders = await _unitOfWork.sliderRepository.GetAll(s=>s.IsDeleted==false,take,skip);
                 var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); // Correctly map the list
                 return sliderItemDto;
             }
@@ -53,8 +53,8 @@ namespace SmartElectronicsApi.Application.Implementations
             public async Task<SliderReturnDto> GetById(int? id)
             {
                 if (id is null) throw new CustomException(400, "Id", "id cant be null");
-                var Slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
-                if (Slider is null) throw new CustomException(404, "Not found");
+            var Slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (Slider is null) throw new CustomException(404, "Not found");
                 var slider = _mapper.Map<SliderReturnDto>(Slider);
                 return slider;
             }
@@ -63,7 +63,7 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 if (id is null) throw new CustomException(400, "Id", "id can't be null");
 
-                var slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
+                var slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
                 if (slider is null) throw new CustomException(404, "Slider not found");
 
                 if (sliderUpdateDto.Image != null)
@@ -88,5 +88,6 @@ namespace SmartElectronicsApi.Application.Implementations
 
                 
             }
+        
         }
     }

@@ -10,7 +10,7 @@ namespace SmartElectronicsApi.Application.Interfaces
         public Task<string> GoogleResponse();
         public Task<string> Login(LoginDto loginDto);
         public Task<UserGetDto> Register(RegisterDto registerDto);
-        Task<AppUser> FindOrCreateUserAsync(string email, string userName, string googleId);
+        Task<AppUser> FindOrCreateUserAsync(string email, string googleId, string GivenName);
         Task<bool> VerifyEmail(string email, string token);
         Task<string> ResetPasswordSendEmail(string email);
         Task<string> ResetPassword(string email, string token, ResetPasswordDto resetPasswordDto);

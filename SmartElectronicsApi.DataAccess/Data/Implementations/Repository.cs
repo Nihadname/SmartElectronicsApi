@@ -67,7 +67,52 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         }
 
         public async Task<List<T>> GetAll(
+       Expression<Func<T, bool>> predicate = null,
+       int skip = 0, int take = 0,
+       params Func<IQueryable<T>, IQueryable<T>>[] includes)
+        {
+            try
+            {
+                IQueryable<T> query = _table;
+
+                if (includes != null)
+                {
+                    foreach (var include in includes)
+                    {
+                        query = include(query);
+                    }
+                }
+
+                // Apply the predicate if provided
+                if (predicate != null)
+                {
+                    query = query.Where(predicate);
+                }
+
+                // Apply skip and take logic
+                if (skip > 0)
+                {
+                    query = query.Skip(skip);
+                }
+
+                if (take > 0)
+                {
+                    query = query.Take(take);
+                }
+
+                // Execute the query
+                return await query.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        public async Task<T> GetEntity(
       Expression<Func<T, bool>> predicate = null,
+      int skip = 0, int take = 0,
       params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             try
@@ -82,37 +127,32 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
                     }
                 }
 
-                return predicate == null ? await query.ToListAsync() : await query.Where(predicate).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<T> GetEntity(
-            Expression<Func<T, bool>> predicate = null,
-            params Func<IQueryable<T>, IQueryable<T>>[] includes)
-        {
-            try
-            {
-                IQueryable<T> query = _table;
-
-                if (includes != null)
+                // Apply the predicate first if provided
+                if (predicate != null)
                 {
-                    foreach (var include in includes)
-                    {
-                        query = include(query);
-                    }
+                    query = query.Where(predicate);
                 }
 
-                return predicate == null ? await query.FirstOrDefaultAsync() : await query.FirstOrDefaultAsync(predicate);
+                // Apply skip and take after the filtering
+                if (skip > 0)
+                {
+                    query = query.Skip(skip);
+                }
+
+                if (take > 0)
+                {
+                    query = query.Take(take);
+                }
+
+                // Return the first entity that matches
+                return await query.FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
         }
+
 
 
         public async Task<bool> isExists(Expression<Func<T, bool>> predicate = null)
