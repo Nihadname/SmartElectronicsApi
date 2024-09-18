@@ -1,43 +1,25 @@
-﻿@section styles {
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Auth
+@model LoginVm
+@section styles {
     <link href="~/assets/css/Login.css" rel="stylesheet" />
 }
 
 <div class="container mt-5">
     <div class="card form-card p-4">
-        <h3 class="text-center mb-4">Create Your Account</h3>
-        <form class="row g-3">
+        <h3 class="text-center mb-4">Login to Your Account</h3>
+        <form asp-action="Login" class="row g-3">
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
             <div class="col-md-6">
-                <label for="inputFirstName" class="form-label">Ad</label>
-                <input type="text" class="form-control shadow-lg input-glow" id="inputFirstName" placeholder="Ad">
+                <label asp-for="UserNameOrGmail" class="form-label"></label>
+                <input asp-for="UserNameOrGmail"   class="form-control shadow-lg input-glow"  placeholder="UserNameOrGmail">
+                <span class="text-danger" asp-validation-for="UserNameOrGmail"></span>
             </div>
             <div class="col-md-6">
-                <label for="inputPhone" class="form-label">Telefon nömrəsi</label>
-                <input type="tel" class="form-control shadow-lg input-glow" id="inputPhone" placeholder="+994( ) ___ ___ ___">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control shadow-lg input-glow" placeholder="Password">
+                <span class="text-danger" asp-validation-for="Password"></span>
             </div>
-            <div class="col-md-6">
-                <label for="inputLastName" class="form-label">Soyad</label>
-                <input type="text" class="form-control shadow-lg input-glow" id="inputLastName" placeholder="Soyad">
-            </div>
-            <div class="col-md-6">
-                <label for="inputEmail" class="form-label">E-poçt</label>
-                <input type="email" class="form-control shadow-lg input-glow" id="inputEmail" placeholder="E-poçt">
-            </div>
-            <div class="col-md-6">
-                <label for="inputID" class="form-label">Şəxsiyyət vəsiqəsi</label>
-                <input type="text" class="form-control shadow-lg input-glow" id="inputID" placeholder="Şəxsiyyət vəsiqəsi">
-            </div>
-            <div class="col-md-6">
-                <label for="inputPassword" class="form-label">Şifrə</label>
-                <input type="password" class="form-control shadow-lg input-glow" id="inputPassword" placeholder="Şifrə minimum 6 xarakter">
-            </div>
-            <div class="col-md-6">
-                <label for="inputFIN" class="form-label">FIN</label>
-                <input type="text" class="form-control shadow-lg input-glow" id="inputFIN" placeholder="FIN">
-            </div>
-            <div class="col-md-6">
-                <label for="inputPasswordConfirm" class="form-label">Şifrə təkrarı</label>
-                <input type="password" class="form-control shadow-lg input-glow" id="inputPasswordConfirm" placeholder="Şifrə təkrarı">
-            </div>
+            
 
             <div class="col-12 d-flex justify-content-center mt-4">
                 <button type="button" class="btn btn-google d-flex align-items-center">
