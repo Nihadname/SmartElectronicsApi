@@ -10,6 +10,51 @@ namespace SmartElectronicsApi.Mvc.Controllers
 {
     public class AccountController : Controller
     {
+        public  IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterVm vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            using var client = new HttpClient();
+            var stringData = JsonConvert.SerializeObject(vm);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("http://localhost:5246/api/Auth", content);
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadAsStringAsync();
+                var FinalResult = JsonConvert.DeserializeObject<UserGetVm>(data);
+                TempData["RegisterSuccess"] = true;
+
+                return RedirectToAction("Index", "Home");
+
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                        TempData["RegisterError"] = (error.Key, error.Value);
+
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+                return View(vm);
+
+            }
+        }
         public IActionResult Login()
         {
             return View();

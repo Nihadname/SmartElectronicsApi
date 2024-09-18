@@ -100,3 +100,32 @@
             background-color: #0056b3;
             box-shadow: 0 12px 25px rgba(0, 86, 179, 0.6);
         }
+
+    .container .form-card .forgot-password {
+        color: #007bff;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+        .container .form-card .forgot-password:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+    .container .form-card .register-btn-small {
+        background-color: #6c757d;
+        color: white;
+        padding: 6px 20px; /* Smaller padding to reduce the size */
+        border-radius: 50px;
+        border: none;
+        transition: background-color 0.3s ease-in-out;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+        .container .form-card .register-btn-small:hover {
+            background-color: #5a6268;
+            box-shadow: 0 10px 25px rgba(90, 98, 104, 0.3);
+        }

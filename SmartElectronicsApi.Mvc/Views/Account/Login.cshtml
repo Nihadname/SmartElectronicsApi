@@ -7,6 +7,8 @@
 <div class="container mt-5">
     <div class="card form-card p-4">
         <h3 class="text-center mb-4">Login to Your Account</h3>
+
+        <!-- First Form: Login Form -->
         <form asp-action="Login" class="row g-3">
             <!-- This will show the overall validation summary -->
             <div class="text-danger" asp-validation-summary="ModelOnly"></div>
@@ -22,13 +24,21 @@
                 <span class="text-danger" asp-validation-for="Password"></span>
             </div>
 
-           
-
+            <!-- Submit button for Login Form -->
             <div class="col-12 d-flex justify-content-center mt-4">
-                <button type="submit" class="btn btn-primary submit-btn">Hesab yaradın</button>
+                <button type="submit" class="btn btn-primary submit-btn">Login</button>
+            </div>
+
+            <!-- Forgot Password & Register Links -->
+            <div class="col-12 d-flex justify-content-between mt-3 align-items-center">
+                <a href="#" class="btn btn-link forgot-password">Forgot Password?</a>
+                <span>If you don't have an account,</span>
+                <a asp-action="Register" asp-controller="Account" class="btn btn-primary register-btn-small">Register</a>
             </div>
         </form>
-        <div class="col-12 d-flex justify-content-lg-start mt-4">
+
+        <!-- Second Form: Google Login Form -->
+        <div class="col-12 d-flex justify-content-center mt-4">
             <form asp-action="LoginWithGoogle" method="post">
                 <button type="submit" class="btn btn-google d-flex align-items-center">
                     <img src="https://smartelectronics.az/assets/images/google.svg" class="google-icon" alt="Google Logo">
@@ -38,6 +48,8 @@
         </div>
     </div>
 </div>
+
+<!-- TempData for displaying a login error using SweetAlert -->
 @if (TempData["LoginError"] != null)
 {
     <script>
@@ -49,5 +61,3 @@
         });
     </script>
 }
-
-

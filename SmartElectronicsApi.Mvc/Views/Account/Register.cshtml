@@ -1,0 +1,64 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Auth
+@model RegisterVm
+@section styles {
+    <link href="~/assets/css/Login.css" rel="stylesheet" />
+}
+<div class="container mt-5">
+    <div class="card form-card p-4">
+        <h3 class="text-center mb-4">Create an Account</h3>
+        <form asp-action="Register" class="row g-3">
+            <!-- This will show the overall validation summary -->
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+            <div class="col-md-6">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control shadow-lg input-glow" placeholder="FullName">
+                <span class="text-danger" asp-validation-for="FullName"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="UserName" class="form-label"></label>
+                <input asp-for="UserName" class="form-control shadow-lg input-glow" placeholder="UserName">
+                <span class="text-danger" asp-validation-for="UserName"></span>
+            </div>
+       
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control shadow-lg input-glow" placeholder="Email">
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control shadow-lg input-glow" placeholder="Password">
+                <span class="text-danger" asp-validation-for="Password"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="RepeatPassword" class="form-label"></label>
+                <input asp-for="RepeatPassword" class="form-control shadow-lg input-glow" placeholder="RepeatPassword">
+                <span class="text-danger" asp-validation-for="RepeatPassword"></span>
+            </div>
+            <div class="col-12 d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary submit-btn">Hesab yaradın</button>
+            </div>
+        </form>
+        <div class="col-12 d-flex justify-content-lg-start mt-4">
+            <form asp-action="LoginWithGoogle" method="post">
+                <button type="submit" class="btn btn-google d-flex align-items-center">
+                    <img src="https://smartelectronics.az/assets/images/google.svg" class="google-icon" alt="Google Logo">
+                    <span class="ms-2">Login with Google</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if (TempData["RegisterError"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Login Failed',
+            text: '@TempData["RegisterError"]',
+            showConfirmButton: true,
+        });
+    </script>
+}

@@ -821,3 +821,19 @@
         </script>
     }
 }
+@{
+    if (TempData["RegisterSuccess"] != null && (bool)TempData["RegisterSuccess"])
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Register Successful',
+                text: 'You have been registered in successfully!, so confirm your email',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+        </script>
+    }
+}
