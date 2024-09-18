@@ -17,9 +17,6 @@ namespace SmartElectronicsApi.Mvc.Controllers
         {
             using var client=new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
-            var token = Request.Cookies["JwtToken"];
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
             using HttpResponseMessage httpResponseMessage = await client.GetAsync($"Slider/GetSliderForUi/{take}");
             if (httpResponseMessage.IsSuccessStatusCode)
             {

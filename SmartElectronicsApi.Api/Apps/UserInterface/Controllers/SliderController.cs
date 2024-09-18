@@ -9,7 +9,6 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class SliderController : ControllerBase
     {
@@ -19,7 +18,6 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             _sliderService = sliderService;
         }
-        [Authorize]
 
 
         [HttpGet("GetSliderForUi/{take}")]

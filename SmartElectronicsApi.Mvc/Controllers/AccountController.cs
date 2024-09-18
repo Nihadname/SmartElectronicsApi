@@ -76,7 +76,12 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return RedirectToAction("Login");
             }
         }
+        public IActionResult LogOut()
+        {
+            Response.Cookies.Delete("JwtToken");
 
+            return RedirectToAction("Index", "Home");
+        }
 
     }
 }

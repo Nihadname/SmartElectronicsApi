@@ -41,8 +41,9 @@ app.UseRouting();
 // Configure the HTTP request pipeline
 
 app.UseCors("AllowAllOrigins");
-app.UseAuthentication();
 app.UseMiddleware<CustomExceptionMiddleware>();
+
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

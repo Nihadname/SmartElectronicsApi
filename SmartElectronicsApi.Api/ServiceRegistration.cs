@@ -90,6 +90,7 @@ public static class ServiceRegistration
             options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             options.User.RequireUniqueEmail = true;
         }).AddDefaultTokenProviders().AddEntityFrameworkStores<SmartElectronicsDbContext>();
+        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
         // JWT Authentication for API
         services.AddAuthentication(options =>
@@ -112,58 +113,48 @@ public static class ServiceRegistration
             };
         });
 
-        // Configure JWT settings
-        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
-
         // Cookie and Google Authentication for Web
         services.AddAuthentication(options =>
         {
-            // This is for web-based authentication (Google, etc.)
             options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
         })
-.AddCookie(options =>
-{
-    options.LoginPath = "/Account/Login"; // Custom login path for web requests
-
-    // Handling redirect for API requests
-    options.Events.OnRedirectToLogin = context =>
-    {
-        if (context.Request.Path.StartsWithSegments("/api"))
+        .AddCookie(options =>
         {
-            // For API requests, return 401 Unauthorized instead of redirecting
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            return Task.CompletedTask;
-        }
+            options.LoginPath = "/Account/Login"; // Custom login path for web requests
 
-        // For non-API requests (regular web requests), redirect to the login page
-        context.Response.Redirect(context.RedirectUri);
-        return Task.CompletedTask;
-    };
+            options.Events.OnRedirectToLogin = context =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                }
+                context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            };
 
-    options.Events.OnRedirectToAccessDenied = context =>
-    {
-        if (context.Request.Path.StartsWithSegments("/api"))
+            options.Events.OnRedirectToAccessDenied = context =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                    return Task.CompletedTask;
+                }
+                context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            };
+        })
+        .AddGoogle(options =>
         {
-            // Return 403 Forbidden for API requests when access is denied
-            context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            return Task.CompletedTask;
-        }
+            options.ClientId = configuration["Authentication:Google:ClientId"];
+            options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+            options.CallbackPath = "/signin-google";
+            options.SaveTokens = true;
+            options.Scope.Add("email");
+            options.Scope.Add("profile");
+        });
 
-        // For non-API requests, redirect to access denied page
-        context.Response.Redirect(context.RedirectUri);
-        return Task.CompletedTask;
-    };
-})
-.AddGoogle(options =>
-{
-    options.ClientId = configuration["Authentication:Google:ClientId"];
-    options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
-    options.CallbackPath = "/signin-google"; // Ensure this matches the redirect URI set in Google Cloud
-    options.SaveTokens = true;
-    options.Scope.Add("email");
-    options.Scope.Add("profile");
-});
     }
 }

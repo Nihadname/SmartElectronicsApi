@@ -211,72 +211,8 @@
             gap: 1rem;
         }
     </style>
-    <header class="mb-4">
-        <nav class="navbar customNav">
-            <div class="container">
-                <a class="navbar-brand customStuff" href="#" id="navLink1">Navbar</a>
-                <a class="navbar-brand customStuff" href="#" id="navLink2">Kampaniyalar</a>
-                <a class="navbar-brand customStuff" href="#" id="navLink3">Əlaqə</a>
-                <a class="navbar-brand customStuff" href="#" id="navLink4">Outlet</a>
-                <div class="divider iconForNavbar"></div>
-                <a class="navbar-brand customStuff iconForNavbar" href="#"><i class="fa-brands fa-facebook"></i></a>
-                <a class="navbar-brand customStuff iconForNavbar" href="#"><i class="fa-brands fa-instagram"></i></a>
-                <a class="navbar-brand customStuff iconForNavbar" href="#"><i class="fa-brands fa-twitter"></i></a>
-                <a class="navbar-brand customStuff iconForNavbar" href="#"><i class="fa-brands fa-youtube"></i></a>
-                <a class="navbar-brand customStuff iconForNavbar" href="#"><i class="fa-brands fa-linkedin"></i></a>
-                <div class="dropdown ms-auto">
-                    <button class="btn btn-light dropdown-toggle customDropdown" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        Az
-                    </button>
-                    <ul class="dropdown-menu shadow" style="margin-left: -130px;" aria-labelledby="languageDropdown">
-                        <li><a class="dropdown-item" href="#" data-lang="az">Az</a></li>
-                        <li><a class="dropdown-item" href="#" data-lang="en">En</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <nav class="navbar navbar-expand-lg navbar-light customSearchNavbar mb-2">
-            <div class="container">
-                <!-- Logo -->
-                <a class="navbar-brand customLogo BarMenuOpen" style="display: none;" href="#">
-                    <i class="fa-solid fa-bars"></i>
-                </a>
-                <a class="navbar-brand customLogo" href="#">
-                    <img src="https://smartelectronics.az/assets/images/logo.svg" alt="Company Logo">
-                </a>
-                <!-- Centered Search Bar -->
-                <div class="d-flex justify-content-center ParentsearchBarInput flex-grow-1">
-                    <input class="searchBarInput" type="search" placeholder="Search...">
-                </div>
-                <!-- Icons on the Right -->
-                <div class="d-flex align-items-center gap-4 IconsOnTheRight">
-                    <a class="nav-link customNavIcon" href="#">
-                        <p class="PhoneNum">*2999</p><!-- Bell icon from Bootstrap Icons -->
-                    </a>
-                    <a class="nav-link customNavIcon" href="#">
-                        <!-- Icon to trigger modal -->
-                        <i class="fa fa-user" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#loginModal"></i>
-                    </a>
-                    <a class="nav-link customNavIcon" href="#">
-                        <i class="fa-solid fa-code-compare"></i>
-                    </a>
-                    <a class="nav-link customNavIcon" href="#">
-                        <i class="fa-regular fa-heart"></i>
-                        <span class="badge position-absolute top-0 start-100 translate-middle badge-notification">3</span>
-                    </a>
-                    <a class="nav-link customNavIcon" href="#">
-                        <i class="fa-solid fa-bag-shopping"></i>
-                        <span class="badge position-absolute top-0 start-100 translate-middle badge-notification">3</span>
-                    </a>
-                </div>
-            </div>
-        </nav>
-        <div class="d-flex justify-content-center align-items-center ExtraInput d-none">
-            <div class="d-flex justify-content-center flex-grow-1">
-                <input class="searchBarInput2" type="search" placeholder="Search...">
-            </div>
-        </div>
-    </header>
+    @await Component.InvokeAsync("SettingHeader");
+
     <main class="mb-5">
         <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
             <div class="modal-dialog">
