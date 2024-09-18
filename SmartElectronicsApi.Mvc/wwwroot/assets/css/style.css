@@ -304,6 +304,9 @@ p {
     .ExtraInput{
         display: block !important;
     }
+    .IconsOnTheRight .customNavIcon {
+        font-size: 15px;
+    }
 }
 .PhoneNum{
     font-weight: 700;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
+using System.Text;
 
 namespace SmartElectronicsApi.Mvc.Controllers
 {
@@ -15,16 +16,19 @@ namespace SmartElectronicsApi.Mvc.Controllers
         {
             using var client = new HttpClient();
             var stringData=JsonConvert.SerializeObject(loginVm);
-           var content=new StringContent(stringData);
+           var content=new StringContent(stringData,Encoding.Default,"application/json");
             var response=await client.PostAsync("",content);
             if (response.IsSuccessStatusCode)
             {
                 var dataFromApi=await response.Content.ReadAsStringAsync();
                 var tokenResponse=JsonConvert.DeserializeObject<TokenResponse>(dataFromApi);
                 Request.Headers.Append("token", JsonConvert.SerializeObject(tokenResponse));
-
-
             }
+            else
+            {
+                BadRequest(response);
+            }
+            return View();
         }
         
     }
