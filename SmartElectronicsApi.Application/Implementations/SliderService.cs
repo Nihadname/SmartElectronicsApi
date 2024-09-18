@@ -42,10 +42,15 @@ namespace SmartElectronicsApi.Application.Implementations
                 _unitOfWork.Commit();
                 return Slider.Id;
             }
-
-            public async Task<List<SliderListItemDto>> GetAll(int take , int skip)
+        public async Task<List<SliderListItemDto>> GetAll()
+        {
+            var sliders = await _unitOfWork.sliderRepository.GetAll(s => s.IsDeleted == false);
+            var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); // Correctly map the list
+            return sliderItemDto;
+        }
+        public async Task<List<SliderListItemDto>> GetAll(int skip, int take)
             {
-                var sliders = await _unitOfWork.sliderRepository.GetAll(s=>s.IsDeleted==false,take,skip);
+                var sliders = await _unitOfWork.sliderRepository.GetAll(s=>s.IsDeleted==false,skip,take);
                 var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); // Correctly map the list
                 return sliderItemDto;
             }

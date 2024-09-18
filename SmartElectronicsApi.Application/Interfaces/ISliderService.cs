@@ -10,7 +10,8 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface ISliderService
     {
-        Task<List<SliderListItemDto>> GetAll(int take, int skip);
+        Task<List<SliderListItemDto>> GetAll(int skip, int take);
+        Task<List<SliderListItemDto>> GetAll();
         Task<SliderReturnDto> GetById(int? id);
          Task<Slider> Create(SliderCreateDto sliderCreateDto);
         Task<int> Delete(int? id);

@@ -67,13 +67,11 @@ namespace SmartElectronicsApi.Mvc.Controllers
             {
                 Response.Cookies.Append("JwtToken", token);
 
-                // Optionally, validate the token here or use it directly
                 TempData["LoginSuccess"] = true;
                 return RedirectToAction("Index", "Home");
             }
             else
             {
-                // If no token is received, return an error view or handle accordingly
                 TempData["LoginError"] = "Google authentication failed. No token received.";
                 return RedirectToAction("Login");
             }

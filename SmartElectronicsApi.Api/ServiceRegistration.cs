@@ -1,117 +1,161 @@
-﻿using FluentValidation;
-using FluentValidation.AspNetCore;
+﻿using FluentValidation.AspNetCore;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Implementations;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Application.Profiles;
-using SmartElectronicsApi.Application.Validators.UserValidators;
-using SmartElectronicsApi.Core.Entities;
-using SmartElectronicsApi.Core.Repositories;
-using SmartElectronicsApi.DataAccess.Data;
-using SmartElectronicsApi.DataAccess.Data.Implementations;
-using System;
-using System.Text;
 using SmartElectronicsApi.Application.Settings;
+using SmartElectronicsApi.Application.Validators.UserValidators;
+using SmartElectronicsApi.Core.Repositories;
+using SmartElectronicsApi.DataAccess.Data.Implementations;
+using SmartElectronicsApi.DataAccess.Data;
+using System.Text;
+using SmartElectronicsApi.Core.Entities;
+using FluentValidation;
 
-namespace SmartElectronicsApi.Api
+public static class ServiceRegistration
 {
-    public static class ServiceRegistration
+    public static void Register(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void Register(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddControllersWithViews()
-     .ConfigureApiBehaviorOptions(opt =>
-     {
-         opt.InvalidModelStateResponseFactory = context =>
-         {
-             var errors = context.ModelState
-                 .Where(e => e.Value?.Errors.Count > 0)
-                 .ToDictionary(
-                     x => x.Key,
-                     x => x.Value.Errors.First().ErrorMessage
-                 );
-
-             // Return a consistent response format with an empty message
-             var response = new
-             {
-                 message = "Validation errors occurred.",
-                 errors
-             };
-
-             return new BadRequestObjectResult(response);
-         };
-     });
-
-            services.AddFluentValidationAutoValidation()
-    .AddFluentValidationClientsideAdapters()
-    .AddValidatorsFromAssemblyContaining<RegisterValidator>();
-            services.AddHttpContextAccessor();
-            services.AddAutoMapper(opt =>
+        // Configure MVC and API behavior options
+        services.AddControllersWithViews()
+            .ConfigureApiBehaviorOptions(opt =>
             {
-                opt.AddProfile(new MapperProfile(new HttpContextAccessor()));
+                opt.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Where(e => e.Value?.Errors.Count > 0)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.Value.Errors.First().ErrorMessage
+                        );
+
+                    var response = new
+                    {
+                        message = "Validation errors occurred.",
+                        errors
+                    };
+
+                    return new BadRequestObjectResult(response);
+                };
             });
-            services.AddFluentValidationRulesToSwagger();
-            services.AddDbContext<SmartElectronicsDbContext>(options =>
-              options.UseSqlServer(configuration.GetConnectionString("AppConnectionString"))
-          );
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<ISliderRepository, SliderRepository>();
-            services.AddScoped<ISliderService, SliderService>();
-            services.AddIdentity<AppUser, IdentityRole>(options =>
+
+        // Fluent Validation
+        services.AddFluentValidationAutoValidation()
+            .AddFluentValidationClientsideAdapters()
+            .AddValidatorsFromAssemblyContaining<RegisterValidator>();
+
+        // Other service configurations
+        services.AddHttpContextAccessor();
+        services.AddAutoMapper(opt =>
+        {
+            opt.AddProfile(new MapperProfile(new HttpContextAccessor()));
+        });
+
+        // Swagger Validation Rules
+        services.AddFluentValidationRulesToSwagger();
+
+        // Database Context
+        services.AddDbContext<SmartElectronicsDbContext>(options =>
+            options.UseSqlServer(configuration.GetConnectionString("AppConnectionString"))
+        );
+
+        // Scoped Services
+        services.AddScoped<ICategoryService, CategoryService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IEmailService, EmailService>();
+        services.AddScoped<ISliderRepository, SliderRepository>();
+        services.AddScoped<ISliderService, SliderService>();
+
+        // Identity Configuration
+        services.AddIdentity<AppUser, IdentityRole>(options =>
+        {
+            options.Password.RequiredLength = 8;
+            options.Password.RequireUppercase = true;
+            options.Password.RequireLowercase = true;
+            options.Password.RequireNonAlphanumeric = true;
+            options.Password.RequireDigit = true;
+            options.SignIn.RequireConfirmedEmail = true;
+            options.Lockout.MaxFailedAccessAttempts = 3;
+            options.Lockout.AllowedForNewUsers = true;
+            options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            options.User.RequireUniqueEmail = true;
+        }).AddDefaultTokenProviders().AddEntityFrameworkStores<SmartElectronicsDbContext>();
+
+        // JWT Authentication for API
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.Password.RequiredLength = 8;
-                options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireDigit = true;
-                options.SignIn.RequireConfirmedEmail = true;
-                options.Lockout.MaxFailedAccessAttempts = 3;
-                options.Lockout.AllowedForNewUsers = true;
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.User.RequireUniqueEmail = true;
-            }).AddDefaultTokenProviders().AddEntityFrameworkStores<SmartElectronicsDbContext>();
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-.AddJwtBearer(options =>
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = configuration["Jwt:Issuer"],
+                ValidAudience = configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"])),
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+
+        // Configure JWT settings
+        services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
+
+        // Cookie and Google Authentication for Web
+        services.AddAuthentication(options =>
+        {
+            // This is for web-based authentication (Google, etc.)
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+        })
+.AddCookie(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
+    options.LoginPath = "/Account/Login"; // Custom login path for web requests
+
+    // Handling redirect for API requests
+    options.Events.OnRedirectToLogin = context =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = configuration["Jwt:Issuer"],
-        ValidAudience = configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"])),
-        ClockSkew = TimeSpan.Zero
+        if (context.Request.Path.StartsWithSegments("/api"))
+        {
+            // For API requests, return 401 Unauthorized instead of redirecting
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        }
+
+        // For non-API requests (regular web requests), redirect to the login page
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
     };
-});
-            services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-.AddCookie()
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        if (context.Request.Path.StartsWithSegments("/api"))
+        {
+            // Return 403 Forbidden for API requests when access is denied
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return Task.CompletedTask;
+        }
+
+        // For non-API requests, redirect to access denied page
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
+})
 .AddGoogle(options =>
 {
     options.ClientId = configuration["Authentication:Google:ClientId"];
@@ -121,6 +165,5 @@ namespace SmartElectronicsApi.Api
     options.Scope.Add("email");
     options.Scope.Add("profile");
 });
-        }
     }
 }
