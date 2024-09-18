@@ -837,3 +837,20 @@
         </script>
     }
 }
+
+@{
+    if (TempData["EmailSendingSuccess"] != null )
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Email sent Successfully',
+                text: 'TempData["EmailSendingSuccess"]',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+        </script>
+    }
+}

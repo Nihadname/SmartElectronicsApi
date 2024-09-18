@@ -235,7 +235,8 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<string> ResetPassword(string email, string token,ResetPasswordDto resetPasswordDto)
         {
-            token=HttpUtility.UrlDecode(token);
+           await CheckExperySutiationOfToken(email, token);
+            token =HttpUtility.UrlDecode(token);
            var existedUser=await _userManager.FindByEmailAsync(email);
             if (existedUser == null) throw new CustomException(404, "User is null or empty");
             var result = await _userManager.ResetPasswordAsync(existedUser, token, resetPasswordDto.Password);
