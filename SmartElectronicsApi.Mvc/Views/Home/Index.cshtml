@@ -805,3 +805,19 @@
         </div>
     </section>
 </div>
+@{
+    if (TempData["LoginSuccess"] != null && (bool)TempData["LoginSuccess"])
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Successful',
+                text: 'You have been logged in successfully!',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(function () {
+                window.location.href = '@Url.Action("Index", "Home")';
+            });
+        </script>
+    }
+}

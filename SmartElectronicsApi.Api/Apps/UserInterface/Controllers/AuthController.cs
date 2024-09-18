@@ -37,7 +37,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         [HttpGet("google-response")]
         public async Task<IActionResult> GoogleResponse()
         {
-            return Ok(await _authService.GoogleResponse());
+            var token = await _authService.GoogleResponse();
+
+            return Redirect($"https://localhost:7170/Account/GoogleResponse?token={token}");
+
         }
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDto registerDto)
@@ -46,7 +49,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
         [HttpPost("Login")]
         
-        public async Task<IActionResult> Login(LoginDto loginDto)
+        public async Task<IActionResult> Login([FromBody]LoginDto loginDto)
         {
           return  Ok(await _authService.Login(loginDto));
         }
