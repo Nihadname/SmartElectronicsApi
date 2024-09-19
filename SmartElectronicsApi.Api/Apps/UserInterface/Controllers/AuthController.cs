@@ -85,9 +85,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
             }
         }
         [HttpPost("ResetPasswordSendEmail")]
-        public async Task<IActionResult> ResetPasswordSendEmail(string email)
+        public async Task<IActionResult> ResetPasswordSendEmail(ResetPasswordEmailDto resetPasswordEmailDto)
         {
-           return Ok(await _authService.ResetPasswordSendEmail(email));
+            var result = await _authService.ResetPasswordSendEmail(resetPasswordEmailDto);
+            return Ok(new { message = result });
         }
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword(string email, string token, [FromBody]ResetPasswordDto resetPasswordDto)

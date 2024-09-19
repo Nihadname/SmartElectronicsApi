@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\Template\ForgetPassword.html" />
-  </ItemGroup>
-
-  <ItemGroup>
 	  <PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0" />
 
 	  <PackageReference Include="Microsoft.AspNet.Cors" Version="5.3.0" />

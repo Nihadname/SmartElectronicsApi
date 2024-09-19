@@ -2,15 +2,24 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using SmartElectronicsApi.Mvc.Interfaces;
 using SmartElectronicsApi.Mvc.ViewModels;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
+using System.Net.Http;
 using System.Text;
 
 namespace SmartElectronicsApi.Mvc.Controllers
 {
     public class AccountController : Controller
     {
-        public  IActionResult Register()
+        private readonly IEmailService emailService;
+
+        public AccountController(IEmailService emailService)
+        {
+            this.emailService = emailService;
+        }
+
+        public IActionResult Register()
         {
             return View();
         }
@@ -132,23 +141,54 @@ namespace SmartElectronicsApi.Mvc.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> ForgetPassword(ForgetPasswordVm forgetPasswordVm)
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordVm forgetPasswordVm)
         {
             if (!ModelState.IsValid)
             {
                 return View(forgetPasswordVm);
             }
-            using var client = new HttpClient();
-            var email = Uri.EscapeDataString(forgetPasswordVm.Email);
-            var stringData = JsonConvert.SerializeObject(forgetPasswordVm);
-            var url = $"http://localhost:5246/api/Auth/ResetPasswordSendEmail?email={email}";
+            var resetPasswordEmailDto = new ForgetPasswordEmailVm
+            {
+                Email = forgetPasswordVm.Email
 
-            var response = await client.PostAsync(url, null); 
+            };
+            var jsonContent = JsonConvert.SerializeObject(resetPasswordEmailDto);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            using var client = new HttpClient();
+
+            var apiUrl = "http://localhost:5246/api/Auth/ResetPasswordSendEmail"; 
+            var response = await client.PostAsync(apiUrl, content);
+
             if (response.IsSuccessStatusCode)
             {
-                var responseAsString = await response.Content.ReadAsStringAsync();
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonConvert.DeserializeObject<ResetPasswordEmailVm>(responseContent);
+                var email = apiResponse.Message.Email;
+                var token = apiResponse.Message.Token;
+                var resetLink = Url.Action(
+                "ResetPassword", 
+                "Account", 
+                new { email = email, token=token },
+                protocol: HttpContext.Request.Scheme);
+                string body;
+                using (StreamReader sr = new StreamReader("wwwroot/Template/ForgetPassword.html"))
+                {
+                    body = sr.ReadToEnd();
+                }
+                body = body.Replace("{{link}}", resetLink).Replace("{{UserName}}", email);
+                emailService.SendEmail(
+                from: "nihadmi@code.edu.az\r\n",
+                to: email,
+                subject: "Verify Email",
+                body: body,
+                smtpHost: "smtp.gmail.com",
+                smtpPort: 587,
+                enableSsl: true,
+                smtpUser: "nihadmi@code.edu.az\r\n",
+                smtpPass: "zrhu njzc qeqr koux\r\n"
+            );
 
-                TempData["EmailSendingSuccess"] = responseAsString;
+                TempData["EmailSendingSuccess"] = "An email with instructions has been sent to the provided address.";
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -161,16 +201,15 @@ namespace SmartElectronicsApi.Mvc.Controllers
                     foreach (var error in errorResponse.Errors)
                     {
                         ModelState.AddModelError(error.Key, error.Value);
-                        TempData["ForgetPasswordError"] = (error.Key, error.Value);
-
+                        TempData["ForgetPasswordError"] = $"{error.Key}: {error.Value}";
                     }
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
-                return View(forgetPasswordVm);
 
+                return View(forgetPasswordVm);
             }
         }
 
