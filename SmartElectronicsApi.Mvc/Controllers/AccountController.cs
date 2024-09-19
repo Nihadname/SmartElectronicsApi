@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SmartElectronicsApi.Mvc.Interfaces;
 using SmartElectronicsApi.Mvc.ViewModels;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
 using System.Net.Http;
 using System.Text;
+using System.Web;
 
 namespace SmartElectronicsApi.Mvc.Controllers
 {
@@ -212,26 +214,21 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return View(forgetPasswordVm);
             }
         }
-
         public async Task<IActionResult> ResetPassword(string email, string token)
         {
+            token = HttpUtility.UrlDecode(token);
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
             {
                 ModelState.AddModelError(string.Empty, "Email or token is missing.");
-                TempData["ResetPasswordExperingError"] = "Email or token is missing.";
-                return View(); 
+                TempData["ResetPasswordError"] = "Email or token is missing.";
+                return View();
             }
             using var client = new HttpClient();
-            var emailEncoded = Uri.EscapeDataString(email);
-            var tokenEncoded = Uri.EscapeDataString(token);
-            var url = $"http://localhost:5246/api/Auth/CheckExperySutiationOfToken?email={emailEncoded}&token={tokenEncoded}";
-
-            var response = await client.PostAsync(url, null);
-
+            var apiUrl = $"http://localhost:5246/api/Auth/CheckExperySutiationOfToken?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
+            var response = await client.GetAsync(apiUrl);
             if (response.IsSuccessStatusCode)
             {
-                var responseAsString = await response.Content.ReadAsStringAsync();
-                return View(); // Show reset password form here
+                return View(email,token);
             }
             else
             {
@@ -243,7 +240,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                     foreach (var error in errorResponse.Errors)
                     {
                         ModelState.AddModelError(error.Key, error.Value);
-                        TempData["ResetPasswordExperingError"] = (error.Key, error.Value);
+                        TempData["ResetPasswordError"] = $"{error.Key}: {error.Value}";
                     }
                 }
                 else
@@ -251,9 +248,49 @@ namespace SmartElectronicsApi.Mvc.Controllers
                     ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
 
-                TempData["ResetPasswordExperingError"] = "The token is either invalid or has expired.";
-                return View(); // Redirect to an error page or show a message
+                TempData["ResetPasswordError"] = "The token is either invalid or has expired.";
+                return View();
             }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(string email, string token, ResetPasswordVm resetPasswordDto)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View(resetPasswordDto);
+            }
+            using var client = new HttpClient();
+            var stringData = JsonConvert.SerializeObject(resetPasswordDto);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync($"http://localhost:5246/api/Auth/ResetPassword?email={email}&token={token}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["resetPasswordSuccess"] = "succesfull Reseting Password";
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                        TempData["LoginError"] = (error.Key, error.Value);
+
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+                return View(resetPasswordDto);
+            }
+
         }
     }
 }

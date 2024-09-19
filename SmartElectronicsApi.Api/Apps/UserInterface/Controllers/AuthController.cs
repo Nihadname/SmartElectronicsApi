@@ -9,6 +9,7 @@ using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using SmartElectronicsApi.Application.Dtos.Auth;
+using SmartElectronicsApi.Application.Exceptions;
 
 namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 {
@@ -87,6 +88,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         [HttpPost("ResetPasswordSendEmail")]
         public async Task<IActionResult> ResetPasswordSendEmail(ResetPasswordEmailDto resetPasswordEmailDto)
         {
+            if (!ModelState.IsValid)
+            {
+                throw new CustomException(StatusCodes.Status400BadRequest, "Some is empty");
+            }
             var result = await _authService.ResetPasswordSendEmail(resetPasswordEmailDto);
             return Ok(new { message = result });
         }

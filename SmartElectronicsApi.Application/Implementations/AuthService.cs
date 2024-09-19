@@ -222,7 +222,17 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<string> ResetPassword(string email, string token,ResetPasswordDto resetPasswordDto)
         {
-           await CheckExperySutiationOfToken(email, token);
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new CustomException(400, "Email is required.");
+            }
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new CustomException(400, "token is required.");
+            }
+         
+
+            await CheckExperySutiationOfToken(email, token);
             token =HttpUtility.UrlDecode(token);
            var existedUser=await _userManager.FindByEmailAsync(email);
             if (existedUser == null) throw new CustomException(404, "User is null or empty");
@@ -237,6 +247,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400, "Email is required.");
             if (string.IsNullOrEmpty(token))
                 throw new CustomException(400, "Token is required.");
+           
             var existUser = await _userManager.FindByEmailAsync(email);
             if (existUser == null) throw new CustomException(404, "User is null or empty");
             bool result = await _userManager
