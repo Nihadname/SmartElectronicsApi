@@ -167,6 +167,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var apiResponse = JsonConvert.DeserializeObject<ResetPasswordEmailVm>(responseContent);
                 var email = apiResponse.Message.Email;
                 var token = apiResponse.Message.Token;
+                token = HttpUtility.UrlDecode(token);
                 var resetLink = Url.Action(
                 "ResetPassword", 
                 "Account", 
@@ -216,19 +217,21 @@ namespace SmartElectronicsApi.Mvc.Controllers
         }
         public async Task<IActionResult> ResetPassword(string email, string token)
         {
-            token = HttpUtility.UrlDecode(token);
+            string decodedToken = HttpUtility.UrlDecode(token).Trim();
+
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
             {
                 ModelState.AddModelError(string.Empty, "Email or token is missing.");
                 TempData["ResetPasswordError"] = "Email or token is missing.";
-                return View();
+                return RedirectToAction("Index", "Home");
             }
             using var client = new HttpClient();
-            var apiUrl = $"http://localhost:5246/api/Auth/CheckExperySutiationOfToken?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
+            var apiUrl = $"http://localhost:5246/api/Auth/CheckExperySutiationOfToken?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(decodedToken)}";
             var response = await client.GetAsync(apiUrl);
             if (response.IsSuccessStatusCode)
             {
-                return View(email,token);
+               
+                return View();
             }
             else
             {
@@ -249,7 +252,8 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 }
 
                 TempData["ResetPasswordError"] = "The token is either invalid or has expired.";
-                return View();
+                return RedirectToAction("Index", "Home");
+
             }
 
         }
@@ -280,7 +284,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                     foreach (var error in errorResponse.Errors)
                     {
                         ModelState.AddModelError(error.Key, error.Value);
-                        TempData["LoginError"] = (error.Key, error.Value);
+                        TempData["ResetPasswordError"] = (error.Key, error.Value);
 
                     }
                 }

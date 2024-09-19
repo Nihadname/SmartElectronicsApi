@@ -213,8 +213,9 @@ namespace SmartElectronicsApi.Application.Implementations
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-
-            resetPasswordEmailDto.Token = token;
+            var encodedToken = HttpUtility.UrlEncode(token);
+            var decodedToken = HttpUtility.UrlDecode(encodedToken);
+            resetPasswordEmailDto.Token =HttpUtility.UrlDecode(decodedToken);
 
 
 
@@ -233,7 +234,6 @@ namespace SmartElectronicsApi.Application.Implementations
          
 
             await CheckExperySutiationOfToken(email, token);
-            token =HttpUtility.UrlDecode(token);
            var existedUser=await _userManager.FindByEmailAsync(email);
             if (existedUser == null) throw new CustomException(404, "User is null or empty");
             var result = await _userManager.ResetPasswordAsync(existedUser, token, resetPasswordDto.Password);
@@ -250,8 +250,13 @@ namespace SmartElectronicsApi.Application.Implementations
            
             var existUser = await _userManager.FindByEmailAsync(email);
             if (existUser == null) throw new CustomException(404, "User is null or empty");
-            bool result = await _userManager
-               .VerifyUserTokenAsync(existUser, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
+            bool result = await _userManager.VerifyUserTokenAsync(
+    existUser,
+    _userManager.Options.Tokens.PasswordResetTokenProvider,
+    "ResetPassword",
+    token
+);
+
             if (!result)
                 throw new CustomException(400, "The token is either invalid or has expired.");
             return "hasnt still expired";

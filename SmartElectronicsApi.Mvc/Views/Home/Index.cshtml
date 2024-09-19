@@ -845,7 +845,7 @@
             Swal.fire({
                 icon: 'success',
                 title: 'Email sent Successfully',
-                text: 'TempData["EmailSendingSuccess"]',
+                text: '@TempData["EmailSendingSuccess"]',
                 showConfirmButton: false,
                 timer: 2000
             }).then(function () {
@@ -853,4 +853,15 @@
             });
         </script>
     }
+}
+@if ( TempData["ResetPasswordError"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'ResetPassword Failed',
+            text: ' @TempData["ResetPasswordError"]',
+            showConfirmButton: true,
+        });
+    </script>
 }
