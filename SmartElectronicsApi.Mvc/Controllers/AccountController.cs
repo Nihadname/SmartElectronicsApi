@@ -264,11 +264,15 @@ namespace SmartElectronicsApi.Mvc.Controllers
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
             {
                 ModelState.AddModelError(string.Empty, "Email or token is missing.");
+                ViewData["email"] = email; // Preserve email
+                ViewData["token"] = token; // Preserve token
                 return View(resetPasswordDto);
             }
 
             if (!ModelState.IsValid)
             {
+                ViewData["email"] = email; // Preserve email
+                ViewData["token"] = token;
                 return View(resetPasswordDto);
             }
           
@@ -300,6 +304,8 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 {
                     ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
+                ViewData["email"] = email; // Preserve email
+                ViewData["token"] = token;
                 return View(resetPasswordDto);
             }
 
