@@ -47,8 +47,8 @@ var swiperBrand = new Swiper('.swiperBrand', {
     centeredSlides: true,   // Center the slides
     height: 400,            // Ensure swiper stays within the container's height
     breakpoints: {          // Optional: Handle responsiveness with breakpoints
-      768: {                // On screens wider than 768px
-        height: 500         // Increase the height for larger screens
+      768: {                
+        height: 500         
       }
     }
   });

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Core.Entities;
@@ -34,7 +35,9 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(s => s.Image, map => map.MapFrom(d =>d.Image.Save(Directory.GetCurrentDirectory(), "img")));
             CreateMap<SliderUpdateDto, Slider>()
       .ForMember(s => s.Image, map => map.MapFrom(d => d.Image.Save(Directory.GetCurrentDirectory(), "img")));
-
+            CreateMap<CategoryCreateDto, Category>()
+                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
+            CreateMap<Category, CategoryListItemDto>();
 
         }
     }

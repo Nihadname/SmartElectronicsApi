@@ -78,7 +78,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
             bool isVerified = await _authService.VerifyEmail(email, token);
             if (isVerified)
             {
-                return Ok(new { message = "Email verified successfully" });
+                return Redirect("https://localhost:7170/Account/Login");
             }
             else
             {
