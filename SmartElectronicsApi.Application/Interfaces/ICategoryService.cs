@@ -11,5 +11,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<PaginatedResponse<CategoryListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10);
         Task<int> Delete(int? id);
         Task<int> Update(int? id, CategoryUpdateDto categoryUpdateDto);
+        Task<CategoryReturnDto> GetById(int? id);
     }
 }

@@ -44,5 +44,12 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
                 throw new Exception(ex.InnerException.Message);
             }
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int? id)
+        {
+            return Ok(await categoryService.GetById(id));
+        }
+
     }
 }

@@ -33,7 +33,11 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<PaginatedResponse<CategoryListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10)
         {
             var TotalCount = (await _unitOfWork.categoryRepository.GetAll()).Count();
-            var categories = await _unitOfWork.categoryRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize);
+            var categories = await _unitOfWork.categoryRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
+    {
+        query => query.Include(p => p.SubCategories).Include(s=>s.Products)
+    }
+);
             var categoriesWithMapping = _mapper.Map<List<CategoryListItemDto>>(categories);
             var paginatedResult = new PaginatedResponse<CategoryListItemDto>
             {
@@ -80,6 +84,18 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork.Commit();
 
             return category.Id;
+        }
+        public async Task<CategoryReturnDto> GetById(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var category = await _unitOfWork.categoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false,includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
+    {
+        query => query.Include(p => p.SubCategories).Include(s=>s.Products)
+    }
+);
+            if (category is null) throw new CustomException(404, "Not found");
+            var Category=_mapper.Map<CategoryReturnDto>(category);
+           return Category;
         }
     }
 }
