@@ -30,6 +30,7 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<ProductVariationColor> productVariationColors { get; set; }
         public DbSet<Slider> sliders { get; set; }
         public DbSet<Subscriber> subscribers { get; set; }
+        public DbSet<Setting> settings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
