@@ -230,7 +230,8 @@ namespace SmartElectronicsApi.Mvc.Controllers
             var response = await client.GetAsync(apiUrl);
             if (response.IsSuccessStatusCode)
             {
-               
+                ViewData["email"] = email;
+                ViewData["token"] = token;
                 return View();
             }
             else
@@ -260,17 +261,22 @@ namespace SmartElectronicsApi.Mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> ResetPassword(string email, string token, ResetPasswordVm resetPasswordDto)
         {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+            {
+                ModelState.AddModelError(string.Empty, "Email or token is missing.");
+                return View(resetPasswordDto);
+            }
 
             if (!ModelState.IsValid)
             {
                 return View(resetPasswordDto);
             }
-            string decodedToken = HttpUtility.UrlDecode(token).Trim();
+          
 
             using var client = new HttpClient();
             var stringData = JsonConvert.SerializeObject(resetPasswordDto);
             var content = new StringContent(stringData, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"http://localhost:5246/api/Auth/ResetPassword?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(decodedToken)}", content);
+            var response = await client.PostAsync($"http://localhost:5246/api/Auth/ResetPassword?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}", content);
             if (response.IsSuccessStatusCode)
             {
                 TempData["resetPasswordSuccess"] = "succesfull Reseting Password";

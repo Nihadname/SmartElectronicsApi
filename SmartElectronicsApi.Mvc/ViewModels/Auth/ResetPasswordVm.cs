@@ -6,5 +6,7 @@ namespace SmartElectronicsApi.Mvc.ViewModels.Auth
     {
         public string Password { get; set; }
         public string RepeatPassword { get; set; }
+        
+   
     }
 }
