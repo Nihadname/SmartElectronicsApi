@@ -167,7 +167,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var apiResponse = JsonConvert.DeserializeObject<ResetPasswordEmailVm>(responseContent);
                 var email = apiResponse.Message.Email;
                 var token = apiResponse.Message.Token;
-                token = HttpUtility.UrlDecode(token);
+                //token = HttpUtility.UrlDecode(token);
                 var resetLink = Url.Action(
                 "ResetPassword", 
                 "Account", 
@@ -217,7 +217,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
         }
         public async Task<IActionResult> ResetPassword(string email, string token)
         {
-            string decodedToken = HttpUtility.UrlDecode(token).Trim();
+     
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
             {
@@ -226,7 +226,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return RedirectToAction("Index", "Home");
             }
             using var client = new HttpClient();
-            var apiUrl = $"http://localhost:5246/api/Auth/CheckExperySutiationOfToken?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(decodedToken)}";
+            var apiUrl = $"http://localhost:5246/api/Auth/CheckExperySutiationOfToken?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(token)}";
             var response = await client.GetAsync(apiUrl);
             if (response.IsSuccessStatusCode)
             {
@@ -265,10 +265,12 @@ namespace SmartElectronicsApi.Mvc.Controllers
             {
                 return View(resetPasswordDto);
             }
+            string decodedToken = HttpUtility.UrlDecode(token).Trim();
+
             using var client = new HttpClient();
             var stringData = JsonConvert.SerializeObject(resetPasswordDto);
             var content = new StringContent(stringData, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync($"http://localhost:5246/api/Auth/ResetPassword?email={email}&token={token}", content);
+            var response = await client.PostAsync($"http://localhost:5246/api/Auth/ResetPassword?email={Uri.EscapeDataString(email)}&token={Uri.EscapeDataString(decodedToken)}", content);
             if (response.IsSuccessStatusCode)
             {
                 TempData["resetPasswordSuccess"] = "succesfull Reseting Password";

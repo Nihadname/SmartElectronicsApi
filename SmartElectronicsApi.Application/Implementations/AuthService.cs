@@ -213,9 +213,9 @@ namespace SmartElectronicsApi.Application.Implementations
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var encodedToken = HttpUtility.UrlEncode(token);
-            var decodedToken = HttpUtility.UrlDecode(encodedToken);
-            resetPasswordEmailDto.Token =HttpUtility.UrlDecode(decodedToken);
+           
+
+            resetPasswordEmailDto.Token = token;
 
 
 
