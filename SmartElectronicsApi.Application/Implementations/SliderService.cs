@@ -49,13 +49,13 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<List<SliderListItemDto>> GetAll()
         {
             var sliders = await _unitOfWork.sliderRepository.GetAll(s => s.IsDeleted == false);
-            var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); // Correctly map the list
+            var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders);
             return sliderItemDto;
         }
         public async Task<List<SliderListItemDto>> GetAll(int skip, int take)
             {
                 var sliders = await _unitOfWork.sliderRepository.GetAll(s=>s.IsDeleted==false,skip,take);
-                var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); // Correctly map the list
+                var sliderItemDto = _mapper.Map<List<SliderListItemDto>>(sliders); 
                 return sliderItemDto;
             }
 

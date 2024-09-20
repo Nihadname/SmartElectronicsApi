@@ -153,7 +153,9 @@
         padding: 30px 32px; /* Adjust padding for better spacing */
         border-bottom: 1px solid #ddd; /* Border for separation */
     }
-
+    .customStuff{
+        padding:0px;
+    }
 
     .vertical-menu li a {
         font-size: 17px;

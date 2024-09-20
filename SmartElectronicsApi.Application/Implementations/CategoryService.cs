@@ -97,5 +97,15 @@ namespace SmartElectronicsApi.Application.Implementations
             var Category=_mapper.Map<CategoryReturnDto>(category);
            return Category;
         }
+        public async Task<List<CategoryListItemDto>> GetAllForUserInterface(int skip, int take)
+        {
+            var categories = await _unitOfWork.categoryRepository.GetAll(s => s.IsDeleted == false, skip, take, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
+    {
+        query => query.Include(p => p.SubCategories).Include(s=>s.Products)
+    });
+            var categoryItemDto = _mapper.Map<List<CategoryListItemDto>>(categories);
+
+            return categoryItemDto;
+        }
     }
 }
