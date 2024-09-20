@@ -21,6 +21,28 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
                 return Ok(await categoryService.Create(categoryCreateDto));
         }
-      
+        [HttpGet]
+        public async Task<IActionResult> get(int pageNumber, int pageSize)
+        {
+            return Ok(await categoryService.GetAllForAdmin(pageNumber, pageSize));
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            return Ok(await categoryService.Delete(id));
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int? id,CategoryUpdateDto categoryUpdateDto)
+        {
+            try
+            {
+                return Ok(await categoryService.Update(id, categoryUpdateDto));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.InnerException.Message);
+            }
+        }
     }
 }

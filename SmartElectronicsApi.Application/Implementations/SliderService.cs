@@ -38,7 +38,11 @@ namespace SmartElectronicsApi.Application.Implementations
                 if (id is null) throw new CustomException(400, "Id", "id cant be null");
                 var Slider = await _unitOfWork.sliderRepository.GetEntity(s => s.Id == id);
                 if (Slider is null) throw new CustomException(404, "Not found");
-                await _unitOfWork.sliderRepository.Delete(Slider);
+            if (!string.IsNullOrEmpty(Slider.Image))
+            {
+                Slider.Image.DeleteFile();
+            }
+            await _unitOfWork.sliderRepository.Delete(Slider);
                 _unitOfWork.Commit();
                 return Slider.Id;
             }

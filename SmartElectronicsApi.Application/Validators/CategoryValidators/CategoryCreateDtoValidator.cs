@@ -14,7 +14,7 @@ namespace SmartElectronicsApi.Application.Validators.CategoryValidators
         {
 
             RuleFor(s => s.Name).NotEmpty().WithMessage("not empty")
-                .MinimumLength(8);
+                .MinimumLength(4);
             RuleFor(s => s.Description).NotEmpty().WithMessage("not empty")
               .MinimumLength(8);
             RuleFor(s => s.Icon).NotEmpty().WithMessage("not empty");
