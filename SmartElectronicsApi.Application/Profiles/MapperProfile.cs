@@ -4,6 +4,7 @@ using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Slider;
+using SmartElectronicsApi.Application.Dtos.SubsCategory;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Core.Entities;
 using System;
@@ -43,6 +44,8 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<Category, CategoryReturnDto>()
                 .ForMember(s => s.Immage, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
+            CreateMap<SubCategoryCreateDto, SubCategory>()
+                .ForMember(s => s.Image, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
         }
     }
 }

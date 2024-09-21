@@ -10,7 +10,10 @@
     background-color: #3B7FED !important;
     padding: 0.27rem 1rem;
 }
-
+.swiperBrand .swiper-wrapper {
+    display: flex;
+    align-items: center;
+}
 .navbar .container {
     display: flex;
     align-items: center;
@@ -506,11 +509,11 @@ p {
   }
   
   /* Vertical border on the right */
-  .border-right {
+.border-right {
     width: 1.5px; /* Border width */
     height: 400px; /* Same height as the slider */
-    background-color: #000; /* Black border color */
+    background-color: #d3c9c9; /* Black border color */
     position: absolute;
     right: 0; /* Positioned on the right */
-  }
+}
  

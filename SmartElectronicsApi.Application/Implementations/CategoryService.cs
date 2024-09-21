@@ -24,6 +24,11 @@ namespace SmartElectronicsApi.Application.Implementations
 
         public async Task<Category> Create(CategoryCreateDto categoryCreateDto)
         {
+            if(await _unitOfWork.categoryRepository.isExists(s=>s.Name.ToLower() == categoryCreateDto.Name.ToLower()))
+            {
+                throw new CustomException(400, "Name", "this category name already exists");
+
+            }
             var Category = _mapper.Map<Category>(categoryCreateDto);
 
             await _unitOfWork.categoryRepository.Create(Category);

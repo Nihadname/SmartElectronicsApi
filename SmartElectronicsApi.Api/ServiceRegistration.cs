@@ -67,6 +67,8 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+        services.AddScoped<ISubCategoryService, SubCategoryService>();
         services.AddScoped<ICategoryService, CategoryService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAuthService, AuthService>();
@@ -78,7 +80,7 @@ public static class ServiceRegistration
 
         // Identity Configuration
         services.AddIdentity<AppUser, IdentityRole>(options =>
-        {
+        { 
             options.Password.RequiredLength = 8;
             options.Password.RequireUppercase = true;
             options.Password.RequireLowercase = true;

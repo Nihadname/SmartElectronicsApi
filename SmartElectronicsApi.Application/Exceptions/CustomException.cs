@@ -27,7 +27,7 @@ namespace SmartElectronicsApi.Application.Exceptions
             Errors = errors;
             if (!string.IsNullOrEmpty(message))
             {
-                base.HelpLink = message; 
+                base.HelpLink = message;
             }
         }
 

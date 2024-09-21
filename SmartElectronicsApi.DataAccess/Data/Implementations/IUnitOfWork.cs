@@ -11,6 +11,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
     {
         public ICategoryRepository   categoryRepository { get; }
         public ISliderRepository sliderRepository { get; }
+        public ISubCategoryRepository subCategoryRepository { get; }
         public void Commit();
 
     }
