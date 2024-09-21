@@ -11,5 +11,6 @@ namespace SmartElectronicsApi.Application.Interfaces
     public interface ISubCategoryService
     {
         Task<SubCategory> Create(SubCategoryCreateDto subCategoryCreateDto);
+        Task<int> Delete(int? id);
     }
 }

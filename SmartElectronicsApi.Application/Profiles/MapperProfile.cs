@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Category;
+using SmartElectronicsApi.Application.Dtos.Product;
 using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Dtos.SubsCategory;
 using SmartElectronicsApi.Application.Extensions;
@@ -48,8 +49,14 @@ namespace SmartElectronicsApi.Application.Profiles
             CreateMap<Category, CategoryReturnDto>()
                 .ForMember(s => s.Immage, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
             CreateMap<SubCategoryCreateDto, SubCategory>()
-                .ForMember(s => s.Image, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
-            CreateMap<SubCategory, SubCategoryListItemDto>();
+                .ForMember(s => s.Image, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")))
+                .ForMember(s => s.Brands, map => map.MapFrom(d => d.brands));
+            CreateMap<SubCategory, SubCategoryListItemDto>()
+                         .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image));
+                      
+            CreateMap<Product, ProdutListItemDto>();
+            CreateMap<Category, CategoryInProductListItemDto>();
+
         }
     }
 }

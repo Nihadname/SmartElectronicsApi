@@ -76,6 +76,11 @@ namespace SmartElectronicsApi.Application.Implementations
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
             var category = await _unitOfWork.categoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (category is null) throw new CustomException(404, "Not found");
+            if(await _unitOfWork.categoryRepository.isExists(s => s.Name.ToLower() == categoryUpdateDto.Name.ToLower()))
+            {
+                throw new CustomException(400, "Name", "this category name already exists");
+
+            }
             _mapper.Map(categoryUpdateDto, category);
 
             if (categoryUpdateDto.formFile != null)
@@ -114,7 +119,7 @@ namespace SmartElectronicsApi.Application.Implementations
      take,
      includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
      {
-        query => query.Include(c => c.SubCategories)
+        query => query.Include(c => c.SubCategories).Include(s=>s.Products)
      });
                 
                 

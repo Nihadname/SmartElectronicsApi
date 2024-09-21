@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SmartElectronicsApi.Application.Dtos.SubsCategory;
 using SmartElectronicsApi.Application.Exceptions;
+using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
@@ -39,6 +40,19 @@ namespace SmartElectronicsApi.Application.Implementations
             await _unitOfWork.subCategoryRepository.Create(subCategory);
             _unitOfWork.Commit();
          return subCategory;
+        }
+        public async Task<int> Delete(int? id)
+        {
+            if(id == null) throw new CustomException(400, "Id", "id cant be null");
+            var SubCategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if(SubCategory is null) throw new CustomException(400, "Not found");
+            if (!string.IsNullOrEmpty(SubCategory.Image))
+            {
+                SubCategory.Image.DeleteFile();
+            }
+            await _unitOfWork.subCategoryRepository.Delete(SubCategory);
+            _unitOfWork.Commit();
+            return SubCategory.Id;
         }
     }
 }
