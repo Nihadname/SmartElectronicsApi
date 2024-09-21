@@ -39,13 +39,17 @@ namespace SmartElectronicsApi.Application.Profiles
             CreateMap<CategoryCreateDto, Category>()
                 .ForMember(s => s.ImageUrl, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
             CreateMap<Category, CategoryListItemDto>()
-                .ForMember(s => s.Immage, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
+      .ForMember(dest => dest.Immage, opt => opt.MapFrom(src => src.ImageUrl))
+      .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(src => src.SubCategories))
+      .ForMember(dest => dest.produtListItemDtos, opt => opt.MapFrom(src => src.Products));
+      
             CreateMap<CategoryUpdateDto, Category>()
                 .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<Category, CategoryReturnDto>()
                 .ForMember(s => s.Immage, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
             CreateMap<SubCategoryCreateDto, SubCategory>()
                 .ForMember(s => s.Image, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
+            CreateMap<SubCategory, SubCategoryListItemDto>();
         }
     }
 }

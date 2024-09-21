@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Slider;
@@ -9,6 +10,7 @@ using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.Core.Repositories;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
+using System.Diagnostics;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -104,13 +106,26 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<List<CategoryListItemDto>> GetAllForUserInterface(int skip, int take)
         {
-            var categories = await _unitOfWork.categoryRepository.GetAll(s => s.IsDeleted == false, skip, take, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
-    {
-        query => query.Include(p => p.SubCategories).Include(s=>s.Products)
-    });
-            var categoryItemDto = _mapper.Map<List<CategoryListItemDto>>(categories);
+            try
+            {
+                var categories = await _unitOfWork.categoryRepository.GetAll(
+     s => s.IsDeleted == false,
+     skip,
+     take,
+     includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
+     {
+        query => query.Include(c => c.SubCategories)
+     });
+                
+                
+                var categoryItemDto = _mapper.Map<List<CategoryListItemDto>>(categories);
 
-            return categoryItemDto;
+                return categoryItemDto;
+            }
+            catch (Exception ex)
+            {
+                throw new CustomException(500, "Error while retrieving categories", ex.Message);
+            }
         }
     }
 }

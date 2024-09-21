@@ -67,15 +67,16 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         }
 
         public async Task<List<T>> GetAll(
-       Expression<Func<T, bool>> predicate = null,
-       int skip = 0, int take = 0,
-       params Func<IQueryable<T>, IQueryable<T>>[] includes)
+      Expression<Func<T, bool>> predicate = null,
+      int skip = 0, int take = 0,
+      params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             try
             {
                 IQueryable<T> query = _table;
 
-                if (includes != null)
+                // Check if includes array is not null and has elements
+                if (includes != null && includes.Length > 0)
                 {
                     foreach (var include in includes)
                     {
@@ -100,26 +101,27 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
                     query = query.Take(take);
                 }
 
-                // Execute the query
+                // Execute the query and return the list
                 return await query.ToListAsync();
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                // Log the full exception details for better debugging
+                throw new Exception("Error in GetAll: " + ex.Message, ex);
             }
         }
 
-
         public async Task<T> GetEntity(
-      Expression<Func<T, bool>> predicate = null,
-      int skip = 0, int take = 0,
-      params Func<IQueryable<T>, IQueryable<T>>[] includes)
+            Expression<Func<T, bool>> predicate = null,
+            int skip = 0, int take = 0,
+            params Func<IQueryable<T>, IQueryable<T>>[] includes)
         {
             try
             {
                 IQueryable<T> query = _table;
 
-                if (includes != null)
+                // Check if includes array is not null and has elements
+                if (includes != null && includes.Length > 0)
                 {
                     foreach (var include in includes)
                     {
@@ -149,7 +151,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                // Log the full exception details for better debugging
+                throw new Exception("Error in GetEntity: " + ex.Message, ex);
             }
         }
 

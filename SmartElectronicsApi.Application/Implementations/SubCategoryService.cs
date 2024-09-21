@@ -26,7 +26,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
         public async Task<SubCategory> Create(SubCategoryCreateDto subCategoryCreateDto)
         {
-            if(!await _unitOfWork.subCategoryRepository.isExists(s => s.Id == subCategoryCreateDto.CategoryId))
+            if(!await _unitOfWork.categoryRepository.isExists(s => s.Id == subCategoryCreateDto.CategoryId))
             {
                 throw new CustomException(400, "CategoryId", "this Subcategory doesnt exist");
             }

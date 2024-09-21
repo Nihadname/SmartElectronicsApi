@@ -17,7 +17,14 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         [HttpGet("GetAllForUserInterface")]
         public async Task<IActionResult> GetAllForUserInterface(int skip, int take)
         {
-            return Ok(await categoryService.GetAllForUserInterface(skip, take));
+            try
+            {
+                return Ok(await categoryService.GetAllForUserInterface(skip, take));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.InnerException.Message);
+            }
         }
     }
 }
