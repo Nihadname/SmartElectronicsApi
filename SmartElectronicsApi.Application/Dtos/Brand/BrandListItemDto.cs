@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartElectronicsApi.Application.Dtos.Product;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,13 @@ namespace SmartElectronicsApi.Application.Dtos.Brand
         public string Name { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
+        public SubCategoryInBrandListItemDto SubCategory { get; set; }
+        public List<ProdutListItemDto> produtListItemDtos { get; set; }
+    }
+    public class SubCategoryInBrandListItemDto
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
     }
 }

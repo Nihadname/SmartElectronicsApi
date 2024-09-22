@@ -88,5 +88,21 @@ namespace SmartElectronicsApi.Application.Implementations
             return paginatedResult;
 
         }
+        public async Task<SubCategoryReturnDto> GetById(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var SubCategory  = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
+  {
+        query => query.Include(s=>s.Products).Include(s=>s.Brands).Include(s=>s.Category)
+  }
+);
+            if(SubCategory is null)
+            {
+                throw new CustomException(404, "Not found");
+            }
+            var SubCategoryWithMapping = _mapper.Map<SubCategoryReturnDto>(SubCategory);
+            return SubCategoryWithMapping;
+
+        }
     }
 }

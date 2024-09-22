@@ -20,5 +20,20 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _brandService.Create(brandCreateDto));
         }
+        [HttpGet]
+        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10)
+        {
+            return Ok(await _brandService.GetForAdmin(pageNumber, pageSize));
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            return Ok(await _brandService.Delete(id));
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int? id)
+        {
+            return Ok(await _brandService.GetById(id));
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<SubCategory> Create(SubCategoryCreateDto subCategoryCreateDto);
         Task<int> Delete(int? id);
         Task<PaginatedResponse<SubCategoryListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10);
+        Task<SubCategoryReturnDto> GetById(int? id);
     }
 }

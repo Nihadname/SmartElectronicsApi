@@ -34,15 +34,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int? id,CategoryUpdateDto categoryUpdateDto)
         {
-            try
-            {
+           
                 return Ok(await categoryService.Update(id, categoryUpdateDto));
-            }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.InnerException.Message);
-            }
+            
+                        
         }
 
         [HttpGet("{id}")]

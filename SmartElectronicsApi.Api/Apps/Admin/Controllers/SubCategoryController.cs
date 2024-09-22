@@ -30,5 +30,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _subCategoryService.GetAllForAdmin(pageNumber,pageSize));
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int? id)
+        {
+            return Ok(await _subCategoryService.GetById(id));
+        }
     }
 }

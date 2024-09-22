@@ -48,7 +48,9 @@ namespace SmartElectronicsApi.Application.Profiles
             CreateMap<CategoryUpdateDto, Category>()
                 .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<Category, CategoryReturnDto>()
-                .ForMember(s => s.Immage, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
+                .ForMember(s => s.Immage, map => map.MapFrom(d => url + "img/" + d.ImageUrl))
+                .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(src => src.SubCategories))
+      .ForMember(dest => dest.produtListItemDtos, opt => opt.MapFrom(src => src.Products));
             CreateMap<SubCategoryCreateDto, SubCategory>()
                 .ForMember(s => s.Image, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")))
   .ForMember(s => s.Brands, map => map.Ignore());
@@ -60,11 +62,20 @@ namespace SmartElectronicsApi.Application.Profiles
                         .ForMember(s => s.Category, map => map.MapFrom(d => d.Category));
             CreateMap<Category, CategoryInProductListItemDto>();
             CreateMap<Brand, BrandReturnDto>()
-                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
+    .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl))
+    .ForMember(s => s.produtListItemDtos, map => map.MapFrom(d => d.Products));
             CreateMap<BrandCreateDto, Brand>()
                 .ForMember(s => s.ImageUrl, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
             CreateMap<Brand, BrandListItemDto>()
-                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
+                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl))
+                .ForMember(s=>s.produtListItemDtos,map=>map.MapFrom(d => d.Products))
+                .ForMember(s => s.SubCategory, map => map.MapFrom(d => d.SubCategory));
+            CreateMap<Category, CategoryInSubcategoryReturnDto>();
+            CreateMap<SubCategory, SubCategoryInBrandListItemDto>();
+            CreateMap<SubCategory, SubCategoryReturnDto>()
+                .ForMember(s => s.CategoryInSubcategoryReturn, map => map.MapFrom(d => d.Category))
+                .ForMember(s => s.brandListItemDtos, map => map.MapFrom(d => d.Brands))
+                .ForMember(s => s.produtListItemDtos, map => map.MapFrom(d => d.Products));
 
         }
     }
