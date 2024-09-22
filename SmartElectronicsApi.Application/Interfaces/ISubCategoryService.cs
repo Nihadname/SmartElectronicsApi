@@ -1,10 +1,6 @@
-﻿using SmartElectronicsApi.Application.Dtos.SubsCategory;
+﻿using SmartElectronicsApi.Application.Dtos;
+using SmartElectronicsApi.Application.Dtos.SubsCategory;
 using SmartElectronicsApi.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Interfaces
 {
@@ -12,5 +8,6 @@ namespace SmartElectronicsApi.Application.Interfaces
     {
         Task<SubCategory> Create(SubCategoryCreateDto subCategoryCreateDto);
         Task<int> Delete(int? id);
+        Task<PaginatedResponse<SubCategoryListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10);
     }
 }

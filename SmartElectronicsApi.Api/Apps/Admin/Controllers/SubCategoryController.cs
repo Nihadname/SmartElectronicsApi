@@ -18,7 +18,17 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(SubCategoryCreateDto subCategoryCreateDto)
         {
-            return Ok(await _subCategoryService.Create(subCategoryCreateDto));
+                return Ok(await _subCategoryService.Create(subCategoryCreateDto));
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            return Ok(await _subCategoryService?.Delete(id));
+        }
+        [HttpGet]
+        public async Task<IActionResult> Get(int pageNumber, int pageSize)
+        {
+            return Ok(await _subCategoryService.GetAllForAdmin(pageNumber,pageSize));
         }
     }
 }

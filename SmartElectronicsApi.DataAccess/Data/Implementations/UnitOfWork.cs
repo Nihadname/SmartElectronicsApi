@@ -13,6 +13,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
 
         public ICategoryRepository categoryRepository { get; private set; }
         public ISliderRepository sliderRepository { get; private set; }
+        public IBrandRepository brandRepository { get; private set; }
 
         public ISubCategoryRepository subCategoryRepository { get; private set; }
 
@@ -21,6 +22,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             categoryRepository= new CategoryRepository(smartElectronicsDbContext);
             sliderRepository= new SliderRepository(smartElectronicsDbContext);
             subCategoryRepository= new SubCategoryRepository(smartElectronicsDbContext);
+            brandRepository= new BrandRepository(smartElectronicsDbContext);
             _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 

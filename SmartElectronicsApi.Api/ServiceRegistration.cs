@@ -45,8 +45,11 @@ public static class ServiceRegistration
                     return new BadRequestObjectResult(response);
                 };
             });
-
-        // Fluent Validation
+        services.AddControllersWithViews()
+     .AddNewtonsoftJson(options =>
+     {
+         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+     });
         services.AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters()
             .AddValidatorsFromAssemblyContaining<RegisterValidator>();
@@ -67,6 +70,8 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<IBrandRepository,BrandRepository>();
+        services.AddScoped<IBrandService,BrandService>();
         services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
         services.AddScoped<ISubCategoryService, SubCategoryService>();
         services.AddScoped<ICategoryService, CategoryService>();

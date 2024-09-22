@@ -20,7 +20,6 @@ builder.Services.AddCors(options =>
 });
 // Add services to the container
 
-// Register custom services
 builder.Services.Register(config);
 
 // Swagger configuration

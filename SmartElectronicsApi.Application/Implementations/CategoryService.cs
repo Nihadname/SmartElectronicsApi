@@ -42,7 +42,7 @@ namespace SmartElectronicsApi.Application.Implementations
             var TotalCount = (await _unitOfWork.categoryRepository.GetAll()).Count();
             var categories = await _unitOfWork.categoryRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
     {
-        query => query.Include(p => p.SubCategories).Include(s=>s.Products)
+        query => query.Include(s=>s.Products).Include(p => p.SubCategories).ThenInclude(s=>s.Brands)
     }
 );
             var categoriesWithMapping = _mapper.Map<List<CategoryListItemDto>>(categories);
@@ -119,7 +119,7 @@ namespace SmartElectronicsApi.Application.Implementations
      take,
      includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
      {
-        query => query.Include(c => c.SubCategories).Include(s=>s.Products)
+        query => query.Include(s=>s.Products).Include(c => c.SubCategories).ThenInclude(s=>s.Brands)
      });
                 
                 

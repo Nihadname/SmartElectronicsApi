@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Product;
 using SmartElectronicsApi.Application.Dtos.Slider;
@@ -50,12 +51,20 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(s => s.Immage, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
             CreateMap<SubCategoryCreateDto, SubCategory>()
                 .ForMember(s => s.Image, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")))
-                .ForMember(s => s.Brands, map => map.MapFrom(d => d.brands));
+  .ForMember(s => s.Brands, map => map.Ignore());
             CreateMap<SubCategory, SubCategoryListItemDto>()
-                         .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image));
-                      
-            CreateMap<Product, ProdutListItemDto>();
+                         .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image))
+                        .ForMember(s => s.brandListItemDtos, map => map.MapFrom(d => d.Brands))
+                        .ForMember(s => s.produtListItemDtos, map => map.MapFrom(d => d.Products));
+            CreateMap<Product, ProdutListItemDto>()
+                        .ForMember(s => s.Category, map => map.MapFrom(d => d.Category));
             CreateMap<Category, CategoryInProductListItemDto>();
+            CreateMap<Brand, BrandReturnDto>()
+                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
+            CreateMap<BrandCreateDto, Brand>()
+                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
+            CreateMap<Brand, BrandListItemDto>()
+                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl));
 
         }
     }
