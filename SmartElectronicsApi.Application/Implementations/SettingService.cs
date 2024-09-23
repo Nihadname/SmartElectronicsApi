@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Brand;
+using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
@@ -61,6 +63,16 @@ namespace SmartElectronicsApi.Application.Implementations
             var setting = await _unitOfWork.settingRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (setting is null) throw new CustomException(404, "Not found");
             await _unitOfWork.settingRepository.Delete(setting);
+            _unitOfWork.Commit();
+            return setting.Id;
+        }
+        public async Task<int> Update(int? id, SettingUpdateDto settingUpdateDto)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var setting = await _unitOfWork.settingRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (setting is null) throw new CustomException(404, "Not found");
+            _mapper.Map(settingUpdateDto, setting);
+            await _unitOfWork.settingRepository.Update(setting);
             _unitOfWork.Commit();
             return setting.Id;
         }

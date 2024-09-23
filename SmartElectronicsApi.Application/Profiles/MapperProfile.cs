@@ -88,6 +88,8 @@ namespace SmartElectronicsApi.Application.Profiles
         }
     })
     .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<SettingUpdateDto,Setting>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

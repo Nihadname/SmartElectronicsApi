@@ -14,5 +14,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<PaginatedResponse<SettingDto>> GetForAdminUi(int pageNumber = 1, int pageSize = 10);
          Task<SettingDto> GetById(int? id);
         Task<int> Delete(int? id);
+        Task<int> Update(int? id, SettingUpdateDto settingUpdateDto);
     }
 }

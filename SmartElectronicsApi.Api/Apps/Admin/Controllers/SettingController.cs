@@ -36,5 +36,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await settingService.Delete(id));
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int? id, [FromQuery] SettingUpdateDto settingUpdateDto)
+        {
+            return Ok(await settingService.Update(id, settingUpdateDto));
+        }
     }
 }
