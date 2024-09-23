@@ -70,6 +70,8 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<ISettingRepository, SettingRepository>();
+        services.AddScoped<ISettingService, SettingService>();  
         services.AddScoped<IBrandRepository,BrandRepository>();
         services.AddScoped<IBrandService,BrandService>();
         services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();

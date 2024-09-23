@@ -104,5 +104,72 @@ namespace SmartElectronicsApi.Application.Implementations
             return SubCategoryWithMapping;
 
         }
+        public async Task<int> Update(int? id,SubCategoryUpdateDto subCategoryUpdateDto)
+        {
+            
+                if (id is null) throw new CustomException(400, "Id", "id cant be null");
+                var SubCategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
+                 {
+        query => query.Include(s=>s.Brands).Include(s=>s.Category)
+                 }
+               );
+                if (SubCategory is null) throw new CustomException(404, "Not found");
+
+                if (string.IsNullOrWhiteSpace(subCategoryUpdateDto.Name))
+                {
+                    throw new CustomException(400, "Name", "Category name can't be empty");
+                }
+                if (await _unitOfWork.subCategoryRepository.isExists(s => s.Name.ToLower() == subCategoryUpdateDto.Name.ToLower()))
+                {
+                    throw new CustomException(400, "Name", "this category name already exists");
+
+                }
+            if (subCategoryUpdateDto.CategoryId.HasValue && subCategoryUpdateDto.CategoryId.Value > 0)
+            {
+                if (await _unitOfWork.categoryRepository.isExists(s => s.Id == subCategoryUpdateDto.CategoryId.Value))
+                {
+                    SubCategory.CategoryId = subCategoryUpdateDto.CategoryId.Value;
+
+                }
+                else
+                {
+                    throw new CustomException(400, "CategoryId", "this category doesnt exists");
+
+                }
+            }
+            _mapper.Map(subCategoryUpdateDto, SubCategory);
+                
+                if (subCategoryUpdateDto.formFile != null)
+                {
+                    if (!string.IsNullOrEmpty(SubCategory.Image))
+                    {
+                        SubCategory.Image.DeleteFile();
+                    }
+                    SubCategory.Image = subCategoryUpdateDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
+                }
+                if (subCategoryUpdateDto.BrandIds != null)
+                {
+                    var AllExistingBrands = SubCategory.Brands.ToList();
+                    foreach (var brand in AllExistingBrands)
+                    {
+                        SubCategory.Brands.Remove(brand);
+                    }
+                    var existingBrands = new List<Brand>();
+                    foreach (var brandId in subCategoryUpdateDto.BrandIds)
+                    {
+                        var brand = await _unitOfWork.brandRepository.GetEntity(b => b.Id == brandId);
+                        if (brand == null)
+                        {
+                            throw new CustomException(400, "BrandId", $"Brand with ID {brandId} does not exist");
+                        }
+                        existingBrands.Add(brand);
+                    }
+                    SubCategory.Brands = existingBrands;
+                }
+                await _unitOfWork.subCategoryRepository.Update(SubCategory);
+                _unitOfWork.Commit();
+                return SubCategory.Id;
+            
+        }
     }
 }

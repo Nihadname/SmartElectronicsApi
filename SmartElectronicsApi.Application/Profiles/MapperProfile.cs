@@ -5,6 +5,7 @@ using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Product;
+using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Dtos.SubsCategory;
 using SmartElectronicsApi.Application.Extensions;
@@ -76,7 +77,17 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(s => s.CategoryInSubcategoryReturn, map => map.MapFrom(d => d.Category))
                 .ForMember(s => s.brandListItemDtos, map => map.MapFrom(d => d.Brands))
                 .ForMember(s => s.produtListItemDtos, map => map.MapFrom(d => d.Products));
-
+            CreateMap<Setting, SettingDto>().ReverseMap();
+            CreateMap<SubCategoryUpdateDto, SubCategory>()
+    .ForMember(dest => dest.CategoryId, opt => opt.Ignore()) 
+    .AfterMap((src, dest) =>
+    {
+        if (src.CategoryId != null && src.CategoryId > 0)
+        {
+            dest.CategoryId = src.CategoryId.Value;
+        }
+    })
+    .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

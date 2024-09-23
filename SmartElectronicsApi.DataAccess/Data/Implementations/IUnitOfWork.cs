@@ -13,6 +13,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public ISliderRepository sliderRepository { get; }
         public ISubCategoryRepository subCategoryRepository { get; }
         public IBrandRepository brandRepository { get; }
+        public ISettingRepository settingRepository { get; }
         public void Commit();
 
     }

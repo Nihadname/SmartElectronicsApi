@@ -21,7 +21,7 @@ namespace SmartElectronicsApi.Api.Middlewares
             {
                 var response = new
                 {
-                    message = ex.InnerException.Message,
+                    message = ex.Message,
                     errors = new Dictionary<string, string>()
                 };
 
