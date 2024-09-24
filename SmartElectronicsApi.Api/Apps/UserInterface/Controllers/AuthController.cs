@@ -10,6 +10,8 @@ using SmartElectronicsApi.Application.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Exceptions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 {
@@ -109,6 +111,20 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         public async Task<IActionResult> ChangePassword(string userName,ChangePasswordDto changePasswordDto)
         {
             return Ok(await _authService.ChangePassword(userName, changePasswordDto));
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+        [HttpGet("Profile")]
+        public async Task<IActionResult> GetProfile()
+        {
+            return Ok(await _authService.Profile());
+        }
+        [HttpPatch("UpdateImage")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+        public async Task<IActionResult> UpdateImage(UserUpdateImageDto userUpdateImageDto)
+        {
+            return Ok(await _authService.UpdateImage(userUpdateImageDto));
         }
     }
 }

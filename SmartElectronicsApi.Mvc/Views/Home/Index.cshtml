@@ -4,54 +4,39 @@
     <div class="row">
         <div class="col-md-3 thisPart">
             <ul class="vertical-menu shadow">
-                <li>
-                    <i class="fas fa-mobile-alt icon"></i>
-                    <a href="#">Smartfon və Planşetlər</a>
-                    <div class="category-details">
-                        <!-- Add your category details here -->
-                        <div class="all">
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Man Clothes</h6>
-                                    <p>Shirt</p>
-                                    <p>T-Shirt</p>
-                                    <p>Pant</p>
-                                    <p>Underwear</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Accessories</h6>
-                                    <p>Belt</p>
-                                    <p>Hat</p>
-                                    <p>Watches</p>
-                                    <p>Sunglasses</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Shoes</h6>
-                                    <p>Sneakers</p>
-                                    <p>Sandals</p>
-                                    <p>Formal</p>
-                                    <p>Casual</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Bags</h6>
-                                    <p>Backpack</p>
-                                    <p>Crossbody Bags</p>
-                                    <p>Side Bags</p>
-                                    <p>Slides</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Woman Clothes</h6>
-                                    <p>Dress</p>
-                                    <p>Skirt</p>
-                                    <p>Top</p>
-                                    <p>Jacket</p>
+                @foreach(var item in Model.Categories)
+                {
+                    <li>
+                        <i class="@item.Icon"></i>
+                        <a href="#">@item.Name</a>
+                       
+                        <div class="category-details">
+                            <!-- Add your category details here -->
+                            <div class="all">
+                                <div class="row">
+                                    @foreach (var cate in item.SubCategories)
+                                    {
+                                        @if(cate is not null){
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <h6>@cate.Name</h6>
+                                                @foreach (var cate2 in cate.brandListItemDtos)
+                                                {
+                                                    <p>@cate2.Name</p>
+
+                                                }
+                                            </div>
+                                        }
+
+                                }
+                                   
+                            
                                 </div>
                             </div>
-                        </div>
 
-                    </div>
-                </li>
-                <li>
+                        </div>
+                    </li>
+                }
+              @*   <li>
                     <i class="fas fa-clock icon"></i>
                     <a href="#">Saatlar</a>
                     <div class="category-details">
@@ -134,7 +119,7 @@
                 <li>
                     <i class="fas fa-couch icon"></i>
                     <a href="#">Mebel</a>
-                </li>
+                </li> *@
                 <!-- Add more items as needed -->
             </ul>
         </div>

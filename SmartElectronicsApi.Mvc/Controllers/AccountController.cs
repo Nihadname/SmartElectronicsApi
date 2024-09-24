@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SmartElectronicsApi.Mvc.Interfaces;
@@ -32,6 +33,10 @@ namespace SmartElectronicsApi.Mvc.Controllers
             {
                 return View(vm);
             }
+            if (!string.IsNullOrEmpty(vm.CountryCode) && !string.IsNullOrEmpty(vm.PhoneNumber))
+            {
+                vm.PhoneNumber = vm.CountryCode + vm.PhoneNumber;
+            }
             using var client = new HttpClient();
             var stringData = JsonConvert.SerializeObject(vm);
             var content = new StringContent(stringData, Encoding.UTF8, "application/json");
@@ -41,6 +46,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var data = await response.Content.ReadAsStringAsync();
                 var FinalResult = JsonConvert.DeserializeObject<UserGetVm>(data);
                 TempData["RegisterSuccess"] = true;
+               
 
                 return RedirectToAction("Index", "Home");
 
@@ -309,6 +315,10 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return View(resetPasswordDto);
             }
 
+        }
+        public IActionResult AccessDenied()
+        {
+            return View(); 
         }
     }
 }

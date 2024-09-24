@@ -21,11 +21,14 @@ using SmartElectronicsApi.Application.Settings;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity.Data;
 using System.Web;
+using Microsoft.IdentityModel.Tokens;
+using SmartElectronicsApi.Application.Extensions;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
     public class AuthService : IAuthService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IUnitOfWork _unitOfWork;
         private UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -37,7 +40,7 @@ namespace SmartElectronicsApi.Application.Implementations
         private readonly SignInManager<AppUser> _signInManager;
         private readonly LinkGenerator _linkGenerator;
 
-        public AuthService(IOptions<JwtSettings> jwtSettings, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService, IEmailService emailService, SignInManager<AppUser> signInManager, LinkGenerator linkGenerator)
+        public AuthService(IOptions<JwtSettings> jwtSettings, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService, IEmailService emailService, SignInManager<AppUser> signInManager, LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -49,6 +52,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _emailService = emailService;
             _signInManager = signInManager;
             _linkGenerator = linkGenerator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<AppUser> FindOrCreateUserAsync(string email,string googleId,string GivenName)
@@ -118,6 +122,7 @@ namespace SmartElectronicsApi.Application.Implementations
             appUser.UserName = registerDto.UserName;
             appUser.Email = registerDto.Email;
             appUser.fullName = registerDto.FullName;
+            appUser.PhoneNumber = registerDto.PhoneNumber;
             appUser.GoogleId = null;
             appUser.Image=null;
          
@@ -274,6 +279,39 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400,errorMessages);
             }
             return result.ToString();
+        }
+        public async Task<UserGetDto> Profile()
+        {
+            
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new CustomException(400, "Id", "User ID cannot be null");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) throw new CustomException(403, "this user doesnt exist");
+ var UserMapped=_mapper.Map<UserGetDto>(user);
+            return UserMapped;
+
+        }
+
+        public async Task<string> UpdateImage(UserUpdateImageDto userUpdateImageDto)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new CustomException(400, "Id", "User ID cannot be null");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) throw new CustomException(403, "this user doesnt exist");
+            if (!string.IsNullOrEmpty(user.Image))
+            {
+                user.Image.DeleteFile();
+            }
+            user.Image=userUpdateImageDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
+            await _userManager.UpdateAsync(user);
+            return  user.Image;
+
         }
     }
 }

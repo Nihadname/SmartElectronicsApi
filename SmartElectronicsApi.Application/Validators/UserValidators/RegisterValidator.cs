@@ -25,8 +25,11 @@ namespace SmartElectronicsApi.Application.Validators.UserValidators
                 .MinimumLength(8)
                 .MaximumLength(100).WithMessage("max is 100");
             RuleFor(s => s.RepeatPassword).NotEmpty().WithMessage("not empty")
-                                .MinimumLength(8)
-           .MaximumLength(100).WithMessage("max is 100");
+                                .MinimumLength(8);
+            RuleFor(x => x.PhoneNumber)
+              .NotEmpty().WithMessage("Phone number is required.")
+            .Matches(@"^(\+?\d{1,4}?)[\s.-]?\(?\d{1,4}?\)?[\s.-]?\d{1,4}[\s.-]?\d{1,9}$")
+            .WithMessage("Invalid phone number format.");
             RuleFor(s => s).Custom((s, context) =>
             {
                 if (s.Password != s.RepeatPassword)

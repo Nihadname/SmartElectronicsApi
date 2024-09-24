@@ -1,8 +1,10 @@
 ﻿@using SmartElectronicsApi.Mvc.ViewModels.Auth
 @model RegisterVm
+
 @section styles {
     <link href="~/assets/css/Login.css" rel="stylesheet" />
 }
+
 <div class="container mt-5">
     <div class="card form-card p-4">
         <h3 class="text-center mb-4">Create an Account</h3>
@@ -12,34 +14,71 @@
 
             <div class="col-md-6">
                 <label asp-for="FullName" class="form-label"></label>
-                <input asp-for="FullName" class="form-control shadow-lg input-glow" placeholder="FullName">
+                <input asp-for="FullName" class="form-control shadow-lg input-glow" placeholder="Full Name">
                 <span class="text-danger" asp-validation-for="FullName"></span>
             </div>
+
             <div class="col-md-6">
                 <label asp-for="UserName" class="form-label"></label>
-                <input asp-for="UserName" class="form-control shadow-lg input-glow" placeholder="UserName">
+                <input asp-for="UserName" class="form-control shadow-lg input-glow" placeholder="User Name">
                 <span class="text-danger" asp-validation-for="UserName"></span>
             </div>
-       
+
             <div class="col-md-6">
                 <label asp-for="Email" class="form-label"></label>
                 <input asp-for="Email" class="form-control shadow-lg input-glow" placeholder="Email">
                 <span class="text-danger" asp-validation-for="Email"></span>
             </div>
+
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <select asp-for="CountryCode" class="form-select shadow-lg input-glow">
+                            <option value="">Code</option>
+                            <option value="+1" data-flag="us">
+                                <img src="https://flagcdn.com/w20/us.png" alt="USA Flag" class="flag-icon"> +1 (USA)
+                            </option>
+                            <option value="+44" data-flag="uk">
+                                <img src="https://flagcdn.com/w20/gb.png" alt="UK Flag" class="flag-icon"> +44 (UK)
+                            </option>
+                            <option value="+91" data-flag="in">
+                                <img src="https://flagcdn.com/w20/in.png" alt="India Flag" class="flag-icon"> +91 (India)
+                            </option>
+                            <option value="+49" data-flag="de">
+                                <img src="https://flagcdn.com/w20/de.png" alt="Germany Flag" class="flag-icon"> +49 (Germany)
+                            </option>
+                            <option value="+81" data-flag="jp">
+                                <img src="https://flagcdn.com/w20/jp.png" alt="Japan Flag" class="flag-icon"> +81 (Japan)
+                            </option>
+                            <!-- Add more options as needed with global flag images -->
+                        </select>
+                    </div>
+                    <input asp-for="PhoneNumber" class="form-control shadow-lg input-glow"
+                           placeholder="Phone Number" maxlength="10"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+                </div>
+                <span class="text-danger" asp-validation-for="PhoneNumber"></span>
+            </div>
+
+
             <div class="col-md-6">
                 <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control shadow-lg input-glow" placeholder="Password">
+                <input asp-for="Password" type="password" class="form-control shadow-lg input-glow" placeholder="Password">
                 <span class="text-danger" asp-validation-for="Password"></span>
             </div>
+
             <div class="col-md-6">
                 <label asp-for="RepeatPassword" class="form-label"></label>
-                <input asp-for="RepeatPassword" class="form-control shadow-lg input-glow" placeholder="RepeatPassword">
+                <input asp-for="RepeatPassword" type="password" class="form-control shadow-lg input-glow"
+                       placeholder="Repeat Password">
                 <span class="text-danger" asp-validation-for="RepeatPassword"></span>
             </div>
+
             <div class="col-12 d-flex justify-content-center mt-4">
                 <button type="submit" class="btn btn-primary submit-btn">Hesab yaradın</button>
             </div>
         </form>
+
         <div class="col-12 d-flex justify-content-lg-start mt-4">
             <form asp-action="LoginWithGoogle" method="post">
                 <button type="submit" class="btn btn-google d-flex align-items-center">
@@ -56,7 +95,7 @@
     <script>
         Swal.fire({
             icon: 'error',
-            title: 'Login Failed',
+            title: 'Registration Failed',
             text: '@TempData["RegisterError"]',
             showConfirmButton: true,
         });

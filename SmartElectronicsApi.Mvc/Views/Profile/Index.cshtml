@@ -1,0 +1,180 @@
+﻿@model ProfileViewModel
+    <div class="container py-5">
+        <div class="row">
+            <!-- User Profile Card -->
+            <div class="col-lg-4 mb-4">
+                <div class="card profile-card shadow-sm">
+                    <div class="card-header bg-gradient text-white text-center position-relative">
+                        <img src="@Model.UserGetVm.Image" alt="User Image" class="rounded-circle shadow profile-img">
+                        <h2 class="mt-3 text-black">@Model.UserGetVm.FullName</h2>
+                    <button class="btn btn-outline-black btn-sm edit-btn" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+                </div>
+                    <div class="card-body">
+                        <h5>Account Information</h5>
+                        <ul class="list-unstyled">
+                        <li><i class="fa fa-envelope"></i> @Model.UserGetVm.Email</li>
+                        <li><i class="fa fa-phone"></i> @Model.UserGetVm.PhoneNumber</li>
+                            <li><i class="fa fa-map-marker-alt"></i> @Model.UserGetVm.UserName</li>
+                        </ul>
+                        <h5 class="mt-4">Loyalty Points</h5>
+                        <div class="progress mb-3">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">750 / 1000 Points</div>
+                        </div>
+                        <h5>Favorite Categories</h5>
+                        <ul class="list-inline mb-0">
+                            <li class="list-inline-item badge bg-secondary">Electronics</li>
+                            <li class="list-inline-item badge bg-secondary">Fashion</li>
+                            <li class="list-inline-item badge bg-secondary">Home & Garden</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card shadow-sm mt-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Saved Addresses</h5>
+                        <div class="address-box">
+                            <p><i class="fa fa-home"></i> 1234 Elm Street, New York, NY, USA</p>
+                            <p><i class="fa fa-building"></i> Office, 5th Avenue, New York, NY, USA</p>
+                            <button class="btn btn-outline-primary btn-sm">Manage Addresses</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- User Statistics & Orders -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Statistics Overview</h4>
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-4">
+                                <div class="stat-card bg-light p-4 rounded">
+                                    <i class="fa fa-dollar-sign fa-2x mb-3 text-success"></i>
+                                    <h5>Total Spent</h5>
+                                    <h4>$2,560</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="stat-card bg-light p-4 rounded">
+                                    <i class="fa fa-box-open fa-2x mb-3 text-info"></i>
+                                    <h5>Total Orders</h5>
+                                    <h4>42 Orders</h4>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="stat-card bg-light p-4 rounded">
+                                    <i class="fa fa-heart fa-2x mb-3 text-danger"></i>
+                                    <h5>Wishlisted Items</h5>
+                                    <h4>18 Items</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Payment Methods -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Payment Methods</h4>
+                        <div class="payment-methods">
+                            <div class="method-item d-flex align-items-center mb-3">
+                                <i class="fa fa-credit-card fa-2x me-3"></i>
+                                <div>
+                                    <h6>Visa **** 1234</h6>
+                                    <p>Expires 12/25</p>
+                                </div>
+                            </div>
+                            <div class="method-item d-flex align-items-center mb-3">
+                                <i class="fa fa-credit-card fa-2x me-3"></i>
+                                <div>
+                                    <h6>Mastercard **** 5678</h6>
+                                    <p>Expires 06/23</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline-primary btn-sm">Manage Payment Methods</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Order History -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Recent Orders</h4>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Product</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#12345</td>
+                                        <td>Smartphone</td>
+                                        <td>Sep 20, 2024</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>$699</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#12344</td>
+                                        <td>Wireless Headphones</td>
+                                        <td>Sep 15, 2024</td>
+                                        <td><span class="badge bg-warning">Pending</span></td>
+                                        <td>$199</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#12343</td>
+                                        <td>Gaming Laptop</td>
+                                        <td>Sep 10, 2024</td>
+                                        <td><span class="badge bg-success">Delivered</span></td>
+                                        <td>$1,299</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#12342</td>
+                                        <td>Smartwatch</td>
+                                        <td>Sep 5, 2024</td>
+                                        <td><span class="badge bg-danger">Canceled</span></td>
+                                        <td>$299</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-end">
+                            <a href="#" class="btn btn-primary btn-sm">View All Orders</a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Rewards Program -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Rewards Program</h4>
+                        <p>Join our rewards program and earn points on every purchase. Redeem points for discounts and special offers!</p>
+                        <button class="btn btn-warning">Join Now</button>
+                    </div>
+                </div>
+                <!-- Spin the Wheel Section -->
+
+            </div>
+        </div>
+    </div>
+<!-- HTML Structure -->
+<div class="modal fade edit-profile-modal" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>What would you like to edit?</p>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary btn-lg">Change Profile Image</button>
+                    <button class="btn btn-secondary btn-lg">Update Information</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Include jQuery if needed (optional) -->
+

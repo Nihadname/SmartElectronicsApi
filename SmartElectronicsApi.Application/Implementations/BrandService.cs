@@ -45,7 +45,7 @@ namespace SmartElectronicsApi.Application.Implementations
             var TotalCount = (await _unitOfWork.brandRepository.GetAll()).Count();
             var Brands=await _unitOfWork.brandRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Brand>, IQueryable<Brand>>[]
     {
-        query => query.Include(p => p.Products)
+        query => query.Include(p => p.Products).Include(s=>s.brandSubCategories).ThenInclude(s=>s.SubCategory)
     }
 );
             var brandsWithMapping=_mapper.Map<List<BrandListItemDto>>(Brands);
@@ -75,7 +75,7 @@ namespace SmartElectronicsApi.Application.Implementations
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
             var brand = await _unitOfWork.brandRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<Brand>, IQueryable<Brand>>[]
     {
-        query => query.Include(s=>s.Products)
+        query => query.Include(s=>s.Products).Include(s=>s.brandSubCategories).ThenInclude(s=>s.SubCategory)
     }
 );
             if (brand is null) throw new CustomException(404, "Not found");

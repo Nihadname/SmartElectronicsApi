@@ -16,5 +16,7 @@ namespace SmartElectronicsApi.Application.Interfaces
             Task<string> ResetPassword(string email, string token, ResetPasswordDto resetPasswordDto);
         Task<string> CheckExperySutiationOfToken(string email, string token);
         Task<string> ChangePassword(string UserName, ChangePasswordDto changePasswordDto);
+        Task<UserGetDto> Profile();
+        Task<string> UpdateImage(UserUpdateImageDto userUpdateImageDto);
     }
 }
