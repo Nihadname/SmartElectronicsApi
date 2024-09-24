@@ -20,11 +20,15 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
             try
             {
                 return Ok(await categoryService.GetAllForUserInterface(skip, take));
+
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.InnerException.Message);
+             throw new Exception(ex.Message);
             }
+
+
+
         }
     }
 }

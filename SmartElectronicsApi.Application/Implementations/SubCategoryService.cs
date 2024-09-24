@@ -30,146 +30,164 @@ namespace SmartElectronicsApi.Application.Implementations
 
         public async Task<SubCategory> Create(SubCategoryCreateDto subCategoryCreateDto)
         {
-           
-                if (!await _unitOfWork.categoryRepository.isExists(s => s.Id == subCategoryCreateDto.CategoryId))
+            if (!await _unitOfWork.categoryRepository.isExists(s => s.Id == subCategoryCreateDto.CategoryId))
+            {
+                throw new CustomException(400, "CategoryId", "This category doesn't exist");
+            }
+
+            if (await _unitOfWork.subCategoryRepository.isExists(s => s.Name.ToLower() == subCategoryCreateDto.Name.ToLower()))
+            {
+                throw new CustomException(400, "Name", "This subcategory name already exists");
+            }
+
+            var subCategory = _mapper.Map<SubCategory>(subCategoryCreateDto);
+
+            var brandSubCategories = new List<BrandSubCategory>();
+
+            foreach (var brandId in subCategoryCreateDto.BrandIds)
+            {
+                var brand = await _unitOfWork.brandRepository.GetEntity(b => b.Id == brandId);
+                if (brand == null)
                 {
-                    throw new CustomException(400, "CategoryId", "this Subcategory doesnt exist");
+                    throw new CustomException(400, "BrandId", $"Brand with ID {brandId} does not exist");
                 }
-                if (await _unitOfWork.subCategoryRepository.isExists(s => s.Name.ToLower() == subCategoryCreateDto.Name.ToLower()))
+                brandSubCategories.Add(new BrandSubCategory
                 {
-                    throw new CustomException(400, "Name", "this Subcategory name already exists");
+                    BrandId = brandId,
+                    SubCategory = subCategory
+                });
+            }
+
+            subCategory.brandSubCategories = brandSubCategories;
+
+            await _unitOfWork.subCategoryRepository.Create(subCategory);
+            _unitOfWork.Commit();
+            return subCategory;
+        }
+        public async Task<int> Delete(int? id)
+        {
+            if (id == null) throw new CustomException(400, "Id", "Id can't be null");
+
+            var subCategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
+            {
+        query => query.Include(s => s.brandSubCategories)
+            });
+
+            if (subCategory is null) throw new CustomException(400, "Not found");
+
+            subCategory.brandSubCategories.Clear();
+
+            if (!string.IsNullOrEmpty(subCategory.Image))
+            {
+                subCategory.Image.DeleteFile();
+            }
+
+            await _unitOfWork.subCategoryRepository.Delete(subCategory);
+            _unitOfWork.Commit();
+            return subCategory.Id;
+        }
+        public async Task<SubCategoryReturnDto> GetById(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "Id can't be null");
+
+            var subCategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
+            {
+        query => query.Include(s => s.brandSubCategories).ThenInclude(bs => bs.Brand).Include(s => s.Products).Include(s => s.Category)
+            });
+
+            if (subCategory is null)
+            {
+                throw new CustomException(404, "Not found");
+            }
+
+            var subCategoryWithMapping = _mapper.Map<SubCategoryReturnDto>(subCategory);
+            return subCategoryWithMapping;
+        }
+
+        public async Task<PaginatedResponse<SubCategoryListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10)
+        {
+            var totalCount = (await _unitOfWork.subCategoryRepository.GetAll()).Count();
+            var subCategories = await _unitOfWork.subCategoryRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
+            {
+        query => query.Include(s => s.brandSubCategories).ThenInclude(bs => bs.Brand).Include(s => s.Products).Include(s => s.Category)
+            });
+
+            var subCategoriesWithMapping = _mapper.Map<List<SubCategoryListItemDto>>(subCategories);
+            var paginatedResult = new PaginatedResponse<SubCategoryListItemDto>
+            {
+                Data = subCategoriesWithMapping,
+                TotalRecords = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+            return paginatedResult;
+        }
+
+        public async Task<int> Update(int? id, SubCategoryUpdateDto subCategoryUpdateDto)
+        {
+            if (id is null) throw new CustomException(400, "Id", "Id can't be null");
+
+            var subCategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
+            {
+        query => query.Include(s => s.brandSubCategories)
+            });
+
+            if (subCategory is null) throw new CustomException(404, "Not found");
+
+            if (!string.IsNullOrWhiteSpace(subCategoryUpdateDto.Name))
+            {
+                if (await _unitOfWork.subCategoryRepository.isExists(s => s.Name.ToLower() == subCategoryUpdateDto.Name.ToLower() && s.Id != id))
+                {
+                    throw new CustomException(400, "Name", "This subcategory name already exists");
                 }
-                var subCategory = _mapper.Map<SubCategory>(subCategoryCreateDto);
-                var existingBrands = new List<Brand>();
-                foreach (var brandId in subCategoryCreateDto.BrandIds)
+
+            }
+
+
+            if (subCategoryUpdateDto.CategoryId.HasValue && subCategoryUpdateDto.CategoryId.Value > 0)
+            {
+                if (!await _unitOfWork.categoryRepository.isExists(s => s.Id == subCategoryUpdateDto.CategoryId.Value))
+                {
+                    throw new CustomException(400, "CategoryId", "This category doesn't exist");
+                }
+                subCategory.CategoryId = subCategoryUpdateDto.CategoryId.Value;
+            }
+
+            _mapper.Map(subCategoryUpdateDto, subCategory);
+
+            if (subCategoryUpdateDto.formFile != null)
+            {
+                if (!string.IsNullOrEmpty(subCategory.Image))
+                {
+                    subCategory.Image.DeleteFile();
+                }
+                subCategory.Image = subCategoryUpdateDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
+            }
+
+            if (subCategoryUpdateDto.BrandIds != null)
+            {
+                subCategory.brandSubCategories.Clear();
+
+                foreach (var brandId in subCategoryUpdateDto.BrandIds)
                 {
                     var brand = await _unitOfWork.brandRepository.GetEntity(b => b.Id == brandId);
                     if (brand == null)
                     {
                         throw new CustomException(400, "BrandId", $"Brand with ID {brandId} does not exist");
                     }
-                    existingBrands.Add(brand);
-                }
-                subCategory.Brands = existingBrands;
 
-                await _unitOfWork.subCategoryRepository.Create(subCategory);
-                _unitOfWork.Commit();
-                return subCategory;
-        }
-        public async Task<int> Delete(int? id)
-        {
-            if(id == null) throw new CustomException(400, "Id", "id cant be null");
-            var SubCategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
-            if(SubCategory is null) throw new CustomException(400, "Not found");
-            if (!string.IsNullOrEmpty(SubCategory.Image))
-            {
-                SubCategory.Image.DeleteFile();
+                    subCategory.brandSubCategories.Add(new BrandSubCategory
+                    {
+                        BrandId = brandId,
+                        SubCategory = subCategory
+                    });
+                }
             }
-            await _unitOfWork.subCategoryRepository.Delete(SubCategory);
+
+            await _unitOfWork.subCategoryRepository.Update(subCategory);
             _unitOfWork.Commit();
-            return SubCategory.Id;
+            return subCategory.Id;
         }
-        public async Task<PaginatedResponse<SubCategoryListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10)
-        {
-            var TotalCount = (await _unitOfWork.subCategoryRepository.GetAll()).Count();
-            var subCategories = await _unitOfWork.subCategoryRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
-   {
-        query => query.Include(s=>s.Products).Include(s=>s.Brands).Include(s=>s.Category)
-   }
-);
-            var subCategoriesWithMapping = _mapper.Map<List<SubCategoryListItemDto>>(subCategories);
-            var paginatedResult = new PaginatedResponse<SubCategoryListItemDto>
-            {
-                Data = subCategoriesWithMapping,
-                TotalRecords = TotalCount,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
-            return paginatedResult;
 
-        }
-        public async Task<SubCategoryReturnDto> GetById(int? id)
-        {
-            if (id is null) throw new CustomException(400, "Id", "id cant be null");
-            var SubCategory  = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
-  {
-        query => query.Include(s=>s.Products).Include(s=>s.Brands).Include(s=>s.Category)
-  }
-);
-            if(SubCategory is null)
-            {
-                throw new CustomException(404, "Not found");
-            }
-            var SubCategoryWithMapping = _mapper.Map<SubCategoryReturnDto>(SubCategory);
-            return SubCategoryWithMapping;
-
-        }
-        public async Task<int> Update(int? id,SubCategoryUpdateDto subCategoryUpdateDto)
-        {
-            
-                if (id is null) throw new CustomException(400, "Id", "id cant be null");
-                var SubCategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
-                 {
-        query => query.Include(s=>s.Brands).Include(s=>s.Category)
-                 }
-               );
-                if (SubCategory is null) throw new CustomException(404, "Not found");
-
-                if (string.IsNullOrWhiteSpace(subCategoryUpdateDto.Name))
-                {
-                    throw new CustomException(400, "Name", "Category name can't be empty");
-                }
-                if (await _unitOfWork.subCategoryRepository.isExists(s => s.Name.ToLower() == subCategoryUpdateDto.Name.ToLower()))
-                {
-                    throw new CustomException(400, "Name", "this category name already exists");
-
-                }
-            if (subCategoryUpdateDto.CategoryId.HasValue && subCategoryUpdateDto.CategoryId.Value > 0)
-            {
-                if (await _unitOfWork.categoryRepository.isExists(s => s.Id == subCategoryUpdateDto.CategoryId.Value))
-                {
-                    SubCategory.CategoryId = subCategoryUpdateDto.CategoryId.Value;
-
-                }
-                else
-                {
-                    throw new CustomException(400, "CategoryId", "this category doesnt exists");
-
-                }
-            }
-            _mapper.Map(subCategoryUpdateDto, SubCategory);
-                
-                if (subCategoryUpdateDto.formFile != null)
-                {
-                    if (!string.IsNullOrEmpty(SubCategory.Image))
-                    {
-                        SubCategory.Image.DeleteFile();
-                    }
-                    SubCategory.Image = subCategoryUpdateDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
-                }
-                if (subCategoryUpdateDto.BrandIds != null)
-                {
-                    var AllExistingBrands = SubCategory.Brands.ToList();
-                    foreach (var brand in AllExistingBrands)
-                    {
-                        SubCategory.Brands.Remove(brand);
-                    }
-                    var existingBrands = new List<Brand>();
-                    foreach (var brandId in subCategoryUpdateDto.BrandIds)
-                    {
-                        var brand = await _unitOfWork.brandRepository.GetEntity(b => b.Id == brandId);
-                        if (brand == null)
-                        {
-                            throw new CustomException(400, "BrandId", $"Brand with ID {brandId} does not exist");
-                        }
-                        existingBrands.Add(brand);
-                    }
-                    SubCategory.Brands = existingBrands;
-                }
-                await _unitOfWork.subCategoryRepository.Update(SubCategory);
-                _unitOfWork.Commit();
-                return SubCategory.Id;
-            
-        }
     }
 }

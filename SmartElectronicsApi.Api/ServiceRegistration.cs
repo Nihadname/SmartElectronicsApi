@@ -18,6 +18,7 @@ using SmartElectronicsApi.DataAccess.Data;
 using System.Text;
 using SmartElectronicsApi.Core.Entities;
 using FluentValidation;
+using AutoMapper;
 
 public static class ServiceRegistration
 {
@@ -84,6 +85,7 @@ public static class ServiceRegistration
         services.AddScoped<IEmailService, EmailService>();
         services.AddScoped<ISliderRepository, SliderRepository>();
         services.AddScoped<ISliderService, SliderService>();
+        
 
         // Identity Configuration
         services.AddIdentity<AppUser, IdentityRole>(options =>

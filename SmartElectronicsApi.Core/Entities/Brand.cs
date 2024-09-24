@@ -12,8 +12,7 @@ namespace SmartElectronicsApi.Core.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public int? SubCategoryId { get; set; }
-        public SubCategory? SubCategory { get; set; }
+        public ICollection<BrandSubCategory> brandSubCategories { get; set; }
         public ICollection<Product>? Products { get; set; }
     }
 }

@@ -45,7 +45,7 @@ namespace SmartElectronicsApi.Application.Implementations
             var TotalCount = (await _unitOfWork.brandRepository.GetAll()).Count();
             var Brands=await _unitOfWork.brandRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Brand>, IQueryable<Brand>>[]
     {
-        query => query.Include(s=>s.SubCategory).Include(p => p.Products)
+        query => query.Include(p => p.Products)
     }
 );
             var brandsWithMapping=_mapper.Map<List<BrandListItemDto>>(Brands);
@@ -87,13 +87,12 @@ namespace SmartElectronicsApi.Application.Implementations
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
             var brand = await _unitOfWork.brandRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (brand is null) throw new CustomException(404, "Not found");
-            if (string.IsNullOrWhiteSpace(brandUpdateDto.Name))
+            if (!string.IsNullOrEmpty(brandUpdateDto.Name))
             {
-                throw new CustomException(400, "Name", "brand name can't be empty");
-            }
-            if (await _unitOfWork.categoryRepository.isExists(s => s.Name.ToLower() == brandUpdateDto.Name.ToLower()))
-            {
-                throw new CustomException(400, "Name", "this brand name already exists");
+                if (await _unitOfWork.brandRepository.isExists(s => s.Name.ToLower() == brandUpdateDto.Name.ToLower()))
+                {
+                    throw new CustomException(400, "Name", "this Brand name already exists");
+                }
             }
             _mapper.Map(brandUpdateDto, brand);
             if (brandUpdateDto.formFile != null)
