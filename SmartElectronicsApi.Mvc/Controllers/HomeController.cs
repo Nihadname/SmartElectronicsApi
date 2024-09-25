@@ -19,7 +19,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
             using var client=new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             using HttpResponseMessage httpResponseMessage = await client.GetAsync($"Slider/GetSliderForUi/{take}");
-            using HttpResponseMessage httpResponseMessage1 = await client.GetAsync("http://localhost:5246/api/Category/GetAllForUserInterface");
+            using HttpResponseMessage httpResponseMessage1 = await client.GetAsync("Category/GetAllForUserInterface");
             if (httpResponseMessage.IsSuccessStatusCode)
             {
 

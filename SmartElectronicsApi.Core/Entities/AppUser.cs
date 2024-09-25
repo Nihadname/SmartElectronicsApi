@@ -12,6 +12,8 @@ namespace SmartElectronicsApi.Core.Entities
         public string fullName { get; set; }
         public string? GoogleId { get; set; }
         public string? Image {  get; set; }
+        public ICollection<Address> addresses { get; set; }
 
     }
+
 }

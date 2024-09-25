@@ -32,6 +32,7 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<Subscriber> subscribers { get; set; }
         public DbSet<Setting> settings { get; set; }
         public DbSet<BrandSubCategory> brandSubCategories { get; set; }
+        public DbSet<Address> addresses { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

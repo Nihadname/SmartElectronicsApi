@@ -168,8 +168,11 @@
             <div class="modal-body">
                 <p>What would you like to edit?</p>
                 <div class="d-grid gap-2">
-                    <button class="btn btn-primary btn-lg">Change Profile Image</button>
-                    <button class="btn btn-secondary btn-lg">Update Information</button>
+               
+                        <a asp-action="UpdateImage" asp-controller="Profile" class="btn btn-primary btn-lg">Change Profile Image</a>
+               
+                        <button class="btn btn-secondary btn-lg"style="">Update Information</button>
+
                 </div>
             </div>
         </div>
@@ -177,4 +180,19 @@
 </div>
 
     <!-- Include jQuery if needed (optional) -->
-
+@{
+    if (TempData["AddingSuccess"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'updated Image  Successful',
+                text: 'You have updated Image   successfully!',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(function () {
+                window.location.href = '@Url.Action("Index", "Profile")';
+            });
+        </script>
+    }
+}

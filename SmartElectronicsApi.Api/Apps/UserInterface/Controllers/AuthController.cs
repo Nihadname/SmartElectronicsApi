@@ -122,7 +122,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         [HttpPatch("UpdateImage")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
-        public async Task<IActionResult> UpdateImage(UserUpdateImageDto userUpdateImageDto)
+        public async Task<IActionResult> UpdateImage([FromForm] UserUpdateImageDto userUpdateImageDto)
         {
             return Ok(await _authService.UpdateImage(userUpdateImageDto));
         }
