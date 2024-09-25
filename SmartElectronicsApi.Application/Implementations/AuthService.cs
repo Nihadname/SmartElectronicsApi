@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Identity.Data;
 using System.Web;
 using Microsoft.IdentityModel.Tokens;
 using SmartElectronicsApi.Application.Extensions;
+using SmartElectronicsApi.Application.Dtos.Brand;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -311,6 +312,29 @@ namespace SmartElectronicsApi.Application.Implementations
             user.Image=userUpdateImageDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
             await _userManager.UpdateAsync(user);
             return  user.Image;
+
+        }
+        public async Task<string> UpdateUserInformation(UpdateUserDto updateUserDto)
+        {
+           
+                var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    throw new CustomException(400, "Id", "User ID cannot be null");
+
+                }
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user is null) throw new CustomException(403, "this user doesnt exist");
+            _mapper.Map(updateUserDto, user);
+            await _userManager.UpdateAsync(user);
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new CustomException(400, "Update Failed", errors);
+            }
+            return user.UserName;
+
 
         }
     }

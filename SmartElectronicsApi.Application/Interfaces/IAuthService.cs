@@ -18,5 +18,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<string> ChangePassword(string UserName, ChangePasswordDto changePasswordDto);
         Task<UserGetDto> Profile();
         Task<string> UpdateImage(UserUpdateImageDto userUpdateImageDto);
+        Task<string> UpdateUserInformation(UpdateUserDto updateUserDto);
     }
 }
