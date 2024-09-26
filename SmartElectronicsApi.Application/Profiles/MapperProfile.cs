@@ -38,7 +38,6 @@ namespace SmartElectronicsApi.Application.Profiles
                  .ForMember(s => s.PhoneNumber, map => map.MapFrom(d => d.PhoneNumber))
                   .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image));
                 CreateMap<UpdateUserDto, AppUser>()
-                 .ForMember(s => s.PhoneNumber, map => map.MapFrom(d => d.PhoneNumber))
                  .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
 
                 // Slider mappings

@@ -325,7 +325,38 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user is null) throw new CustomException(403, "this user doesnt exist");
-            _mapper.Map(updateUserDto, user);
+            _mapper.Map(updateUserDto, user); 
+            if(!string.IsNullOrEmpty(updateUserDto.Email))
+            {
+                user.EmailConfirmed=false;
+                string token = await _userManager.GenerateEmailConfirmationTokenAsync(user  );
+                string link = _linkGenerator.GetUriByAction(
+                    httpContext: _contextAccessor.HttpContext,
+                    action: "VerifyEmail",
+                controller: "Auth",
+                    values: new { email = updateUserDto.Email, token = token },
+                    scheme: _contextAccessor.HttpContext.Request.Scheme,
+                    host: _contextAccessor.HttpContext.Request.Host
+                );
+                string body;
+                using (StreamReader sr = new StreamReader("wwwroot/Template/emailConfirm.html"))
+                {
+                    body = sr.ReadToEnd();
+                }
+                body = body.Replace("{{link}}", link).Replace("{{UserName}}", user.UserName);
+
+                _emailService.SendEmail(
+                    from: "nihadmi@code.edu.az\r\n",
+                    to: updateUserDto.Email,
+                    subject: "Verify Email",
+                    body: body,
+                    smtpHost: "smtp.gmail.com",
+                    smtpPort: 587,
+                    enableSsl: true,
+                    smtpUser: "nihadmi@code.edu.az\r\n",
+                    smtpPass: "zrhu njzc qeqr koux\r\n"
+                );
+            }
             await _userManager.UpdateAsync(user);
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)

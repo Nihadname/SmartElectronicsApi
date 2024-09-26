@@ -1,0 +1,39 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Auth
+@model UpdateUserInformationVM
+
+<div class="container mt-5">
+    <div class="card form-card p-4">
+        <h3 class="text-center mb-4">Create an Account</h3>
+        <form asp-action="UpdateInformation"  class="row g-3">
+            <!-- This will show the overall validation summary -->
+            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+            <div class="col-md-6">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control shadow-lg input-glow" placeholder="Full Name">
+                <span class="text-danger" asp-validation-for="FullName"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control shadow-lg input-glow" placeholder="User Email">
+                <span class="text-danger" asp-validation-for="Email"></span>
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="UserName" class="form-label"></label>
+                <input asp-for="UserName" class="form-control shadow-lg input-glow" placeholder="User Name">
+                <span class="text-danger" asp-validation-for="UserName"></span>
+            </div>
+
+
+
+           
+            <div class="col-12 d-flex justify-content-center mt-4">
+                <button type="submit" class="btn btn-primary submit-btn">Hesab yaradın</button>
+            </div>
+        </form>
+
+        
+    </div>
+</div>

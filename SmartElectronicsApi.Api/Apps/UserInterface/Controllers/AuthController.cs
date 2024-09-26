@@ -126,9 +126,9 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _authService.UpdateImage(userUpdateImageDto));
         }
-        [HttpPut]
+        [HttpPut("UpdateUserInformation")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> UpdateUserInformation([FromForm]UpdateUserDto updateUserDto)
+        public async Task<IActionResult> UpdateUserInformation(UpdateUserDto updateUserDto)
         {
             return Ok(await _authService.UpdateUserInformation(updateUserDto));
         }

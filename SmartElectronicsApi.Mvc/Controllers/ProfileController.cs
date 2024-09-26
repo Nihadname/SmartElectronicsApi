@@ -48,6 +48,10 @@ namespace SmartElectronicsApi.Mvc.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateImage(UserUpdateImageVM userUpdateImageVM)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(userUpdateImageVM);
+            }
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             var jwtToken = Request.Cookies["JwtToken"];
@@ -96,6 +100,53 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return View(userUpdateImageVM);
             }
         }
+        public async Task<IActionResult> UpdateInformation()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateInformation(UpdateUserInformationVM updateUserInformationVM)
+        {
+           
+          
+            var handler = new HttpClientHandler();
+            using var client = new HttpClient(handler);
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            var jwtToken = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                ModelState.AddModelError("", "User not authenticated.");
+                return View(updateUserInformationVM);
+            }
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", jwtToken);
+            var stringData = JsonConvert.SerializeObject(updateUserInformationVM);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync("Auth/UpdateUserInformation", content);
+            if (response.IsSuccessStatusCode)
+            {
 
+                TempData["AddingSuccessInformation"] = "ProfileImage deyisdirildi";
+                return RedirectToAction("Index", "Profile");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                        TempData["AddingError"] = (error.Key, error.Value);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+                return View(updateUserInformationVM);
+            }
+        }
     }
 }
