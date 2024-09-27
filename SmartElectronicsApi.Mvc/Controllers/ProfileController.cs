@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartElectronicsApi.Mvc.ViewModels;
+using SmartElectronicsApi.Mvc.ViewModels.Address;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
 using SmartElectronicsApi.Mvc.ViewModels.Category;
 using System.Net;
@@ -19,12 +20,20 @@ namespace SmartElectronicsApi.Mvc.Controllers
             client.DefaultRequestHeaders.Authorization =
           new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
             using HttpResponseMessage httpResponseMessage = await client.GetAsync("http://localhost:5246/api/Auth/Profile");
+            using HttpResponseMessage httpResponseMessage2 = await client.GetAsync("http://localhost:5246/api/Address");
+
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 var User = await httpResponseMessage.Content.ReadAsStringAsync();
                 var FinalResult = JsonConvert.DeserializeObject<UserGetVm>(User);
                 ProfileViewModel profileViewModel = new ProfileViewModel();
                 profileViewModel.UserGetVm = FinalResult;
+                if (httpResponseMessage2.IsSuccessStatusCode)
+                {
+                    var addresses=await httpResponseMessage2.Content.ReadAsStringAsync();
+                    var FinalOne=JsonConvert.DeserializeObject<List<AddressListItemVM>>(addresses);
+                    profileViewModel.AddressList = FinalOne;
+                }
                 return View(profileViewModel);
             } else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {
@@ -148,5 +157,6 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return View(updateUserInformationVM);
             }
         }
+        
     }
 }

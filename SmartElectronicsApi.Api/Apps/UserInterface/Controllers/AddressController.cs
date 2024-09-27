@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartElectronicsApi.Application.Dtos.Address;
+using SmartElectronicsApi.Application.Interfaces;
 
 namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 {
@@ -7,7 +11,30 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
     [ApiController]
     public class AddressController : ControllerBase
     {
+        private readonly IAddressService _addressService;
+
+        public AddressController(IAddressService addressService)
+        {
+            _addressService = addressService;
+        }
         [HttpPost]
-      //  public async Task<bool> Create();
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Create([FromForm]AddressCreateDto addressCreateDto)
+        {
+            return Ok(await _addressService.Create(addressCreateDto));
+        }
+        [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            return Ok(await _addressService.Delete(id));
+        }
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+          public async Task<IActionResult> Get()
+        {
+            return Ok(await _addressService.GetAll());
+        }
     }
 }

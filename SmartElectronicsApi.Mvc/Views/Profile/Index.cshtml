@@ -32,8 +32,11 @@
                     <div class="card-body">
                         <h5 class="card-title">Saved Addresses</h5>
                         <div class="address-box">
-                            <p><i class="fa fa-home"></i> 1234 Elm Street, New York, NY, USA</p>
-                            <p><i class="fa fa-building"></i> Office, 5th Avenue, New York, NY, USA</p>
+                        @foreach(var item in Model.AddressList)
+                        {
+                            <p><i class="fa fa-home"></i> @item.Country+" "+@item.City+@item.Street</p>
+                        }
+
                             <button class="btn btn-outline-primary btn-sm">Manage Addresses</button>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos.Address;
 using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
@@ -112,6 +113,11 @@ namespace SmartElectronicsApi.Application.Profiles
             CreateMap<Setting, SettingDto>().ReverseMap();
             CreateMap<SettingUpdateDto, Setting>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+                CreateMap<AddressCreateDto, Address>();
+                CreateMap<Address, AddressListItemDto>()
+     .ForMember(s => s.AppUser, map => map.MapFrom(d => d.appUser))
+     .ForMember(s => s.AddressType, map => map.MapFrom(d => d.AddressType.ToString()));
+
             });
             configuration.AssertConfigurationIsValid();
         }
