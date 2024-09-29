@@ -10,7 +10,7 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IAddressService
     {
-       Task<Address> Create(AddressCreateDto addressCreateDto);
+       Task<AddressListItemDto> Create(AddressCreateDto addressCreateDto);
         Task<int> Delete(int? id);
         Task<List<AddressListItemDto>> GetAll();
 

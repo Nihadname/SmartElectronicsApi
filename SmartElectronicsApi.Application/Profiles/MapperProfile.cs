@@ -117,7 +117,7 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<Address, AddressListItemDto>()
      .ForMember(s => s.AppUser, map => map.MapFrom(d => d.appUser))
      .ForMember(s => s.AddressType, map => map.MapFrom(d => d.AddressType.ToString()));
-
+                CreateMap<AddressUpdateDto, Address>();
             });
             configuration.AssertConfigurationIsValid();
         }

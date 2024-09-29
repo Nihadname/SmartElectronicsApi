@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SmartElectronicsApi.Application.Dtos.Address;
+using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
@@ -32,7 +33,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Address> Create(AddressCreateDto addressCreateDto)
+        public async Task<AddressListItemDto> Create(AddressCreateDto addressCreateDto)
         {
             var userId = _contextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
@@ -44,7 +45,7 @@ namespace SmartElectronicsApi.Application.Implementations
             if (user is null) throw new CustomException(403, "This user doesn't exist");
 
             if (await _unitOfWork.addressRepository.GetEntity(s => s.Country.ToLower() == addressCreateDto.Country.ToLower() &&
-                                                                   s.City.ToLower() == addressCreateDto.City.ToLower() ||
+                                                                   s.City.ToLower() == addressCreateDto.City.ToLower() &&
                                                                    s.Street.ToLower() == addressCreateDto.Street.ToLower() ||
                                                                    s.ZipCode.ToLower() == addressCreateDto.ZipCode.ToLower() &&
                                                                    s.AppUserId == addressCreateDto.AppUserId) is not null)
@@ -75,8 +76,8 @@ namespace SmartElectronicsApi.Application.Implementations
 
             await _unitOfWork.addressRepository.Create(mappedAddress);
             _unitOfWork.Commit();
-
-            return mappedAddress;
+            var AddressListItemDto=_mapper.Map<AddressListItemDto>(mappedAddress);
+            return AddressListItemDto;
         }
 
         private async Task<(double? Latitude, double? Longitude)> GetCoordinatesFromAddress(AddressCreateDto addressCreateDto)
@@ -128,9 +129,33 @@ namespace SmartElectronicsApi.Application.Implementations
             public string lat { get; set; }
             public string lon { get; set; }
         }
+        public async Task<AddressUpdateDto> Update(int? id , AddressUpdateDto addressUpdateDto)
+        {
+            if (id == null)
+            {
+                throw new CustomException(400, "Address ID cannot be null");
+            }
+
+            var existingAddress = await _unitOfWork.addressRepository.GetEntity(a => a.Id == id);
+            if (existingAddress == null)
+            {
+                throw new CustomException(404, "You are not authorized to update this address.");
+            }
+
+            var userId = _contextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId) || userId != existingAddress.AppUserId)
+            {
+                throw new CustomException(401, "Address not found or does not belong to the user");
+            }
+            _mapper.Map(addressUpdateDto, existingAddress);
+            var (latitude, longitude) = await GetCoordinatesFromAddress(addressUpdateDto);
+            await _unitOfWork.addressRepository.Update(existingAddress);
+            _unitOfWork.Commit();
+            return addressUpdateDto;
+
+        }
 
 
-      
         public async Task<int> Delete(int? id)
         {
             if (id == null)

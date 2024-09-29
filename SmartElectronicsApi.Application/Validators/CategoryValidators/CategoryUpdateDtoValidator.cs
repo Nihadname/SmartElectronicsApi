@@ -16,15 +16,15 @@ namespace SmartElectronicsApi.Application.Validators.CategoryValidators
             RuleFor(s => s.Name)
              .MinimumLength(4)
              .MaximumLength(120)
-             .When(s => s.Name != null);
+             .When(s => s.Name != null || !string.IsNullOrWhiteSpace(s.Name));
 
             RuleFor(s => s.Description)
                 .MinimumLength(8)
                 .MaximumLength(150)
-                .When(s => s.Description != null);
+                .When(s => s.Description != null || !string.IsNullOrWhiteSpace(s.Description));
 
             RuleFor(s => s.Icon).MaximumLength(350)
-                .When(s => s.Icon != null);
+                .When(s => s.Icon != null || !string.IsNullOrWhiteSpace(s.Icon));
 
             RuleFor(s => s).Custom((c, context) =>
             {
