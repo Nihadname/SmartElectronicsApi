@@ -28,20 +28,35 @@
                         </ul>
                     </div>
                 </div>
-                <div class="card shadow-sm mt-4">
-                    <div class="card-body">
-                        <h5 class="card-title">Saved Addresses</h5>
-                        <div class="address-box">
-                        @foreach(var item in Model.AddressList)
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Saved Addresses</h5>
+                    <div class="address-box-container">
+                        @foreach (var item in Model.AddressList)
                         {
-                            <p><i class="fa fa-home"></i> @item.Country,@item.State,@item.City,@item.Street</p>
-                            <button onclick="deleteItem(@item.Id)">Delete Item</button>
+                            <div class="address-box AddressText"  data-id="@item.Id">
+                                <div class="address-details">
+                                    <p class="address-icon"><i class="fa fa-home"></i></p>
+                                    <div class="address-info">
+                                        <h6>@item.Country, @item.State</h6>
+                                        <p>@item.City, @item.Street</p>
+                                    </div>
+                                </div>
+                                <div class="address-actions">
+                                    <a class="btn btn-danger btn-sm" onclick="deleteItem(@item.Id)">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </div>
                         }
-
-                            <button class="btn btn-outline-primary btn-sm">Manage Addresses</button>
-                        </div>
                     </div>
+
+                    <a asp-action="CreateAddress" asp-controller="Profile" class="btn btn-outline-primary btn-sm mt-3">
+                        <i class="fa fa-plus"></i> Manage Addresses
+                    </a>
                 </div>
+            </div>
+
             </div>
             <!-- User Statistics & Orders -->
             <div class="col-lg-8">

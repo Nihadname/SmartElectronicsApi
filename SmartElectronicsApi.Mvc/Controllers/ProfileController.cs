@@ -209,17 +209,22 @@ namespace SmartElectronicsApi.Mvc.Controllers
         {
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
+
+            // Retrieve the JWT token from cookies
             var jwtToken = Request.Cookies["JwtToken"];
             if (string.IsNullOrEmpty(jwtToken))
             {
-                ModelState.AddModelError("", "User not authenticated.");
-                return View(id);
+                // Return a JSON response indicating that the user is not authenticated
+                return Json(new { success = false, message = "User not authenticated." });
             }
+
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
             var response = await client.DeleteAsync($"http://localhost:5246/api/Address/{id}");
+
             if (response.IsSuccessStatusCode)
             {
-              return  RedirectToAction("Index", "Profile");
+                return Json(new { success = true, message = "Address successfully deleted." });
             }
             else
             {
@@ -228,19 +233,13 @@ namespace SmartElectronicsApi.Mvc.Controllers
 
                 if (errorResponse?.Errors != null)
                 {
-                    foreach (var error in errorResponse.Errors)
-                    {
-                        ModelState.AddModelError(error.Key, error.Value);
-                    }
+                    return Json(new { success = false, errors = errorResponse.Errors });
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                    return Json(new { success = false, message = errorResponse?.Message ?? "An unknown error occurred." });
                 }
-
-                return View(id);
             }
-
         }
 
     }

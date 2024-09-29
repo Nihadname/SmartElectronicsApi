@@ -118,16 +118,45 @@ BarMenuOpen.addEventListener("click",function(){
         });
     });
 function deleteItem(id) {
-    if (confirm("Are you sure you want to delete this item?")) {
-        $.ajax({
-            url: '/Profile/Delete/' + id, 
-            type: 'DELETE',
-            success: function (response) {
-                alert(response.message);
-            },
-            error: function (error) {
-                alert('Error: ' + error.responseText);
-            }
-        });
-    }
+    var addressElement = document.querySelector(`.AddressText[data-id="${id}"]`);
+
+    // SweetAlert confirmation
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with AJAX request if user confirms
+            $.ajax({
+                url: '/Profile/Delete/' + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (response) {
+                    Swal.fire(
+                        'Deleted!',
+                        response.message,
+                        'success'
+                    );
+                    // Remove the corresponding address element from the DOM
+                    addressElement.remove();
+                },
+                error: function (error) {
+                    Swal.fire(
+                        'Error!',
+                        'Error: ' + error.responseText,
+                        'error'
+                    );
+                }
+            });
+        }
+    });
 }
+
