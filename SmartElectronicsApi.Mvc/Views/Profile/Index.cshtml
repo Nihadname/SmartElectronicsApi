@@ -34,7 +34,8 @@
                         <div class="address-box">
                         @foreach(var item in Model.AddressList)
                         {
-                            <p><i class="fa fa-home"></i> @item.Country+" "+@item.City+@item.Street</p>
+                            <p><i class="fa fa-home"></i> @item.Country,@item.State,@item.City,@item.Street</p>
+                            <button onclick="deleteItem(@item.Id)">Delete Item</button>
                         }
 
                             <button class="btn btn-outline-primary btn-sm">Manage Addresses</button>
@@ -173,8 +174,8 @@
                 <div class="d-grid gap-2">
                
                         <a asp-action="UpdateImage" asp-controller="Profile" class="btn btn-primary btn-lg">Change Profile Image</a>
-               
-                        <button class="btn btn-secondary btn-lg"style="">Update Information</button>
+
+                    <a asp-action="UpdateInformation" asp-controller="Profile" class="btn btn-secondary btn-lg" style="">Update Information</a>
 
                 </div>
             </div>

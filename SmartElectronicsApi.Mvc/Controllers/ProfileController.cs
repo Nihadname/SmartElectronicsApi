@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SmartElectronicsApi.Mvc.ViewModels;
 using SmartElectronicsApi.Mvc.ViewModels.Address;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
@@ -157,6 +158,90 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return View(updateUserInformationVM);
             }
         }
-        
+        public  IActionResult CreateAddress()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateAddress(AddressCreateVm addressCreateVm)
+        {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            var jwtToken = Request.Cookies["JwtToken"];
+
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                ModelState.AddModelError("", "User not authenticated.");
+                return View(addressCreateVm);
+            }
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            var stringData = JsonConvert.SerializeObject(addressCreateVm);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("http://localhost:5246/api/Address", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index", "Profile");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+
+                return View(addressCreateVm);
+            }
+        }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            var jwtToken = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                ModelState.AddModelError("", "User not authenticated.");
+                return View(id);
+            }
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+            var response = await client.DeleteAsync($"http://localhost:5246/api/Address/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+              return  RedirectToAction("Index", "Profile");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+
+                return View(id);
+            }
+
+        }
+
     }
 }

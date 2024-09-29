@@ -1,5 +1,216 @@
 ﻿@model HomeViewModel
+<style>
+  /* General list view styling */
+.product-list2 {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+        width: 1308px;
+}
 
+.product-list2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-image2 {
+    flex-shrink: 0;
+    width: 100px;
+    height: auto;
+    margin-right: 15px;
+}
+
+.product-details2 {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.product-info2 {
+    flex: 1;
+    min-width: 200px;
+}
+
+.product-actions2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-price2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.product-actions2 button {
+    background-color: #1e2a48;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.product-actions2 button:hover {
+    background-color: #162038;
+}
+
+/* Responsive adjustments */
+media (max-width: 768px) {
+    .product-list2 {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+  
+
+    .product-image2 {
+        width: 100%;
+        height: auto;
+        margin-bottom: 15px;
+    }
+
+    .product-details2 {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .product-info2 {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .product-actions2 {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .product-actions2 button {
+        width: 48%;
+    }
+}
+
+/* Extra small screen adjustments */
+media (max-width: 576px) {
+    .product-list2 {
+        padding: 10px;
+    }
+
+    .product-info2 h5 {
+        font-size: 1rem;
+    }
+
+    .product-image2 {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .product-actions2 {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .product-actions2 button {
+        width: 100%;
+        margin-bottom: 5px;
+            margin-left: 22px;
+    }
+   
+}
+
+    .deal-of-week-title {
+        font-size: 28px; /* Adjust font size as needed */
+        font-weight: bold; /* Make the text bold */
+        color: #007bff; /* Custom color (Bootstrap primary color) */
+        text-align: center; /* Center align the text */
+        margin-top: 20px; /* Add some space above the heading */
+        margin-bottom: 20px; /* Add some space below the heading */
+        letter-spacing: 1px; /* Adds some space between letters */
+        text-transform: uppercase; /* Converts text to uppercase */
+        border-bottom: 2px solid #007bff; /* Adds a border below the heading */
+        padding-bottom: 10px; /* Adds some space between text and border */
+        display: inline-block; /* Makes border fit the text width */
+    }
+
+    .category-item {
+        text-align: center;
+        padding: 20px;
+        border: 1px solid #eee;
+        background: #f6f6f6;
+        border-radius: 8px;
+        height: 100%; /* Ensure full height for grid alignment */
+        transition: all 0.3s ease;
+    }
+
+        .category-item img {
+            width: 100%;
+            height: auto;
+            max-width: 200px;
+            margin-bottom: 15px;
+        }
+
+        .category-item:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+    .section-title {
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 1.2;
+    }
+
+    .section-subtitle {
+        font-size: 18px;
+        color: #6c757d;
+    }
+
+    .card-img {
+        cursor: pointer;
+
+        transition: transform 0.3s;
+    }
+
+        .card-img:hover {
+            transform: scale(1.05);
+        }
+
+    /* Styling the modal for responsive video */
+    .modal-dialog {
+        max-width: 800px;
+        margin: 30px auto;
+    }
+
+  
+
+    .embed-responsive {
+        position: relative;
+        display: block;
+        width: 100%;
+        padding: 0;
+        overflow: hidden;
+    }
+
+        .embed-responsive::before {
+            display: block;
+            content: '';
+            padding-top: 56.25%; /* 16:9 ratio */
+        }
+
+        .embed-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+</style>
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3 thisPart">
@@ -124,12 +335,12 @@
             </ul>
         </div>
         <div class="col-md-9 ForSlider col-sm-12">
-            <div class="swiper mb-3">
+            <div class="swiper swiperMain mb-3">
                 <!-- Additional required wrapper -->
                 <div class="swiper-wrapper">
                     <!-- Slides -->
                     @foreach(var item in Model.Sliders){
-                         <div class="swiper-slide">
+                         <div class="swiper-slide thisSpecial">
                         <img src="@item.Image" alt="">
                     </div>
                     }
@@ -137,17 +348,56 @@
                     
                     <!-- Add more slides as needed -->
                 </div>
+                <div class="swiper-pagination "></div> <!-- Unique Pagination Element -->
+
             </div>
             <div class="small-images">
                 <div class="row">
-                    <div class="col-12 col-md-6">
-                        <img src="https://api.smartelectronics.az/uploads/settings/5f97957d0fcf43e8a8ff89cc74b284ecGroup1.png" style="width: 100%; height: auto;" alt="">
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <img src="https://api.smartelectronics.az/uploads/settings/ab3eb83422674d9e8ee40567d51fc7fdGroup89.png" style="width: 100%; height: auto;" alt="">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center">
+                            <h1 class="deal-of-week-title">DealOfWeek</h1>
+                        </div>
+                        <div class="swiper swiperDeal mb-3">
+                            <div class="swiper-wrapper">
+                                <!-- Product List View Item 1 -->
+                                <div class="swiper-slide">
+                                    <div class="product-list2">
+                                        <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" alt="Product Image" class="product-image2">
+                                        <div class="product-details2">
+                                            <div class="product-info2">
+                                                <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
+                                                <span class="badge bg-success">İlkin ödənişsiz</span>
+                                            </div>
+                                            <div class="product-actions2">
+                                                <div class="product-price2">2549 AZN</div>
+                                                <button class="btn btn-buy">Bir kliklə al</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Product List View Item 2 -->
+                                <div class="swiper-slide">
+                                    <div class="product-list2">
+                                        <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" alt="Product Image" class="product-image2">
+                                        <div class="product-details2">
+                                            <div class="product-info2">
+                                                <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
+                                                <span class="badge bg-success">İlkin ödənişsiz</span>
+                                            </div>
+                                            <div class="product-actions2">
+                                                <div class="product-price2">2549 AZN</div>
+                                                <button class="btn btn-buy">Bir kliklə al</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
 
         </div>
 
@@ -246,7 +496,7 @@
 
                         <!-- Product Image -->
                         <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
                         </div>
 
                         <!-- Product Name -->
@@ -312,7 +562,7 @@
 
                         <!-- Product Image -->
                         <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
                         </div>
 
                         <!-- Product Name -->
@@ -377,137 +627,7 @@
 
                         <!-- Product Image -->
                         <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
-                        </div>
-
-                        <!-- Product Name -->
-                        <h3 class="product-name text-center mb-1">
-                            LG F4J3VYG6J
-                        </h3>
-
-                        <!-- Reviews and Rating -->
-                        <div class="review-section text-center mb-2">
-                            <span class="rating-stars">
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star-half-alt text-warning"></i>
-                            </span>
-                            <span class="review-count">(57 Reviews)</span>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="price-section text-center mb-2">
-                            <span class="price-old text-muted">1269 AZN</span><br>
-                            <span class="price-new fw-bold">1099 AZN</span>
-                        </div>
-
-                        <!-- Color Choices Section -->
-                        <div class="color-choices text-center my-2">
-                            <span class="color-circle" style="background-color: #000000;"></span>
-                            <span class="color-circle" style="background-color: #3498db;"></span>
-                            <span class="color-circle" style="background-color: #ff4757;"></span>
-                            <span class="color-circle" style="background-color: #f1c40f;"></span>
-                        </div>
-
-                        <!-- Monthly Payment Section -->
-                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                            <span class="installment-option">6 ay</span>
-                            <span class="installment-option selected mx-2">12 ay</span>
-                            <span class="installment-price fw-bold">106 AZN</span>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="action-buttons text-center">
-                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
-                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Product Card -->
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <div class="product-card p-3 shadow-sm">
-                        <!-- Discount Badge -->
-                        <div class="discount-badge-circle">
-                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
-                        </div>
-
-                        <!-- Wishlist Icon -->
-                        <div class="wishlist-icon">
-                            <i class="fa-regular fa-heart wishlist"></i>
-                        </div>
-
-                        <!-- Product Image -->
-                        <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
-                        </div>
-
-                        <!-- Product Name -->
-                        <h3 class="product-name text-center mb-1">
-                            LG F4J3VYG6J
-                        </h3>
-
-                        <!-- Reviews and Rating -->
-                        <div class="review-section text-center mb-2">
-                            <span class="rating-stars">
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star-half-alt text-warning"></i>
-                            </span>
-                            <span class="review-count">(57 Reviews)</span>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="price-section text-center mb-2">
-                            <span class="price-old text-muted">1269 AZN</span><br>
-                            <span class="price-new fw-bold">1099 AZN</span>
-                        </div>
-
-                        <!-- Color Choices Section -->
-                        <div class="color-choices text-center my-2">
-                            <span class="color-circle" style="background-color: #000000;"></span>
-                            <span class="color-circle" style="background-color: #3498db;"></span>
-                            <span class="color-circle" style="background-color: #ff4757;"></span>
-                            <span class="color-circle" style="background-color: #f1c40f;"></span>
-                        </div>
-
-                        <!-- Monthly Payment Section -->
-                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                            <span class="installment-option">6 ay</span>
-                            <span class="installment-option selected mx-2">12 ay</span>
-                            <span class="installment-price fw-bold">106 AZN</span>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="action-buttons text-center">
-                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
-                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <div class="product-card p-3 shadow-sm">
-                        <!-- Discount Badge -->
-                        <div class="discount-badge-circle">
-                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
-                        </div>
-
-                        <!-- Wishlist Icon -->
-                        <div class="wishlist-icon">
-                            <i class="fa-regular fa-heart wishlist"></i>
-                        </div>
-
-                        <!-- Product Image -->
-                        <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
                         </div>
 
                         <!-- Product Name -->
@@ -573,7 +693,7 @@
 
                         <!-- Product Image -->
                         <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
                         </div>
 
                         <!-- Product Name -->
@@ -623,7 +743,6 @@
                     </div>
                 </div>
 
-
                 <div class="col-12 col-md-4 col-lg-3 mb-3">
                     <div class="product-card p-3 shadow-sm">
                         <!-- Discount Badge -->
@@ -638,7 +757,7 @@
 
                         <!-- Product Image -->
                         <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
                         </div>
 
                         <!-- Product Name -->
@@ -704,7 +823,138 @@
 
                         <!-- Product Image -->
                         <div class="product-image text-center mb-3">
-                            <img class="img-fluid" src="https://api.smartelectronics.az/uploads/products/969b75d6125c46858bda1c5cba918945f%C3%BCef45%C3%BCf.jpg" alt="Product Image">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
+                        </div>
+
+                        <!-- Product Name -->
+                        <h3 class="product-name text-center mb-1">
+                            LG F4J3VYG6J
+                        </h3>
+
+                        <!-- Reviews and Rating -->
+                        <div class="review-section text-center mb-2">
+                            <span class="rating-stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-alt text-warning"></i>
+                            </span>
+                            <span class="review-count">(57 Reviews)</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-section text-center mb-2">
+                            <span class="price-old text-muted">1269 AZN</span><br>
+                            <span class="price-new fw-bold">1099 AZN</span>
+                        </div>
+
+                        <!-- Color Choices Section -->
+                        <div class="color-choices text-center my-2">
+                            <span class="color-circle" style="background-color: #000000;"></span>
+                            <span class="color-circle" style="background-color: #3498db;"></span>
+                            <span class="color-circle" style="background-color: #ff4757;"></span>
+                            <span class="color-circle" style="background-color: #f1c40f;"></span>
+                        </div>
+
+                        <!-- Monthly Payment Section -->
+                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                            <span class="installment-option">6 ay</span>
+                            <span class="installment-option selected mx-2">12 ay</span>
+                            <span class="installment-price fw-bold">106 AZN</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons text-center">
+                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
+                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="product-card p-3 shadow-sm">
+                        <!-- Discount Badge -->
+                        <div class="discount-badge-circle">
+                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
+                        </div>
+
+                        <!-- Wishlist Icon -->
+                        <div class="wishlist-icon">
+                            <i class="fa-regular fa-heart wishlist"></i>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="product-image text-center mb-3">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
+                        </div>
+
+                        <!-- Product Name -->
+                        <h3 class="product-name text-center mb-1">
+                            LG F4J3VYG6J
+                        </h3>
+
+                        <!-- Reviews and Rating -->
+                        <div class="review-section text-center mb-2">
+                            <span class="rating-stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-alt text-warning"></i>
+                            </span>
+                            <span class="review-count">(57 Reviews)</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-section text-center mb-2">
+                            <span class="price-old text-muted">1269 AZN</span><br>
+                            <span class="price-new fw-bold">1099 AZN</span>
+                        </div>
+
+                        <!-- Color Choices Section -->
+                        <div class="color-choices text-center my-2">
+                            <span class="color-circle" style="background-color: #000000;"></span>
+                            <span class="color-circle" style="background-color: #3498db;"></span>
+                            <span class="color-circle" style="background-color: #ff4757;"></span>
+                            <span class="color-circle" style="background-color: #f1c40f;"></span>
+                        </div>
+
+                        <!-- Monthly Payment Section -->
+                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                            <span class="installment-option">6 ay</span>
+                            <span class="installment-option selected mx-2">12 ay</span>
+                            <span class="installment-price fw-bold">106 AZN</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons text-center">
+                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
+                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Product Card -->
+                <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="product-card p-3 shadow-sm">
+                        <!-- Discount Badge -->
+                        <div class="discount-badge-circle">
+                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
+                        </div>
+
+                        <!-- Wishlist Icon -->
+                        <div class="wishlist-icon">
+                            <i class="fa-regular fa-heart wishlist"></i>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="product-image text-center mb-3">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
                         </div>
 
                         <!-- Product Name -->
@@ -758,38 +1008,173 @@
         </div>
     </section>
     <section class="mb-5">
-        <img width="100%" class="rounded-3" src="https://api.smartelectronics.az/uploads/settings/2211cddaedd64dc8b769380b255c766asmart2.gif" alt="">
+        <div class="row g-4">
+
+            <!-- Left Part: Takes up 12 columns on mobile, 4 on large screens -->
+            <div class="col-12 col-lg-4">
+                <div class="category-item">
+                    <h5>Smartfonlar</h5>
+                    <div class="d-flex justify-content-center align-items-center h-100">
+                        <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=159a5e36-28b6-48c4-80ba-2ca4006120f0.png" alt="Smartfonlar">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Part: Two rows of two items -->
+            <div class="col-12 col-lg-8">
+                <div class="row h-100">
+
+                    <!-- Top Right Section -->
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="category-item h-100">
+                            <h5>Aksessuarlar</h5>
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=a6df627f-f210-423c-96a1-58805239d210.png" style="width:190px" alt="Aksessuarlar">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Right Section -->
+                    <div class="col-12 col-md-6 mb-4">
+                        <div class="category-item h-100">
+                            <h5>Geepas məhsulları</h5>
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=7ae2e6d7-41b5-4541-9287-37791112dc97.png" style="width:190px" alt="Geepas məhsulları">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Third Section in the right row -->
+                    <div class="col-12 col-md-7">
+                        <div class="category-item h-100">
+                            <h5>Celly məhsulları</h5>
+                            <div class="d-flex   justify-content-center align-items-center h-100">
+                                <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=fbf997a5-41d7-4e01-9e4b-3e6fd2901a90.png"  alt="Celly məhsulları">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <div class="category-item h-100">
+                            <h5>Apple Watch</h5>
+                            <div class="d-flex   justify-content-center align-items-center h-100">
+                                <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=8cc0beb1-c49d-4550-92bd-e3b1aa2bb1dc.png" alt="Celly məhsulları">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
+
     <section id="BrandSlider" class="mb-5">
-        <div class="swiperBrand mb-3">
+        <div class=" swiper swiperBrand mb-3">
             <!-- Additional required wrapper -->
             <div class="swiper-wrapper">
                 <!-- Slides -->
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
+                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
+    border: 2px solid #ecedf0;
+     padding: 15px 15px;
+    ">
 
-                    <img src="https://api.smartelectronics.az/uploads/settings/c6d159d9414d4779902291ca4faa4822download.png" alt="" class="img-fluid">
-                    <div class="border-right"></div>
-
+                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
                 </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
+                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
+    border: 2px solid #ecedf0;
+     padding: 15px 15px;
+    ">
 
-                    <img src="https://api.smartelectronics.az/uploads/settings/137b4912df65475488af78f85d6dcef5Apple-Logo.png" alt="" class="img-fluid">
-                    <div class="border-right"></div>
+                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
                 </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
+                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
+    border: 2px solid #ecedf0;
+     padding: 15px 15px;
+    ">
 
-                    <img src="https://api.smartelectronics.az/uploads/settings/c6d159d9414d4779902291ca4faa4822download.png" alt="" class="img-fluid">
-                    <div class="border-right"></div>
+                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
                 </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
+                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
+    border: 2px solid #ecedf0;
+     padding: 15px 15px;
+    ">
 
-                    <img src="https://api.smartelectronics.az/uploads/settings/c6d159d9414d4779902291ca4faa4822download.png" alt="" class="img-fluid">
-                    <div class="border-right"></div>
+                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
                 </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center">
 
-                    <img src="https://api.smartelectronics.az/uploads/settings/c6d159d9414d4779902291ca4faa4822download.png" alt="" class="img-fluid">
-                    <div class="border-right"></div>
+                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
+    border: 2px solid #ecedf0;
+     padding: 15px 15px;
+    ">
+
+                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center mb-4">
+                    <h2 class="section-title">Smart-da Məhsul İcmalı</h2>
+                    <p class="section-subtitle">Sənə özəl kampaniyalarımız və məhsullarımızın icmal videolarını izləməyi unutma! 😊</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- First Video Image -->
+                <div class="col-12 col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <img src="./assets/img/hqdefault.jpg" class="card-img" style="height:400px" alt="Apple Product Review" data-bs-toggle="modal" data-bs-target="#videoModal1">
+                        <div class="card-body">
+                            <h5 class="card-title">QİYMƏTLƏRİ və ŞƏRTLƏRİ yenilədi...</h5>
+                            <p class="card-text">Smart Electronics alış-veriş təcrübənizə yeni nəfəs gətirməyə hazırdır</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Video Image -->
+                <div class="col-12 col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <img src="./assets/img/maxresdefault.jpg" class="card-img" style="height:400px" alt="Smart Electronics 8 Years" data-bs-toggle="modal" data-bs-target="#videoModal2">
+                        <div class="card-body">
+                            <h5 class="card-title">Smart Electronics 8 yaşını qeyd e...</h5>
+                            <p class="card-text">Smart Electronics - Arzularınız üçün olsun 💙</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- First Video Modal -->
+        <div class="modal fade" id="videoModal1" tabindex="-1" aria-labelledby="videoModalLabel1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="videoModalLabel1">Apple Product Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="embed-responsive">
+                            <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Apple Product Review" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Video Modal -->
+        <div class="modal fade" id="videoModal2" tabindex="-1" aria-labelledby="videoModalLabel2" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="videoModalLabel2">Smart Electronics 8 Years</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="embed-responsive">
+                            <iframe src="https://www.youtube.com/embed/3JZ_D3ELwOQ" title="Smart Electronics 8 Years" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

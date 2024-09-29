@@ -19,7 +19,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
         [HttpPost]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Create([FromForm]AddressCreateDto addressCreateDto)
+        public async Task<IActionResult> Create(AddressCreateDto addressCreateDto)
         {
             return Ok(await _addressService.Create(addressCreateDto));
         }

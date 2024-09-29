@@ -43,11 +43,11 @@ namespace SmartElectronicsApi.Application.Implementations
             var user = await _userManager.FindByIdAsync(userId);
             if (user is null) throw new CustomException(403, "This user doesn't exist");
 
-            if (await _unitOfWork.addressRepository.isExists(s => s.Country.ToLower() == addressCreateDto.Country.ToLower() &&
-                                                                   s.City.ToLower() == addressCreateDto.City.ToLower() &&
-                                                                   s.Street.ToLower() == addressCreateDto.Street.ToLower() &&
+            if (await _unitOfWork.addressRepository.GetEntity(s => s.Country.ToLower() == addressCreateDto.Country.ToLower() &&
+                                                                   s.City.ToLower() == addressCreateDto.City.ToLower() ||
+                                                                   s.Street.ToLower() == addressCreateDto.Street.ToLower() ||
                                                                    s.ZipCode.ToLower() == addressCreateDto.ZipCode.ToLower() &&
-                                                                   s.AppUserId == addressCreateDto.AppUserId))
+                                                                   s.AppUserId == addressCreateDto.AppUserId) is not null)
             {
                 throw new CustomException(400, "This location already exists in the user's savings");
             }
@@ -84,6 +84,7 @@ namespace SmartElectronicsApi.Application.Implementations
             var addressParts = new List<string>
     {
         addressCreateDto.Country,
+        addressCreateDto.State,
         addressCreateDto.City,
     };
 

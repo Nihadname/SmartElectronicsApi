@@ -19,12 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-const swiper = new Swiper('.swiper', {
+const swiper = new Swiper('.swiperMain', {
     loop: true,
+
+    dots:true,
     // Disable pagination
     pagination: {
-        el: '.swiper-pagination',
-        clickable: false,
+        el: '.swiper-pagination', // Unique Pagination Element
+        clickable: true,
     },
     // Disable scrollbar
     scrollbar: {
@@ -36,6 +38,24 @@ const swiper = new Swiper('.swiper', {
         prevEl: null,
     }
 });
+var SwiperDeal = new Swiper('.swiperDeal', {
+    loop: true,
+
+   // Disable pagination
+    pagination: {
+        el: null, // Unique Pagination Element
+        clickable: false,
+    },
+    // Disable scrollbar
+    scrollbar: {
+        el: null, // Disable the scrollbar
+    },
+    // Disable navigation buttons
+    navigation: {
+        nextEl: null,
+        prevEl: null,
+    }
+})
 var swiperBrand = new Swiper('.swiperBrand', {
     loop: true,             // Enables infinite loop
     autoplay: {
@@ -43,7 +63,7 @@ var swiperBrand = new Swiper('.swiperBrand', {
       disableOnInteraction: false,
     },
     slidesPerView: 3,       // Show one image at a time
-    spaceBetween: 10,       // Adjust spacing between slides if needed
+    spaceBetween: 5,       // Adjust spacing between slides if needed
     centeredSlides: true,   // Center the slides
     height: 400,            // Ensure swiper stays within the container's height
     breakpoints: {          // Optional: Handle responsiveness with breakpoints
@@ -97,4 +117,17 @@ BarMenuOpen.addEventListener("click",function(){
             this.classList.add('active');
         });
     });
-    
+function deleteItem(id) {
+    if (confirm("Are you sure you want to delete this item?")) {
+        $.ajax({
+            url: '/Profile/Delete/' + id, 
+            type: 'DELETE',
+            success: function (response) {
+                alert(response.message);
+            },
+            error: function (error) {
+                alert('Error: ' + error.responseText);
+            }
+        });
+    }
+}
