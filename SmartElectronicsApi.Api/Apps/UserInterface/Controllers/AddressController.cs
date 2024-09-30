@@ -36,5 +36,11 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _addressService.GetAll());
         }
+        [HttpPut("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Update(int? id,[FromForm]AddressUpdateDto addressUpdateDto)
+        {
+            return Ok(await _addressService.Update(id,addressUpdateDto));
+        }
     }
 }

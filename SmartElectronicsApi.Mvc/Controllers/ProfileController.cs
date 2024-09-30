@@ -95,7 +95,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
             {
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
                 {
                     foreach (var error in errorResponse.Errors)
                     {
@@ -190,7 +190,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
 
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null&&errorResponse?.Errors.Count()!=0)
                 {
                     foreach (var error in errorResponse.Errors)
                     {
@@ -231,7 +231,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
 
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
                 {
                     return Json(new { success = false, errors = errorResponse.Errors });
                 }

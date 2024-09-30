@@ -13,7 +13,7 @@ namespace SmartElectronicsApi.Application.Interfaces
        Task<AddressListItemDto> Create(AddressCreateDto addressCreateDto);
         Task<int> Delete(int? id);
         Task<List<AddressListItemDto>> GetAll();
-
+        Task<AddressListItemDto> Update(int? id, AddressUpdateDto addressUpdateDto);
 
     }
 }

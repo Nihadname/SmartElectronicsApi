@@ -1,42 +1,83 @@
 ﻿@model SmartElectronicsApi.Mvc.ViewModels.Address.AddressCreateVm
 
-<h2>Create Address</h2>
+<h2 class="mb-4 text-center">Create Address</h2>
 
-<form asp-action="CreateAddress" method="post">
-    <div class="form-group">
-        <label asp-for="Street"></label>
-        <input asp-for="Street" class="form-control" />
-        <span asp-validation-for="Street" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="City"></label>
-        <input asp-for="City" class="form-control" />
-        <span asp-validation-for="City" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="State"></label>
-        <input asp-for="State" class="form-control" />
-        <span asp-validation-for="State" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ZipCode"></label>
-        <input asp-for="ZipCode" class="form-control" />
-        <span asp-validation-for="ZipCode" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Country"></label>
-        <input asp-for="Country" class="form-control" />
-        <span asp-validation-for="Country" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="AddressType"></label>
-        <select asp-for="AddressType" class="form-control">
-            <option value="Home">Home</option>
-            <option value="Work">Work</option>
-            <option value="Other">Other</option>
-        </select>
-        <span asp-validation-for="AddressType" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+<form asp-action="CreateAddress" id="CreateAddressForm" method="post">
+    <div class="text-danger" asp-validation-summary="All"></div>
+    
+    <fieldset class="border p-4 mb-4">
+        <legend class="font-weight-bold text-primary">Address Information</legend>
+        
+        <div class="form-group">
+            <label asp-for="Street" class="font-weight-bold"></label>
+            <input asp-for="Street" class="form-control rounded-lg shadow-sm" />
+            <span asp-validation-for="Street" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="City" class="font-weight-bold"></label>
+                <input asp-for="City" class="form-control rounded-lg shadow-sm" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="State" class="font-weight-bold"></label>
+                <input asp-for="State" class="form-control rounded-lg shadow-sm" />
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label asp-for="ZipCode" class="font-weight-bold"></label>
+                <input asp-for="ZipCode" class="form-control rounded-lg shadow-sm" />
+                <span asp-validation-for="ZipCode" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="Country" class="font-weight-bold"></label>
+                <input asp-for="Country" class="form-control rounded-lg shadow-sm" />
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+        </div>
+    </fieldset>
+    
+    <fieldset class="border p-4 mb-4">
+        <legend class="font-weight-bold text-primary">Address Type</legend>
+        
+        <div class="form-group">
+            <label asp-for="AddressType" class="font-weight-bold"></label>
+            <select asp-for="AddressType" class="form-control rounded-lg shadow-sm">
+                <option value="Home">Home</option>
+                <option value="Work">Work</option>
+                <option value="Other">Other</option>
+            </select>
+            <span asp-validation-for="AddressType" class="text-danger"></span>
+        </div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary btn-block rounded-pill shadow-sm">
+        Submit
+    </button>
 </form>
 
+<style>
+    #CreateAddressForm {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+    input:focus, select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+    .btn-primary:active {
+        background-color: #004085;
+        box-shadow: none;
+    }
+</style>

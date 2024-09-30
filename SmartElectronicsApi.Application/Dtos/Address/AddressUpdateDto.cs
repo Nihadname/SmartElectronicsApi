@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Dtos.Address
 {
-    public class AddressUpdateDto
+    public class AddressUpdateDto: IAddressDto
     {
         public string? Street { get; set; }
         public string? City { get; set; }

@@ -31,6 +31,11 @@ namespace SmartElectronicsApi.Mvc.Controllers
         {
             if (!ModelState.IsValid)
             {
+                if(vm.CountryCode is null)
+                {
+                    ModelState.AddModelError(string.Empty,"country code cant be null");
+
+                }
                 return View(vm);
             }
             if (!string.IsNullOrEmpty(vm.CountryCode) && !string.IsNullOrEmpty(vm.PhoneNumber))
@@ -55,7 +60,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
             {
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
                 {
                     foreach (var error in errorResponse.Errors)
                     {
@@ -100,7 +105,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
 
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
                 {
                     foreach (var error in errorResponse.Errors)
                     {
@@ -205,7 +210,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
 
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
                 {
                     foreach (var error in errorResponse.Errors)
                     {
@@ -245,7 +250,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
 
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
                 {
                     foreach (var error in errorResponse.Errors)
                     {
@@ -297,7 +302,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 var errorResponseString = await response.Content.ReadAsStringAsync();
                 var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
 
-                if (errorResponse?.Errors != null)
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
                 {
                     foreach (var error in errorResponse.Errors)
                     {

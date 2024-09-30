@@ -19,25 +19,26 @@ namespace SmartElectronicsApi.Api.Middlewares
             }
             catch (Exception ex)
             {
+                var errors = new Dictionary<string, string>();
+                var responseMessage = ex.Message;
+
+                // If it's a CustomException, extract the errors
+                if (ex is CustomException customException)
+                {
+                    errors = customException.Errors;
+                    responseMessage = customException.Message;
+                }
+
                 var response = new
                 {
-                    message = ex.Message,
-                    errors = new Dictionary<string, string>()
+                    message = responseMessage,
+                    errors = errors // Always include the errors dictionary, even if empty
                 };
 
                 httpContext.Response.ContentType = "application/json";
                 httpContext.Response.StatusCode = ex is CustomException custom
                     ? custom.Code
                     : StatusCodes.Status500InternalServerError;
-
-                if (ex is CustomException customException)
-                {
-                    response = new
-                    {
-                        message = customException.Message,
-                        errors = customException.Errors
-                    };
-                }
 
                 await httpContext.Response.WriteAsJsonAsync(response);
             }
