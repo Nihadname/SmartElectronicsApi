@@ -228,15 +228,44 @@ $('#updateAddressForm').submit(function (e) {
         success: function (response) {
             console.log(JSON.stringify(addressData))
             if (response.success) {
-                $('#editAddressModal').modal('hide');
-                location.reload(); // Reload the page to show updated address
+                Swal.fire({
+                    title: 'Updated!',
+                    text: response.message,
+                    icon: 'success',
+                    timer: 2000,  // Delay in milliseconds (2000ms = 2 seconds)
+                    showConfirmButton: false  // Hide the confirmation button
+                }).then(() => {
+                    
+                    $('#editAddressModal').modal('hide');  
+                    location.reload();
+                });
             } else {
-                console.log(data)
-                alert(response.message || 'An error occurred while updating the address.');
+                displayErrors([response.message]);
             }
         },
-        error: function () {
-            alert('Error updating address.');
+        error: function (xhr) {
+            if (xhr.status === 400) {
+                var response = xhr.responseJSON;
+                if (response.errors && response.errors.length > 0) {
+                    displayErrors(response.errors);  
+                } else {
+                    displayErrors([response.message || 'An error occurred.']);
+                }
+            } else {
+                displayErrors(['An unexpected error occurred.']);
+            }
         }
     });
 });
+
+function displayErrors(errors) {
+    var errorDiv = $('#errorMessages');
+    errorDiv.html('');  // Clear previous errors
+
+    if (errors && errors.length > 0) {
+        errors.forEach(function (error) {
+            errorDiv.append('<p>' + error + '</p>');  // Add each error
+        });
+        errorDiv.removeClass('d-none');  // Show error div
+    }
+}
