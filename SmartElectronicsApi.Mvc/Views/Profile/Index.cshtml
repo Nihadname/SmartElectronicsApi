@@ -34,7 +34,7 @@
                     <div class="address-box-container">
                         @foreach (var item in Model.AddressList)
                         {
-                            <div class="address-box AddressText"  data-id="@item.Id">
+                            <div class="address-box AddressText" data-id="@item.Id">
                                 <div class="address-details">
                                     <p class="address-icon"><i class="fa fa-home"></i></p>
                                     <div class="address-info">
@@ -43,9 +43,9 @@
                                     </div>
                                 </div>
                                 <div class="address-actions">
-                                    <a class="btn btn-danger btn-sm" onclick="deleteItem(@item.Id)">
-                                        <i class="fa fa-trash"></i> Delete
-                                    </a>
+                                    <button class="btn btn-primary btn-sm" onclick="editAddress(@item.Id)">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </button>
                                 </div>
                             </div>
                         }
@@ -193,6 +193,50 @@
                     <a asp-action="UpdateInformation" asp-controller="Profile" class="btn btn-secondary btn-lg" style="">Update Information</a>
 
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAddressModalLabel">Update Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateAddressForm">
+                    <input type="hidden" id="addressId" name="Id">
+                    <div class="form-group mb-3">
+                        <label for="country">Country</label>
+                        <input type="text" id="country" name="Country" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="state">State</label>
+                        <input type="text" id="state" name="State" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="city">City</label>
+                        <input type="text" id="city" name="City" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="street">Street</label>
+                        <input type="text" id="street" name="Street" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="zipcode">Zip Code</label>
+                        <input type="text" id="zipcode" name="ZipCode" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="AddressType" class="font-weight-bold">AddressType</label>
+                        <select for="AddressType" id="AddressType" name="AddressType class="form-control rounded-lg shadow-sm">
+                            <option value="Home">Home</option>
+                            <option value="Work">Work</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Address</button>
+                </form>
             </div>
         </div>
     </div>

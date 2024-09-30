@@ -119,6 +119,8 @@ namespace SmartElectronicsApi.Application.Profiles
      .ForMember(s => s.AddressType, map => map.MapFrom(d => d.AddressType.ToString()));
                 CreateMap<AddressUpdateDto, Address>()
                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+                CreateMap<Address, AddressReturnDto>()
+                .ForMember(s => s.AddressType, map => map.MapFrom(d => d.AddressType.ToString()));
 
             });
             configuration.AssertConfigurationIsValid();

@@ -241,6 +241,56 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 }
             }
         }
+       public async Task<IActionResult> GetById(int? id)
+        {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            var jwtToken = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                return Json(new { success = false, message = "User not authenticated." });
+            }
 
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            var response = await client.GetAsync($"Address/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var address = await response.Content.ReadAsStringAsync();
+                var addressObj = JsonConvert.DeserializeObject<AddressListItemVM>(address);
+                return Json(addressObj);
+            }
+            else
+            {
+                return Json(new { success = false, message = "Failed to retrieve address." });
+            }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateAddress(int? id,[FromBody]AddressUpdateVm addressUpdateVm)
+        {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            var jwtToken = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                return Json(new { success = false, message = "User not authenticated." });
+            }
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            var content = new StringContent(JsonConvert.SerializeObject(addressUpdateVm), Encoding.UTF8, "application/json");
+            var response = await client.PutAsync($"Address/{id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return Json(new { success = true, message = "Address updated successfully." });
+            }
+            else
+            {
+                var errorResponse = await response.Content.ReadAsStringAsync();
+                return Json(new { success = false, message = errorResponse ?? "Failed to update address." });
+            }
+        }
     }
 }

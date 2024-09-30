@@ -159,4 +159,84 @@ function deleteItem(id) {
         }
     });
 }
+function getJwtToken() {
+    // Retrieve the JWT token from the cookies
+    return document.cookie.split('; ').find(row => row.startsWith('JwtToken=')).split('=')[1];
+}
 
+function editAddress(id) {
+    const jwtToken = getJwtToken();
+    console.log(jwtToken)
+    if (!jwtToken) {
+        alert("User not authenticated.");
+        return;
+    }
+
+    // Make an API call to get the address details by id
+    $.ajax({
+        url: `/Profile/GetById/${id}`,
+        type: 'GET',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`
+        },
+        success: function (data) {
+            // Populate the modal fields with the address data
+            $('#addressId').val(data.id);
+            $('#country').val(data.country);
+            $('#state').val(data.state);
+            $('#city').val(data.city);
+            $('#street').val(data.street);
+            $('#zipcode').val(data.zipCode);
+            $('#AddressType').val(data.AddressType);
+            console.log("Address ID:", $('#addressId').val());
+
+            // Show the modal
+            $('#editAddressModal').modal('show');
+        },
+        error: function () {
+            alert('Error retrieving address data.');
+        }
+    });
+}
+
+$('#updateAddressForm').submit(function (e) {
+    e.preventDefault();
+
+    const jwtToken = getJwtToken();
+    if (!jwtToken) {
+        alert("User not authenticated.");
+        return;
+    }
+    var Id = $("#addressId").val();
+    var addressData = {
+        Country: $('#country').val(),
+        State: $('#state').val(),
+        City: $('#city').val(),
+        Street: $('#street').val(),
+        ZipCode: $('#zipcode').val(),
+            AddressType: $('#AddressType').val()
+    };
+    $.ajax({
+        url: `/Profile/UpdateAddress/${Id}`,  // The endpoint in the controller to update address
+        type: 'POST',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': `Bearer ${jwtToken}`
+        },
+        data: JSON.stringify(addressData),
+    
+        success: function (response) {
+            console.log(JSON.stringify(addressData))
+            if (response.success) {
+                $('#editAddressModal').modal('hide');
+                location.reload(); // Reload the page to show updated address
+            } else {
+                console.log(data)
+                alert(response.message || 'An error occurred while updating the address.');
+            }
+        },
+        error: function () {
+            alert('Error updating address.');
+        }
+    });
+});

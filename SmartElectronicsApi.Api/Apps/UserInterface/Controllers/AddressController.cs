@@ -38,9 +38,17 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
         [HttpPut("{id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Update(int? id,[FromForm]AddressUpdateDto addressUpdateDto)
+        public async Task<IActionResult> Update(int? id, [FromBody] AddressUpdateDto addressUpdateDto)
         {
-            return Ok(await _addressService.Update(id,addressUpdateDto));
+            await _addressService.Update(id, addressUpdateDto);
+            return Ok(new { success = true, message = "Address updated successfully." });
+
+        }
+        [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Get(int? id)
+        {
+            return Ok(await _addressService.GetById(id));
         }
     }
 }

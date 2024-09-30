@@ -14,6 +14,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<int> Delete(int? id);
         Task<List<AddressListItemDto>> GetAll();
         Task<AddressListItemDto> Update(int? id, AddressUpdateDto addressUpdateDto);
-
+        Task<AddressReturnDto> GetById(int? id);
     }
 }

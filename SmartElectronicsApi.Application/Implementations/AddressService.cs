@@ -219,5 +219,26 @@ namespace SmartElectronicsApi.Application.Implementations
             var MappedAddresses=_mapper.Map<List<AddressListItemDto>>(Addresses);
             return MappedAddresses;
         }
+        public async Task<AddressReturnDto> GetById(int? id)
+        {
+            if (id == null)
+            {
+                throw new CustomException(400, "Address ID cannot be null");
+            }
+
+            var userId = _contextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new CustomException(400, "User ID cannot be null");
+            }
+
+            var address = await _unitOfWork.addressRepository.GetEntity(s => s.Id == id && s.AppUserId == userId);
+            if (address == null)
+            {
+                throw new CustomException(404, "Address not found or does not belong to the user");
+            }
+            var MappedDto=_mapper.Map<AddressReturnDto>(address);
+            return MappedDto;
+        }
     }
 }
