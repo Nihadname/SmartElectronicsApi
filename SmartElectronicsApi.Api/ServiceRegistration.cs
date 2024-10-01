@@ -72,6 +72,8 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<ISubscriberService, SubscriberService>();
+        services.AddScoped<ISubscriberRepository, SubscriberRepository>();
         services.AddScoped<IColorService,ColorService>();
         services.AddScoped<IAddressService, AddressService>();
         services.AddScoped<IAddressRepository, AddressRepository>();

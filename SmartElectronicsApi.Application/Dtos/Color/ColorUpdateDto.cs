@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Dtos.Color
 {
-    public class ColorListItemDto
+    public class ColorUpdateDto
     {
-        public int Id { get; set; } 
-        public string Name { get; set; }
-        public string Code { get; set; }
+        public string? Name { get; set; }
+        public string? Code { get; set; }
     }
 }

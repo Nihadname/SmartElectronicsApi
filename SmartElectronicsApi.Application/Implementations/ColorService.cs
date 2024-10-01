@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Color;
+using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
-    public class ColorService :IColorService
+    public class ColorService : IColorService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -27,7 +28,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
         public async Task<ColorCreateDto> Create(ColorCreateDto colorCreateDto)
         {
-  if(await _unitOfWork.colorRepository.isExists(s => s.Code.ToLower() == colorCreateDto.Code))
+            if (await _unitOfWork.colorRepository.isExists(s => s.Code.ToLower() == colorCreateDto.Code.ToLower()))
             {
                 throw new CustomException(400, "Code", "they cant have the same colors already existed one");
             }
@@ -41,7 +42,7 @@ namespace SmartElectronicsApi.Application.Implementations
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
             var color = await _unitOfWork.colorRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (color is null) throw new CustomException(404, "Not found");
-await _unitOfWork.colorRepository.Delete(color);
+            await _unitOfWork.colorRepository.Delete(color);
             _unitOfWork.Commit();
             return color.Id;
         }
@@ -68,8 +69,32 @@ await _unitOfWork.colorRepository.Delete(color);
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
             var color = await _unitOfWork.colorRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (color is null) throw new CustomException(404, "Not found");
-            var MappedColor=_mapper.Map<ColorListItemDto>(color);
+            var MappedColor = _mapper.Map<ColorListItemDto>(color);
             return MappedColor;
         }
+        public async Task<Color> Update(int? id, ColorUpdateDto colorUpdateDto)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id can't be null");
+
+            var color = await _unitOfWork.colorRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (color is null) throw new CustomException(404, "Not found");
+
+            if (!string.IsNullOrEmpty(colorUpdateDto.Code))
+            {
+                if (await _unitOfWork.colorRepository.isExists(s => s.Code.ToLower() == colorUpdateDto.Code.ToLower()))
+                {
+                    throw new CustomException(400, "Code", "A color with the same code already exists.");
+                }
+            }
+
+            color.Name = colorUpdateDto.Name ?? color.Name;
+            color.Code = colorUpdateDto.Code ?? color.Code;
+
+            await _unitOfWork.colorRepository.Update(color);
+             _unitOfWork.Commit();
+
+            return color;
+        }
+
     }
 }

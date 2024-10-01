@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SmartElectronicsApi.Core;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Configurations;
 using System;

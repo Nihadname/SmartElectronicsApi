@@ -10,6 +10,7 @@ using SmartElectronicsApi.Application.Dtos.Product;
 using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Dtos.SubsCategory;
+using SmartElectronicsApi.Application.Dtos.Subscriber;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Core.Entities;
 using System;
@@ -124,6 +125,10 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(s => s.AddressType, map => map.MapFrom(d => d.AddressType.ToString()));
                 CreateMap<ColorCreateDto, Color>();
                 CreateMap<Color, ColorListItemDto>();
+                CreateMap<Subscriber, SubscriberDto>().ReverseMap();
+                CreateMap<ColorUpdateDto, Color>()
+                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
             });
             configuration.AssertConfigurationIsValid();
         }

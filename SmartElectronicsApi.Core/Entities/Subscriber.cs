@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SmartElectronicsApi.Core
+namespace SmartElectronicsApi.Core.Entities
 {
-    public class Subscriber:BaseEntity
+    public class Subscriber : BaseEntity
     {
-        public string Email {  get; set; }
+        public string Email { get; set; }
     }
 }
