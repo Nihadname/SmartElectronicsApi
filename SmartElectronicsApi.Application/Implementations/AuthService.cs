@@ -24,6 +24,8 @@ using System.Web;
 using Microsoft.IdentityModel.Tokens;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Dtos.Brand;
+using SmartElectronicsApi.Application.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -56,7 +58,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<AppUser> FindOrCreateUserAsync(string email,string googleId,string GivenName)
+        public async Task<AppUser> FindOrCreateUserAsync(string email, string googleId, string GivenName)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -67,8 +69,8 @@ namespace SmartElectronicsApi.Application.Implementations
                 user.UserName = email.Split('@')[0];
                 user.fullName = GivenName;
                 user.Image = null;
-              user.EmailConfirmed=true;
-                var result=await _userManager.CreateAsync(user, "User_@" + Guid.NewGuid().ToString().Substring(0, 14));
+                user.EmailConfirmed = true;
+                var result = await _userManager.CreateAsync(user, "User_@" + Guid.NewGuid().ToString().Substring(0, 14));
 
                 if (!result.Succeeded)
                 {
@@ -78,7 +80,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
 
                 await _userManager.AddToRoleAsync(user, nameof(RolesEnum.Member));
-               
+
             }
             return user;
 
@@ -95,8 +97,8 @@ namespace SmartElectronicsApi.Application.Implementations
                     throw new CustomException(400, "UserNameOrGmail", "userName or email is wrong\"");
                 }
             }
-            var result= await _userManager.CheckPasswordAsync(User, loginDto.Password);
-           
+            var result = await _userManager.CheckPasswordAsync(User, loginDto.Password);
+
             if (!result)
             {
                 throw new CustomException(400, "Password", "Password is wrong\"");
@@ -104,6 +106,11 @@ namespace SmartElectronicsApi.Application.Implementations
             if (!User.EmailConfirmed)
             {
                 throw new CustomException(400, "UserNameOrGmail", "email not confirmed");
+
+            }
+            if (User.IsBlocked)
+            {
+                throw new CustomException(400, "UserNameOrGmail", $"you are blocked until {User.BlockedUntil?.ToString("dd MMM yyyy hh:mm")}");
 
             }
             IList<string> roles = await _userManager.GetRolesAsync(User);
@@ -117,7 +124,7 @@ namespace SmartElectronicsApi.Application.Implementations
         {
             var existUser = await _userManager.FindByNameAsync(registerDto.UserName);
             if (existUser != null) throw new CustomException(400, "UserName", "UserName is already Taken");
-             var existUserEmail= await _userManager.FindByEmailAsync(registerDto.Email);
+            var existUserEmail = await _userManager.FindByEmailAsync(registerDto.Email);
             if (existUserEmail != null) throw new CustomException(400, "Email", "Email is already taken");
             AppUser appUser = new AppUser();
             appUser.UserName = registerDto.UserName;
@@ -125,55 +132,55 @@ namespace SmartElectronicsApi.Application.Implementations
             appUser.fullName = registerDto.FullName;
             appUser.PhoneNumber = registerDto.PhoneNumber;
             appUser.GoogleId = null;
-            appUser.Image=null;
-         
-                var result = await _userManager.CreateAsync(appUser, registerDto.Password);
+            appUser.Image = null;
+
+            var result = await _userManager.CreateAsync(appUser, registerDto.Password);
             if (!result.Succeeded)
             {
                 var errorMessages = result.Errors.ToDictionary(e => e.Code, e => e.Description);
 
                 throw new CustomException(400, errorMessages);
             }
-                await _userManager.AddToRoleAsync(appUser, RolesEnum.Member.ToString());
-                string token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
-                string link = _linkGenerator.GetUriByAction(
-                    httpContext: _contextAccessor.HttpContext,
-                    action: "VerifyEmail",
-                    controller: "Auth",
-                    values: new { email = appUser.Email, token = token },
-                    scheme: _contextAccessor.HttpContext.Request.Scheme,
-                    host: _contextAccessor.HttpContext.Request.Host
-                );
-                string body;
-                using (StreamReader sr = new StreamReader("wwwroot/Template/emailConfirm.html"))
-                {
-                    body = sr.ReadToEnd();
-                }
-                body = body.Replace("{{link}}", link).Replace("{{UserName}}", appUser.UserName);
+            await _userManager.AddToRoleAsync(appUser, RolesEnum.Member.ToString());
+            string token = await _userManager.GenerateEmailConfirmationTokenAsync(appUser);
+            string link = _linkGenerator.GetUriByAction(
+                httpContext: _contextAccessor.HttpContext,
+                action: "VerifyEmail",
+                controller: "Auth",
+                values: new { email = appUser.Email, token = token },
+                scheme: _contextAccessor.HttpContext.Request.Scheme,
+                host: _contextAccessor.HttpContext.Request.Host
+            );
+            string body;
+            using (StreamReader sr = new StreamReader("wwwroot/Template/emailConfirm.html"))
+            {
+                body = sr.ReadToEnd();
+            }
+            body = body.Replace("{{link}}", link).Replace("{{UserName}}", appUser.UserName);
 
-                _emailService.SendEmail(
-                    from: "nihadmi@code.edu.az\r\n",
-                    to: appUser.Email,
-                    subject: "Verify Email",
-                    body: body,
-                    smtpHost: "smtp.gmail.com",
-                    smtpPort: 587,
-                    enableSsl: true,
-                    smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "zrhu njzc qeqr koux\r\n"
-                );
-                var MappedUser =_mapper.Map<UserGetDto>(appUser);
-                return MappedUser; 
-            
-            
+            _emailService.SendEmail(
+                from: "nihadmi@code.edu.az\r\n",
+                to: appUser.Email,
+                subject: "Verify Email",
+                body: body,
+                smtpHost: "smtp.gmail.com",
+                smtpPort: 587,
+                enableSsl: true,
+                smtpUser: "nihadmi@code.edu.az\r\n",
+                smtpPass: "zrhu njzc qeqr koux\r\n"
+            );
+            var MappedUser = _mapper.Map<UserGetDto>(appUser);
+            return MappedUser;
+
+
 
         }
 
         public async Task<bool> VerifyEmail(string email, string token)
-        { 
+        {
             AppUser appUser = await _userManager.FindByEmailAsync(email);
             if (appUser is null) throw new CustomException(404, "User is null");
-         var result=   await _userManager.ConfirmEmailAsync(appUser, token);
+            var result = await _userManager.ConfirmEmailAsync(appUser, token);
             // await _signInManager.SignInAsync(appUser, true);
             return result.Succeeded;
         }
@@ -181,7 +188,7 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<string> GoogleResponse()
         {
             var result = await _contextAccessor.HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
-            if (!result.Succeeded|| result.Principal == null) throw new CustomException(400, "Authentication failed!");
+            if (!result.Succeeded || result.Principal == null) throw new CustomException(400, "Authentication failed!");
             var claims = result.Principal.Identities.FirstOrDefault()?.Claims;
             var email = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
             var userName = claims?.FirstOrDefault(s => s.Type == ClaimTypes.Name)?.Value;
@@ -191,7 +198,7 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 throw new CustomException(400, "Failed to retrieve user information from Google.");
             }
-            var user =await FindOrCreateUserAsync(email, Id, GivenName);
+            var user = await FindOrCreateUserAsync(email, Id, GivenName);
             IList<string> roles = await _userManager.GetRolesAsync(user);
             var Audience = _jwtSettings.Audience;
             var SecretKey = _jwtSettings.secretKey;
@@ -202,8 +209,8 @@ namespace SmartElectronicsApi.Application.Implementations
             //googleGetDto.GivenName = GivenName;
             //googleGetDto.Email = email;
             //googleGetDto.Id = Id;
-                return _tokenService.GetToken(SecretKey, Audience, Issuer, user, roles);
-           }
+            return _tokenService.GetToken(SecretKey, Audience, Issuer, user, roles);
+        }
 
         public async Task<ResetPasswordEmailDto> ResetPasswordSendEmail(ResetPasswordEmailDto resetPasswordEmailDto)
         {
@@ -219,7 +226,7 @@ namespace SmartElectronicsApi.Application.Implementations
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-           
+
 
             resetPasswordEmailDto.Token = token;
 
@@ -227,7 +234,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
             return resetPasswordEmailDto;
         }
-        public async Task<string> ResetPassword(string email, string token,ResetPasswordDto resetPasswordDto)
+        public async Task<string> ResetPassword(string email, string token, ResetPasswordDto resetPasswordDto)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -237,13 +244,13 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 throw new CustomException(400, "token is required.");
             }
-         
+
 
             await CheckExperySutiationOfToken(email, token);
-           var existedUser=await _userManager.FindByEmailAsync(email);
+            var existedUser = await _userManager.FindByEmailAsync(email);
             if (existedUser == null) throw new CustomException(404, "User is null or empty");
             var result = await _userManager.ResetPasswordAsync(existedUser, token, resetPasswordDto.Password);
-            if(!result.Succeeded) throw new CustomException(400,result.Errors.ToString());
+            if (!result.Succeeded) throw new CustomException(400, result.Errors.ToString());
             await _userManager.UpdateSecurityStampAsync(existedUser);
             return "password Reseted";
         }
@@ -253,7 +260,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400, "Email is required.");
             if (string.IsNullOrEmpty(token))
                 throw new CustomException(400, "Token is required.");
-           
+
             var existUser = await _userManager.FindByEmailAsync(email);
             if (existUser == null) throw new CustomException(404, "User is null or empty");
             bool result = await _userManager.VerifyUserTokenAsync(
@@ -266,24 +273,24 @@ namespace SmartElectronicsApi.Application.Implementations
             if (!result)
                 throw new CustomException(400, "The token is either invalid or has expired.");
             return "hasnt still expired";
-          
+
 
         }
-        public async Task<string> ChangePassword(string UserName,ChangePasswordDto changePasswordDto)
+        public async Task<string> ChangePassword(string UserName, ChangePasswordDto changePasswordDto)
         {
             if (string.IsNullOrEmpty(UserName)) throw new CustomException(400, "userName cant be empty");
             var user = await _userManager.FindByNameAsync(UserName);
             if (user is null) throw new CustomException(404, "this user doesnt exist");
             var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
-            if (!result.Succeeded){
+            if (!result.Succeeded) {
                 var errorMessages = result.Errors.ToDictionary(e => e.Code, e => e.Description);
-                throw new CustomException(400,errorMessages);
+                throw new CustomException(400, errorMessages);
             }
             return result.ToString();
         }
         public async Task<UserGetDto> Profile()
         {
-            
+
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
@@ -291,7 +298,7 @@ namespace SmartElectronicsApi.Application.Implementations
             }
             var user = await _userManager.FindByIdAsync(userId);
             if (user is null) throw new CustomException(403, "this user doesnt exist");
- var UserMapped=_mapper.Map<UserGetDto>(user);
+            var UserMapped = _mapper.Map<UserGetDto>(user);
             return UserMapped;
 
         }
@@ -309,27 +316,27 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 user.Image.DeleteFile();
             }
-            user.Image=userUpdateImageDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
+            user.Image = userUpdateImageDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
             await _userManager.UpdateAsync(user);
-            return  user.Image;
+            return user.Image;
 
         }
         public async Task<string> UpdateUserInformation(UpdateUserDto updateUserDto)
         {
-           
-                var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userId))
-                {
-                    throw new CustomException(400, "Id", "User ID cannot be null");
 
-                }
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user is null) throw new CustomException(403, "this user doesnt exist");
-            _mapper.Map(updateUserDto, user); 
-            if(!string.IsNullOrEmpty(updateUserDto.Email))
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
-                user.EmailConfirmed=false;
-                string token = await _userManager.GenerateEmailConfirmationTokenAsync(user  );
+                throw new CustomException(400, "Id", "User ID cannot be null");
+
+            }
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null) throw new CustomException(403, "this user doesnt exist");
+            _mapper.Map(updateUserDto, user);
+            if (!string.IsNullOrEmpty(updateUserDto.Email))
+            {
+                user.EmailConfirmed = false;
+                string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 string link = _linkGenerator.GetUriByAction(
                     httpContext: _contextAccessor.HttpContext,
                     action: "VerifyEmail",
@@ -367,6 +374,27 @@ namespace SmartElectronicsApi.Application.Implementations
             return user.UserName;
 
 
+        }
+        public async Task<PaginatedResponse<UserGetDto>> GetAll(int pageNumber = 1, int pageSize = 10)
+        {
+            var TotalCount = _userManager.Users.Count();
+            var users=await _userManager.Users.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            var MappedUsers=_mapper.Map<List<UserGetDto>>(users);
+            return new PaginatedResponse<UserGetDto>
+            {
+                Data = MappedUsers,
+                TotalRecords = TotalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+        public async Task<string> Delete(string? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null) throw new CustomException(404, "Not found");
+            await _userManager.DeleteAsync(user);
+            return user.Id;
         }
     }
 }

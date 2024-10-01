@@ -262,45 +262,7 @@
         </div>
         @RenderBody()
     </main>
-    <footer style="background-color: #3B7FED; color: white;">
-        <div class="container">
-            <footer class="py-5">
-                <div class="row">
-                    <div class="col-6 col-md-2 mb-3">
-                        <h5 style="color: white;">Section</h5>
-                        <ul class="nav flex-column">
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">Home</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">Features</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">Pricing</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">FAQs</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">About</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-6 col-md-2 mb-3">
-                        <h5 style="color: white;">Section</h5>
-                        <ul class="nav flex-column">
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">Home</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">Features</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">Pricing</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">FAQs</a></li>
-                            <li class="nav-item mb-2"><a href="#" class="nav-link p-0" style="color: white;">About</a></li>
-                        </ul>
-                    </div>
-                   
-                    <div class="col-md-5 offset-md-1 mb-3">
-                        <h5 style="color: white;">Newsletter</h5>
-                        <p style="color: white;">Subscribe to our newsletter to get the latest updates and offers.</p>
-                        <form>
-                            <div class="d-flex flex-column flex-sm-row">
-                                <input type="text" class="form-control me-2" placeholder="Your email address">
-                                <button class="btn btn-light" type="button" style="height:48px">Subscribe</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </footer>
-        </div>
-    </footer>
+  @await Component.InvokeAsync("SettingFooter")
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

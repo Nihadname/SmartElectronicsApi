@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Core.Entities;
 
@@ -19,5 +20,7 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<UserGetDto> Profile();
         Task<string> UpdateImage(UserUpdateImageDto userUpdateImageDto);
         Task<string> UpdateUserInformation(UpdateUserDto updateUserDto);
+        Task<PaginatedResponse<UserGetDto>> GetAll(int pageNumber = 1, int pageSize = 10);
+        Task<string> Delete(string? id);
     }
 }

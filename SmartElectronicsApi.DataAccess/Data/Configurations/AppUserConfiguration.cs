@@ -16,6 +16,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Configurations
             builder.Property(s => s.UserName).HasMaxLength(100);
             builder.Property(s => s.fullName).HasMaxLength(150);
             builder.Property(s => s.Email).HasMaxLength(220);
+            builder.Property(s=>s.IsBlocked).HasDefaultValue(false);
         }
     }
 }

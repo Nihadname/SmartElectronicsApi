@@ -1071,43 +1071,18 @@ media (max-width: 576px) {
             <!-- Additional required wrapper -->
             <div class="swiper-wrapper">
                 <!-- Slides -->
-                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
+                @foreach(var item in Model.Brands)
+                {
+                    <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
     border: 2px solid #ecedf0;
      padding: 15px 15px;
-    ">
+        ">
 
-                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
-    border: 2px solid #ecedf0;
-     padding: 15px 15px;
-    ">
+                        <img style="height:60px; width:60px;" src="@item.ImageUrl" alt="" class="img-fluid">
+                    </div>
 
-                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
-    border: 2px solid #ecedf0;
-     padding: 15px 15px;
-    ">
-
-                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
-                </div>
-                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
-    border: 2px solid #ecedf0;
-     padding: 15px 15px;
-    ">
-
-                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
-                </div>
-
-                <div class="swiper-slide d-flex justify-content-center align-items-center" style="    border-radius: 4px;
-    border: 2px solid #ecedf0;
-     padding: 15px 15px;
-    ">
-
-                    <img style="height:60px; width:60px;" src="https://assets.smartelectronics.az/Assets/cdn-cgi?path=06d28318-7d5b-4a25-9c74-174631d89616.webp" alt="" class="img-fluid">
-                </div>
-
+                }
+               
             </div>
         </div>
     </section>

@@ -16,5 +16,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<int> Delete(int? id);
         Task<BrandReturnDto> GetById(int? id);
         Task<int> Update(int? id, BrandUpdateDto brandUpdateDto);
+        Task<List<BrandListItemDto>> getAllForUi(int skip, int take);
     }
 }

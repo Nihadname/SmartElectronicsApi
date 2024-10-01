@@ -276,4 +276,46 @@ function displayErrors(errors) {
         });
         errorDiv.removeClass('d-none');  // Show error div
     }
-}
+}  
+
+$("#SubForm").on("submit", function (e) {
+    e.preventDefault(); // Prevent default form submission
+
+    var formData = {
+        Email: $("#email").val()
+    };
+    console.log(formData);
+    $.ajax({
+        url: '/Home/SubscriberCreate', 
+        type: 'POST',
+        data: JSON.stringify(formData),
+        contentType: 'application/json',
+        success: function (response) {
+            console.log(response)
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Subscribed successfully!',
+                    text: 'You have subscribed successfully.',
+                    showConfirmButton: true
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Subscription failed!',
+                    text: response.message,
+                    showConfirmButton: true
+                });
+            }
+        },
+        error: function (xhr) {
+            console.log(xhr);
+            Swal.fire({
+                icon: 'error',
+                title: 'An error occurred',
+                text: 'Please try again later.',
+                showConfirmButton: true
+            });
+        }
+    });
+});

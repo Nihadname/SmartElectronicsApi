@@ -17,7 +17,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SubscriberDto subscriber)
+        public async Task<IActionResult> Create([FromBody]SubscriberDto subscriber)
         {
             return Ok(await _ISubscriberService.Create(subscriber));
         }

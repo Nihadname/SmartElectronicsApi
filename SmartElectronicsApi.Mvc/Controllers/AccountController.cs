@@ -323,7 +323,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
         }
         public IActionResult AccessDenied()
         {
-            return View(); 
+            return View("AccessDenied"); 
         }
     }
 }

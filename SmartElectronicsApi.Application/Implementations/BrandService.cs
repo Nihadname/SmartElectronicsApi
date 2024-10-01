@@ -2,18 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Brand;
-using SmartElectronicsApi.Application.Dtos.Category;
-using SmartElectronicsApi.Application.Dtos.SubsCategory;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -108,5 +101,17 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork.Commit();
             return brand.Id;
         }
+        public async Task<List<BrandListItemDto>> getAllForUi(int skip, int take)
+        {
+            var Brands = await _unitOfWork.brandRepository.GetAll(s => s.IsDeleted == false, skip, take, includes: new Func<IQueryable<Brand>, IQueryable<Brand>>[]
+            {
+                query => query.Include(c => c.Products)
+
+            });
+            var MappedBrands=_mapper.Map<List<BrandListItemDto>>(Brands);
+            return MappedBrands;
+                }
+
+        }
     }
-}
+
