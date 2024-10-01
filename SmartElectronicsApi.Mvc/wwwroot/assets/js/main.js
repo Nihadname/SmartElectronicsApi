@@ -168,9 +168,13 @@ function editAddress(id) {
     const jwtToken = getJwtToken();
     console.log(jwtToken)
     if (!jwtToken) {
-        alert("User not authenticated.");
+        Swal.fire(
+            'Error!',
+            'Error: ' + "user not authenticated",
+            'error'
+        );
         return;
-    }
+    } 
 
     // Make an API call to get the address details by id
     $.ajax({
@@ -204,9 +208,13 @@ $('#updateAddressForm').submit(function (e) {
 
     const jwtToken = getJwtToken();
     if (!jwtToken) {
-        alert("User not authenticated.");
+        Swal.fire(
+            'Error!',
+            'Error: ' + "user not authenticated",
+            'error'
+        );
         return;
-    }
+    } 
     var Id = $("#addressId").val();
     var addressData = {
         Country: $('#country').val(),

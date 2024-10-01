@@ -34,18 +34,26 @@
                     <div class="address-box-container">
                         @foreach (var item in Model.AddressList)
                         {
-                            <div class="address-box AddressText" data-id="@item.Id">
-                                <div class="address-details">
-                                    <p class="address-icon"><i class="fa fa-home"></i></p>
+                            <div class="address-box AddressText p-3 mb-3 border rounded shadow-sm" data-id="@item.Id">
+                                <div class="d-flex align-items-start">
+                                    <!-- Icon Section -->
+                                    <p class="address-icon me-3"><i class="fa fa-home fa-2x text-secondary"></i></p>
+
+                                    <!-- Address Info Section -->
                                     <div class="address-info">
-                                        <h6>@item.Country, @item.State</h6>
-                                        <p>@item.City, @item.Street</p>
+                                        <h6 class="mb-1 text-primary">@item.Country, @item.State</h6>
+                                        <p class="mb-0 text-muted">@item.City, @item.Street</p>
                                     </div>
-                                </div>
-                                <div class="address-actions">
-                                    <button class="btn btn-primary btn-sm" onclick="editAddress(@item.Id)">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </button>
+
+                                    <!-- Action Buttons Section -->
+                                    <div class="ms-auto d-flex flex-column">
+                                        <button class="btn btn-outline-primary btn-sm mb-2" onclick="editAddress(@item.Id)">
+                                            <i class="fa fa-edit"></i> Edit
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="deleteItem(@item.Id)">
+                                            <i class="fa fa-trash"></i> Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         }

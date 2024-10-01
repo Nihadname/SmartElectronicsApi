@@ -5,6 +5,7 @@ using SmartElectronicsApi.Application.Dtos.Address;
 using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
+using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.Product;
 using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Dtos.Slider;
@@ -121,7 +122,8 @@ namespace SmartElectronicsApi.Application.Profiles
                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
                 CreateMap<Address, AddressReturnDto>()
                 .ForMember(s => s.AddressType, map => map.MapFrom(d => d.AddressType.ToString()));
-
+                CreateMap<ColorCreateDto, Color>();
+                CreateMap<Color, ColorListItemDto>();
             });
             configuration.AssertConfigurationIsValid();
         }
