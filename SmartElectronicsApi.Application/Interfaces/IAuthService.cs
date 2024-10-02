@@ -22,5 +22,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<string> UpdateUserInformation(UpdateUserDto updateUserDto);
         Task<PaginatedResponse<UserGetDto>> GetAll(int pageNumber = 1, int pageSize = 10);
         Task<string> Delete(string? id);
+        Task<string> ChangeStatus(string id);
     }
 }

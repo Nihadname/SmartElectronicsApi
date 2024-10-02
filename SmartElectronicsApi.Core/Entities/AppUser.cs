@@ -13,6 +13,7 @@ namespace SmartElectronicsApi.Core.Entities
         public string? GoogleId { get; set; }
         public string? Image {  get; set; }
         public bool IsBlocked { get; set; }
+        public DateTime? CreatedTime { get; set; }
         public DateTime? BlockedUntil { get; set; }
         public ICollection<Address> addresses { get; set; }
 

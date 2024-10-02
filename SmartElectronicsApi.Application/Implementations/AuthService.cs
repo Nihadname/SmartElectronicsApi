@@ -70,6 +70,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 user.fullName = GivenName;
                 user.Image = null;
                 user.EmailConfirmed = true;
+                user.CreatedTime= DateTime.UtcNow;  
                 var result = await _userManager.CreateAsync(user, "User_@" + Guid.NewGuid().ToString().Substring(0, 14));
 
                 if (!result.Succeeded)
@@ -108,16 +109,26 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400, "UserNameOrGmail", "email not confirmed");
 
             }
-            if (User.IsBlocked)
+            if (User.IsBlocked && User.BlockedUntil.HasValue)
             {
-                throw new CustomException(400, "UserNameOrGmail", $"you are blocked until {User.BlockedUntil?.ToString("dd MMM yyyy hh:mm")}");
-
+                if (User.BlockedUntil.Value <= DateTime.UtcNow)
+                {
+                    User.IsBlocked = false;
+                    User.BlockedUntil = null;
+                    await _userManager.UpdateAsync(User);
+                }
+                else
+                {
+                    // User is still blocked
+                    throw new CustomException(403, "UserNameOrGmail", $"you are blocked until {User.BlockedUntil?.ToString("dd MMM yyyy hh:mm")}");
+                }
             }
-            IList<string> roles = await _userManager.GetRolesAsync(User);
-            var Audience = _jwtSettings.Audience;
-            var SecretKey = _jwtSettings.secretKey;
-            var Issuer = _jwtSettings.Issuer;
-            return _tokenService.GetToken(SecretKey, Audience, Issuer, User, roles);
+
+                IList<string> roles = await _userManager.GetRolesAsync(User);
+                var Audience = _jwtSettings.Audience;
+                var SecretKey = _jwtSettings.secretKey;
+                var Issuer = _jwtSettings.Issuer;
+                return _tokenService.GetToken(SecretKey, Audience, Issuer, User, roles);
         }
 
         public async Task<UserGetDto> Register(RegisterDto registerDto)
@@ -395,6 +406,25 @@ namespace SmartElectronicsApi.Application.Implementations
             if (user is null) throw new CustomException(404, "Not found");
             await _userManager.DeleteAsync(user);
             return user.Id;
+        }
+        public async Task<string> ChangeStatus(string id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var currentUser = await _userManager.FindByIdAsync(id);
+            if (currentUser is null) throw new CustomException(404, "Not found");
+            if (!currentUser.IsBlocked)
+            {
+                currentUser.IsBlocked = true;
+                currentUser.BlockedUntil = DateTime.UtcNow.AddMinutes(60);
+            }
+            else
+            {
+                currentUser.IsBlocked = false;
+                currentUser.BlockedUntil = null;
+            }
+
+            await _userManager.UpdateAsync(currentUser);
+        return currentUser.Id;
         }
     }
 }

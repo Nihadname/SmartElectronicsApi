@@ -30,5 +30,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _authService.Delete(id));
         }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ChangeStatus(string id)
+        {
+            return Ok(await _authService.ChangeStatus(id));
+        }
     }
 }
