@@ -144,7 +144,7 @@ namespace SmartElectronicsApi.Application.Implementations
             appUser.PhoneNumber = registerDto.PhoneNumber;
             appUser.GoogleId = null;
             appUser.Image = null;
-
+            appUser.CreatedTime = DateTime.UtcNow;
             var result = await _userManager.CreateAsync(appUser, registerDto.Password);
             if (!result.Succeeded)
             {

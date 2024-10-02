@@ -2,21 +2,22 @@
 @using SmartElectronicsApi.Mvc.ViewModels.pagination
 @model PaginatedResponseVM<UserGetVm>
 
-<div class="table-responsive">
+<div class="table-responsive mb-4">
     <table class="table">
         <thead>
             <tr>
-                <th>Assignee</th>
-                <th>Subject</th>
-                <th>Status</th>
-                <th>Last Update</th>
-                <th>Tracking ID</th>
+                <th>ImageAndUserName</th>
+                <th>Email</th>
+                <th>IsBlocked</th>
+                <th>CreatedTime</th>
+                <th>PhoneNumber</th> <!-- New column for actions -->
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.Data)
             {
-                <tr>
+                <tr class="UserTable" data-id="@item.Id">
+
                     <td>
                         <img src="@(item.Image != "http://localhost:5246/img/" ? item.Image : Url.Content("~/assets/img/default.jpg"))" class="me-2" alt="image"> @item.UserName
                     </td>
@@ -32,7 +33,21 @@
                         }
                     </td>
                     <td>@item.CreatedTime</td>
-                    <td> @item.PhoneNumber</td>
+                    <td>@item.PhoneNumber</td>
+                    <td>
+                        <!-- Dropdown for actions -->
+                        <div class="dropdown">
+                            <a class="btn btn-sm btn-light" href="#" role="button" id="dropdownMenuLink-@item.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="mdi mdi-dots-vertical"></i> <!-- Three dots icon -->
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-@item.Id">
+                                <li><a class="dropdown-item" href="#">View Details</a></li>
+                                <li><a class="dropdown-item" asp-action="ChangeStatus" asp-controller="User" asp-route-id="@item.Id">ChangeStatus</a></li>
+                                <a class="dropdown-item text-danger" onclick='deleteItemUser("@item.Id")'>Delete</a>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -57,3 +72,14 @@
         </li>
     </ul>
 </nav>
+@if (TempData["BanningError"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: ' Failed',
+            text: ' @TempData["BanningError"]',
+            showConfirmButton: true,
+        });
+    </script>
+}

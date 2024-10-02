@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Home\Error404.cshtml" />
+    <Content Remove="wwwroot\admin\assets\js\Mainjs.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Home\Error404.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\admin\assets\js\Mainjs.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +52,7 @@
     <None Include="wwwroot\admin\assets\js\file-upload.js" />
     <None Include="wwwroot\admin\assets\js\hoverable-collapse.js" />
     <None Include="wwwroot\admin\assets\js\jquery.cookie.js" />
+    <None Include="wwwroot\admin\assets\js\Mainjs.js" />
     <None Include="wwwroot\admin\assets\js\misc.js" />
     <None Include="wwwroot\admin\assets\js\off-canvas.js" />
     <None Include="wwwroot\admin\assets\js\todo.js" />

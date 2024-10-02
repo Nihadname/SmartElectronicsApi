@@ -19,17 +19,21 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
             _authService = authService;
             _roleManager = roleManager;
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles ="Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get(int pageNumber, int pageSize)
         {
             return Ok(await _authService.GetAll(pageNumber, pageSize));
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string? id)
         {
             return Ok(await _authService.Delete(id));
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
         [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeStatus(string id)
         {
