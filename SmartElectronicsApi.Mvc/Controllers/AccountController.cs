@@ -77,12 +77,14 @@ namespace SmartElectronicsApi.Mvc.Controllers
 
             }
         }
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
+            ViewData["ReturnUrl"] = returnUrl;
+
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVm loginVm)
+        public async Task<IActionResult> Login(LoginVm loginVm, string returnUrl = null)
         {
             if (!ModelState.IsValid)
             {
@@ -98,7 +100,14 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 Response.Cookies.Append("JwtToken",token);
                 TempData["LoginSuccess"] = true;
 
-                return RedirectToAction("Index", "Home");
+                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
+                else
+                {
+                    return RedirectToAction("Index", "Home");
+                }
             }
             else
             {

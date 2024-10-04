@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Address;
 using SmartElectronicsApi.Application.Dtos.Auth;
@@ -7,6 +8,7 @@ using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.Product;
+using SmartElectronicsApi.Application.Dtos.Role;
 using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Dtos.SubsCategory;
@@ -128,7 +130,8 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<Subscriber, SubscriberDto>().ReverseMap();
                 CreateMap<ColorUpdateDto, Color>()
                  .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
-
+                CreateMap<IdentityRole, RoleListItemDto>();
+                CreateMap<RoleDto, IdentityRole>();
             });
             configuration.AssertConfigurationIsValid();
         }

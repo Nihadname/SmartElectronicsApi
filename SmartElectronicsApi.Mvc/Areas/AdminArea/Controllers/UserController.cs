@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NuGet.Common;
+using SmartElectronicsApi.Mvc.Helpers;
 using SmartElectronicsApi.Mvc.ViewModels;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
 using SmartElectronicsApi.Mvc.ViewModels.pagination;
 using SmartElectronicsApi.Mvc.ViewModels.Slider;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
@@ -46,7 +51,12 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
-
+            var currentUserId = JwtHelper.GetUserIdFromJwt(Request.Cookies["JwtToken"]);
+            if (currentUserId == id)
+            {
+                TempData["BanningError"] = "you cant controll   status of yourself";
+                return RedirectToAction("Index"); 
+            }
             using HttpResponseMessage httpResponseMessage = await client.PatchAsync($"http://localhost:5246/api/Auth/{id}", null);
 
             if (httpResponseMessage.IsSuccessStatusCode)
@@ -81,6 +91,11 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             {
                 return Json(new { success = false, message = "User not authenticated." });
             }
+            var currentUserId = JwtHelper.GetUserIdFromJwt(jwtToken); 
+            if (currentUserId == id)
+            {
+                return Json(new { success = false, message = "You cannot delete your own account." });
+            }
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
 
@@ -105,6 +120,22 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 }
             }
         }
+        //private string GetUserIdFromJwt(string jwtToken)
+        //{
+        //    var handler = new JwtSecurityTokenHandler();
+
+        //    var jwtToken11 = handler.ReadJwtToken(jwtToken);
+
+        //    var userIdClaim = jwtToken11.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId)?.Value;
+                        
+        //    // Check if the claim exists
+        //    if (userIdClaim == null)
+        //    {
+        //        throw new InvalidOperationException("User ID claim not found in the JWT token.");
+        //    }
+
+        //    return userIdClaim; // Return the user ID
+        //}
 
 
     }
