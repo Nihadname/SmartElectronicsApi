@@ -79,7 +79,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
         }
         public async Task<IActionResult> Create()
         {
-            return View();  
+            return View();
         }
         [HttpPost]
         public async Task<IActionResult> Create(RolePostVM rolePostVM)
@@ -89,7 +89,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                      new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
             var stringData = JsonConvert.SerializeObject(rolePostVM);
             var content = new StringContent(stringData, Encoding.UTF8, "application/json");
-            using HttpResponseMessage httpResponseMessage = await client.PostAsync("http://localhost:5246/api/Role",content);
+            using HttpResponseMessage httpResponseMessage = await client.PostAsync("http://localhost:5246/api/Role", content);
             if (httpResponseMessage.IsSuccessStatusCode)
             {
 
@@ -117,7 +117,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 
         public async Task<IActionResult> Update(string id)
         {
-            if (string.IsNullOrWhiteSpace(id)||id==null)
+            if (string.IsNullOrWhiteSpace(id) || id == null)
             {
                 return RedirectToAction("Error404", "Home", new { area = "" });
 
@@ -150,56 +150,123 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
         [HttpPost]
         public async Task<IActionResult> Update(string id, RolePostVM rolePostVM)
         {
-           
-                if (rolePostVM.Name == null)
+
+            if (rolePostVM.Name == null)
+            {
+                ModelState.AddModelError(string.Empty, "Invalid input.");
+                return View(rolePostVM);
+            }
+
+            var handler = new HttpClientHandler();
+            using var client = new HttpClient(handler);
+            var jwtToken = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                ModelState.AddModelError("", "User not authenticated.");
+                return View(rolePostVM);
+            }
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", jwtToken);
+
+            var stringData = JsonConvert.SerializeObject(rolePostVM);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+
+            var response = await client.PutAsync($"http://localhost:5246/api/Role/{id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["UpdateRole"] = "ProfileImage deyisdirildi";
+                return RedirectToAction("Index", "Role");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+
+                if (errorResponse?.Errors != null)
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid input.");
-                    return View(rolePostVM);
-                }
-
-                var handler = new HttpClientHandler();
-                using var client = new HttpClient(handler);
-                var jwtToken = Request.Cookies["JwtToken"];
-                if (string.IsNullOrEmpty(jwtToken))
-                {
-                    ModelState.AddModelError("", "User not authenticated.");
-                    return View(rolePostVM);
-                }
-
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", jwtToken);
-
-                var stringData = JsonConvert.SerializeObject(rolePostVM);
-                var content = new StringContent(stringData, Encoding.UTF8, "application/json");
-
-                var response = await client.PutAsync($"http://localhost:5246/api/Role/{id}", content);
-                if (response.IsSuccessStatusCode)
-                {
-                    TempData["UpdateRole"] = "ProfileImage deyisdirildi";
-                    return RedirectToAction("Index", "Role");
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                        TempData["AddingError"] = (error.Key, error.Value);
+                    }
                 }
                 else
                 {
-                    var errorResponseString = await response.Content.ReadAsStringAsync();
-                    var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
-
-                    if (errorResponse?.Errors != null)
-                    {
-                        foreach (var error in errorResponse.Errors)
-                        {
-                            ModelState.AddModelError(error.Key, error.Value);
-                            TempData["AddingError"] = (error.Key, error.Value);
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
-                    }
-                    return View(rolePostVM);
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
+                return View(rolePostVM);
             }
-         
+        }
+        public async Task<IActionResult> UpdateRoles(string id)
+        {
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Role/GetUserRoles?id={id}");
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+
+                string ContentStream = await httpResponseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<RoleUpdateVM>(ContentStream);
+                return View(data);
+            }
+            else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction("AccessDenied", "Account", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Error404", "Home", new { area = "" });
+            }
+
+        }
+        [HttpPost]
+       public async Task<IActionResult> UpdateRoles(string id,List<string> NewRoles)
+        {
+            using var client = new HttpClient();
+            var jwtToken = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                ModelState.AddModelError("", "User not authenticated.");
+                return View(NewRoles);
+            }
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", jwtToken);
+            var stringData = JsonConvert.SerializeObject(NewRoles);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+            var response = await client.PutAsync($"http://localhost:5246/api/Role/UpdateRoles?id={id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["UpdateRoleInUser"] = "roles updated succesfully";
+                return RedirectToAction("Index", "User");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                        TempData["AddingError"] = (error.Key, error.Value);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+
+                return RedirectToAction("Index", "User");
+            }
         }
 
-
+    }
     }

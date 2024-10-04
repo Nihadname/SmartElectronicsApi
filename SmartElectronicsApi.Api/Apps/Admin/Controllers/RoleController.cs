@@ -52,5 +52,17 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _roleService.Update(id, roleDto));
         }
+        [HttpGet("GetUserRoles")]
+        public async Task<IActionResult> GetUserRoles(string id)
+        {
+            return Ok(await _roleService.GetUserRoles(id));
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
+        [HttpPut("UpdateRoles")]
+        public async Task<IActionResult> UpdateRoles(string id, List<string> NewRoles)
+        {
+            return Ok(await _roleService.UpdateRole(id, NewRoles));
+        }
     }
 }

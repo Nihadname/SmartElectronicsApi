@@ -96,5 +96,38 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400, errorMessages);
             }
         }
+        public async Task<roleUpdateDto> GetUserRoles(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new CustomException(400, "Id", "id can't be null");
+            }
+            var currentUser = await _userManager.FindByIdAsync(id);
+            if (currentUser == null)
+            {
+                throw new CustomException(404, "Not found");
+            }
+            var userRoles = await _userManager.GetRolesAsync(currentUser);
+            var allRoles = await _roleManager.Roles.ToListAsync();
+            var roleUpdateVm = new roleUpdateDto(userRoles, currentUser.UserName, allRoles);
+            return roleUpdateVm;
+        }
+        public async Task<string> UpdateRole(string id, List<string> NewRoles)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new CustomException(400, "Id", "id can't be null");
+            }
+            var currentUser = await _userManager.FindByIdAsync(id);
+            if (currentUser == null)
+            {
+                throw new CustomException(404, "Not found");
+            }
+            var userRoles = await _userManager.GetRolesAsync(currentUser);
+            await _userManager.RemoveFromRolesAsync(currentUser, userRoles);
+            await _userManager.AddToRolesAsync(currentUser, NewRoles);
+            return "Updated Roles successfully";
+
+        }
     }
 }

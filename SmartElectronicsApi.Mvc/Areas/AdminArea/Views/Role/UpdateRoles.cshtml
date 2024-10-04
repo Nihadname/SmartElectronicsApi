@@ -1,0 +1,87 @@
+﻿@model RoleUpdateVM
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3" style="background-color: #f7f9fc;">
+        <div class="card-header text-center text-white" style="background: linear-gradient(45deg, #3a6073, #16222a);">
+            <h2 class="card-title mb-0" style="   color: white;">@Model.UserName's Role Management</h2>
+        </div>
+        <div class="card-body p-5">
+            <form asp-action="UpdateRoles" asp-controller="Role" method="post">
+                <div class="row">
+                    @foreach (var role in Model.IdentityRoles)
+                    {
+                        <div class="col-md-4 mb-4">
+                            <div class="form-check p-3 rounded border shadow-sm" style="background-color: #fff; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                                @if (Model.roles.Contains(role.Name))
+                                {
+                                    <input name="NewRoles" class="form-check-input" type="checkbox" value="@role.Name" id="@role.Name" checked />
+                                }
+                                else
+                                {
+                                    <input name="NewRoles" class="form-check-input" type="checkbox" value="@role.Name" id="@role.Name" />
+                                }
+                                <label class="form-check-label ms-2 d-inline-block align-middle" for="@role.Name" style="cursor: pointer;">
+                                    <i class="fas fa-user-shield me-2"></i>@role.Name
+                                </label>
+                                <span class="badge  ms-2" style="background: linear-gradient(to right, #da8cff, #9a55ff);
+}" data-bs-toggle="tooltip" title="Manage @role.Name responsibilities">?</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-lg btn-gradient px-5 py-3 mt-4" style="background: linear-gradient(to right, #da8cff, #9a55ff);); color: white; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease, box-shadow 0.3s ease;">
+                        <i class="fas fa-sync-alt me-2"></i>Update Roles
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Optional: Add icons and style using Bootstrap 5 and FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .form-check:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card {
+        border-radius: 16px;
+        background-color: #f4f6f9;
+    }
+
+    .form-check-label {
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .badge {
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .btn-lg {
+        border-radius: 50px;
+    }
+
+    h2 {
+     
+        font-family: 'Roboto', sans-serif;
+        font-weight: 500;
+    }
+</style>
+
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>

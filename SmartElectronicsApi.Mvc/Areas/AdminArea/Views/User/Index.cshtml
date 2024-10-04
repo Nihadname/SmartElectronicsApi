@@ -44,6 +44,8 @@
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink-@item.Id">
                                 <li><a class="dropdown-item" href="#">View Details</a></li>
                                 <li><a class="dropdown-item" asp-action="ChangeStatus" asp-controller="User" asp-route-id="@item.Id">ChangeStatus</a></li>
+                                <li><a class="dropdown-item" asp-action="UpdateRoles" asp-controller="Role" asp-route-id="@item.Id">Update Roles</a></li>
+
                                 <a class="dropdown-item text-danger" onclick='deleteItemUser("@item.Id")'>Delete</a>
                             </ul>
                         </div>

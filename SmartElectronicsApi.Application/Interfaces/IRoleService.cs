@@ -17,5 +17,7 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<string> Delete(string? id);
         Task<RoleDto> Create(RoleDto roleDto);
         Task<IdentityRole> Update(string? id, RoleDto roleDto);
+        Task<roleUpdateDto> GetUserRoles(string id);
+        Task<string> UpdateRole(string id, List<string> NewRoles);
     }
 }
