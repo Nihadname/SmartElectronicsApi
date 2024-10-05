@@ -111,10 +111,12 @@ namespace SmartElectronicsApi.Application.Profiles
 
             // Product mappings
             CreateMap<Product, ProdutListItemDto>()
-                .ForMember(s => s.Category, map => map.MapFrom(d => d.Category));
+                .ForMember(s => s.Category, map => map.MapFrom(d => d.Category))
+    .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.productImages.Select(pi => url + "img/" + pi.Name))) 
+                    .ForMember(dest => dest.colorListItemDtos, opt => opt.MapFrom(src => src.productColors.Select(s=>s.Color)));
 
-            // Setting mappings
-            CreateMap<Setting, SettingDto>().ReverseMap();
+                // Setting mappings
+                CreateMap<Setting, SettingDto>().ReverseMap();
             CreateMap<SettingUpdateDto, Setting>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
                 CreateMap<AddressCreateDto, Address>();
@@ -133,6 +135,9 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<IdentityRole, RoleListItemDto>();
                 CreateMap<RoleDto, IdentityRole>();
                 CreateMap<ProductCreateDto, Product>();
+    // .ForMember(dest => dest.productColors, opt => opt.MapFrom(src => src.ColorIds.Select(cid => new ProductColor { ColorId = cid })));
+
+
                 CreateMap<Product, ProductReturnDto>();
             });
             configuration.AssertConfigurationIsValid();

@@ -13,7 +13,7 @@ namespace SmartElectronicsApi.Core.Entities
         public bool IsMain { get; set; }
         public int ProductId { get; set; }
         public Product product { get; set; }
-        public int ProductVariationId { get; set; }
-        public ProductVariation productVariation { get; set; }
+        public int? ProductVariationId { get; set; }
+        public ProductVariation? productVariation { get; set; }
     }
 }

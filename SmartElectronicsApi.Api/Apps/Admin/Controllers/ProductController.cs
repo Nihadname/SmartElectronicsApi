@@ -19,7 +19,14 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] ProductCreateDto productCreateDto)
         {
-            return Ok(await _productService.Create(productCreateDto));
+            try
+            {
+                return Ok(await _productService.Create(productCreateDto));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.InnerException.Message,ex);
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int? id)

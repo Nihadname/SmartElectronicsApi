@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,8 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
         public int SubcategoryId    { get; set; }
+        public List<int> ColorIds { get; set; }
+        public List<IFormFile> Images { get; set; }
 
     }
 }

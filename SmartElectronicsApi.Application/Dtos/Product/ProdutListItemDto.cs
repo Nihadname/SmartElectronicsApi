@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartElectronicsApi.Application.Dtos.Color;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,8 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public bool IsFeatured { get; set; }
         public int StockQuantity { get; set; }
         public CategoryInProductListItemDto Category { get; set; }
-
+        public List<string> ImageUrls { get; set; }
+        public List<ColorListItemDto> colorListItemDtos { get; set; }
 
     }
     public class CategoryInProductListItemDto  
@@ -29,4 +31,5 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public string Name { get; set; }
         public int ProductCount { get; set; }
     }
+   
 }
