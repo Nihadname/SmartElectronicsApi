@@ -39,24 +39,33 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<PaginatedResponse<CategoryListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10)
         {
-            var totalCount = (await _unitOfWork.categoryRepository.GetAll()).Count();
-            var categories = await _unitOfWork.categoryRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
+
+            try
             {
+                var totalCount = (await _unitOfWork.categoryRepository.GetAll()).Count();
+                var categories = await _unitOfWork.categoryRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
+                {
         query => query.Include(c => c.Products)
                       .Include(c => c.SubCategories)
-                      .ThenInclude(sc => sc.brandSubCategories) // Include BrandSubCategories
-                      .ThenInclude(bsc => bsc.Brand) // Include Brands through join entity
-            });
+                      //.ThenInclude(sc => sc.brandSubCategories) // Include BrandSubCategories
+                      //.ThenInclude(bsc => bsc.Brand)
+                      //.ThenInclude(s=>s.Products)
+                });
 
-            var categoriesWithMapping = _mapper.Map<List<CategoryListItemDto>>(categories);
-            var paginatedResult = new PaginatedResponse<CategoryListItemDto>
+                var categoriesWithMapping = _mapper.Map<List<CategoryListItemDto>>(categories);
+                var paginatedResult = new PaginatedResponse<CategoryListItemDto>
+                {
+                    Data = categoriesWithMapping,
+                    TotalRecords = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = pageSize
+                };
+                return paginatedResult;
+            }
+            catch (Exception ex)
             {
-                Data = categoriesWithMapping,
-                TotalRecords = totalCount,
-                PageNumber = pageNumber,
-                PageSize = pageSize
-            };
-            return paginatedResult;
+                throw new Exception(ex.InnerException.Message, ex);
+            }
         }
         public async Task<int> Delete(int? id)
         {

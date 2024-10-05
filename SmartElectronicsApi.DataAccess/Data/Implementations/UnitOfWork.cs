@@ -18,7 +18,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public ISubCategoryRepository subCategoryRepository { get; private set; }
 
         public IAddressRepository addressRepository { get; private set; }
-
+        public IProductRepository productRepository { get; private set; }
         public IColorRepository colorRepository { get; private set; }
         public ISubscriberRepository subscriberRepository { get; private set; }
         public UnitOfWork(SmartElectronicsDbContext smartElectronicsDbContext)
@@ -31,6 +31,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             addressRepository= new AddressRepository(smartElectronicsDbContext);
             colorRepository= new ColorRepository(smartElectronicsDbContext);
             subscriberRepository= new SubscriberRepository(smartElectronicsDbContext);
+            productRepository= new ProductRepository(smartElectronicsDbContext);
         _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 

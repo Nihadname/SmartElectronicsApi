@@ -17,6 +17,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IAddressRepository addressRepository { get; }
         public IColorRepository colorRepository { get; }
         public ISubscriberRepository subscriberRepository { get; }
+        public IProductRepository productRepository {get; }
         public void Commit();
 
     }

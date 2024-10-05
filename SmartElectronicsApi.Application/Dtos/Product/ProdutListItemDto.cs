@@ -15,7 +15,7 @@ namespace SmartElectronicsApi.Application.Dtos.Product
 
 
     }
-    public class CategoryInProductListItemDto
+    public class CategoryInProductListItemDto  
     {
         public string Name { get; set; }
         public int ProductCount { get; set; }

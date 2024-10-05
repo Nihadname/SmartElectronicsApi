@@ -58,10 +58,10 @@ namespace SmartElectronicsApi.Application.Profiles
             // Category mappings
             CreateMap<CategoryCreateDto, Category>()
                 .ForMember(s => s.ImageUrl, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
-            CreateMap<Category, CategoryListItemDto>()
-                .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl))
-                .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(src => src.SubCategories))
-                .ForMember(dest => dest.produtListItemDtos, opt => opt.MapFrom(src => src.Products));
+                CreateMap<Category, CategoryListItemDto>()
+                    .ForMember(s => s.ImageUrl, map => map.MapFrom(d => url + "img/" + d.ImageUrl))
+                    .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(src => src.SubCategories))
+               .ForMember(dest => dest.ProdutListItemDtos, opt => opt.MapFrom(src => src.Products));
             CreateMap<CategoryUpdateDto, Category>()
                 .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<Category, CategoryReturnDto>()
@@ -69,12 +69,12 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(dest => dest.SubCategories, opt => opt.MapFrom(src => src.SubCategories))
                 .ForMember(dest => dest.produtListItemDtos, opt => opt.MapFrom(src => src.Products));
             CreateMap<Category, CategoryInSubcategoryReturnDto>();
-
+                CreateMap<Category, CategoryInProductListItemDto>();
             // SubCategory mappings
             CreateMap<SubCategoryCreateDto, SubCategory>()
                 .ForMember(s => s.Image, map => map.MapFrom(d => d.formFile.Save(Directory.GetCurrentDirectory(), "img")));
-            CreateMap<SubCategory, SubCategoryListItemDto>()
-       .ForMember(dest => dest.Image, opt => opt.MapFrom(src => url + "img/" + src.Image))
+                CreateMap<SubCategory, SubCategoryListItemDto>()
+           .ForMember(dest => dest.Image, opt => opt.MapFrom(src => url + "img/" + src.Image))
        .ForMember(dest => dest.produtListItemDtos, opt => opt.MapFrom(src => src.Products))
        .ForMember(dest => dest.brandListItemDtos, opt => opt.MapFrom(src => src.brandSubCategories.Select(bs => bs.Brand)));
                 CreateMap<SubCategory, SubCategoryListItemInBrandDto>()
@@ -132,6 +132,7 @@ namespace SmartElectronicsApi.Application.Profiles
                  .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
                 CreateMap<IdentityRole, RoleListItemDto>();
                 CreateMap<RoleDto, IdentityRole>();
+                CreateMap<ProductCreateDto, Product>();
             });
             configuration.AssertConfigurationIsValid();
         }

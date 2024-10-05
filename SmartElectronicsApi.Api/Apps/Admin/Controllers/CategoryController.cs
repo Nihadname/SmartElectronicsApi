@@ -24,7 +24,14 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> get(int pageNumber, int pageSize)
         {
-            return Ok(await categoryService.GetAllForAdmin(pageNumber, pageSize));
+            try
+            {
+                return Ok(await categoryService.GetAllForAdmin(pageNumber, pageSize));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.InnerException.Message,ex);
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int? id)

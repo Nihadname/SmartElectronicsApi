@@ -16,6 +16,6 @@ namespace SmartElectronicsApi.Application.Dtos.Category
         public string Icon { get; set; }
         public string ImageUrl { get; set; }
         public ICollection<SubCategoryListItemDto> SubCategories { get; set; }
-        public ICollection<ProdutListItemDto> produtListItemDtos { get; set; }
+        public ICollection<ProdutListItemDto> ProdutListItemDtos { get; set; }
     }
 }
