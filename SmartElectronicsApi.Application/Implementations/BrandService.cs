@@ -35,7 +35,7 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<PaginatedResponse<BrandListItemDto>> GetForAdmin(int pageNumber = 1, int pageSize = 10)
         {
-            var TotalCount = (await _unitOfWork.brandRepository.GetAll()).Count();
+            var TotalCount = (await _unitOfWork.brandRepository.GetAll(s => s.IsDeleted == false)).Count();
             var Brands=await _unitOfWork.brandRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Brand>, IQueryable<Brand>>[]
     {
         query => query.Include(p => p.Products).Include(s=>s.brandSubCategories).ThenInclude(s=>s.SubCategory)

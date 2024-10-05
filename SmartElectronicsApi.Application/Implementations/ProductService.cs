@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Product;
 using SmartElectronicsApi.Application.Exceptions;
@@ -80,6 +81,40 @@ namespace SmartElectronicsApi.Application.Implementations
              _unitOfWork.Commit();
 
             return productCreateDto;
+        }
+        public async Task<PaginatedResponse<ProdutListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10)
+        {
+            var TotalCount = (await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false)).Count();
+             var products=await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+    {
+        query => query.Include(p => p.Category)
+    });
+            var MappedProducts=_mapper.Map<List<ProdutListItemDto>>(products);
+            return new PaginatedResponse<ProdutListItemDto>
+            {
+                Data = MappedProducts,
+                TotalRecords = TotalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+        }
+        public async Task<ProductReturnDto> GetById(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var product = await _unitOfWork.productRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (product is null) throw new CustomException(404, "Not found");
+            var MappedProduct=_mapper.Map<ProductReturnDto>(product);
+            return MappedProduct;
+        }
+        public async Task<int> Delete(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var product = await _unitOfWork.productRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (product is null) throw new CustomException(404, "Not found");
+            await _unitOfWork.productRepository.Delete(product);
+            _unitOfWork.Commit();
+            return product.Id;
         }
     }
 }

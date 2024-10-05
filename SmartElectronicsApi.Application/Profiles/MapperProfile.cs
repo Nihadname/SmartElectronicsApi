@@ -133,6 +133,7 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<IdentityRole, RoleListItemDto>();
                 CreateMap<RoleDto, IdentityRole>();
                 CreateMap<ProductCreateDto, Product>();
+                CreateMap<Product, ProductReturnDto>();
             });
             configuration.AssertConfigurationIsValid();
         }

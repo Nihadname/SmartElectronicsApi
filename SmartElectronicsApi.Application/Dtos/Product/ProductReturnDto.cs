@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Dtos.Product
 {
-    public class ProdutListItemDto
+    public class ProductReturnDto
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public decimal Price { get; set; }
@@ -20,13 +19,5 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public bool IsDealOfTheWeek { get; set; }
         public bool IsFeatured { get; set; }
         public int StockQuantity { get; set; }
-        public CategoryInProductListItemDto Category { get; set; }
-
-
-    }
-    public class CategoryInProductListItemDto  
-    {
-        public string Name { get; set; }
-        public int ProductCount { get; set; }
     }
 }
