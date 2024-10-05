@@ -7,6 +7,8 @@ using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Color;
+using SmartElectronicsApi.Application.Dtos.ParametrGroup;
+using SmartElectronicsApi.Application.Dtos.ParametrValue;
 using SmartElectronicsApi.Application.Dtos.Product;
 using SmartElectronicsApi.Application.Dtos.Role;
 using SmartElectronicsApi.Application.Dtos.Setting;
@@ -134,11 +136,16 @@ namespace SmartElectronicsApi.Application.Profiles
                  .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
                 CreateMap<IdentityRole, RoleListItemDto>();
                 CreateMap<RoleDto, IdentityRole>();
-                CreateMap<ProductCreateDto, Product>();
-    // .ForMember(dest => dest.productColors, opt => opt.MapFrom(src => src.ColorIds.Select(cid => new ProductColor { ColorId = cid })));
+                CreateMap<ProductCreateDto, Product>()
+                .ForMember(s => s.parametricGroups, map => map.MapFrom(d => d.ParametrGroupCreateDtos));
+                // .ForMember(dest => dest.productColors, opt => opt.MapFrom(src => src.ColorIds.Select(cid => new ProductColor { ColorId = cid })));
 
 
                 CreateMap<Product, ProductReturnDto>();
+                CreateMap<ParametrGroupCreateDto,ParametrGroup>()
+                .ForMember(s => s.parametrValues, map => map.MapFrom(d => d.parametrValues));
+
+                CreateMap<ParametrValue, ParametrValueListItemDto>();
             });
             configuration.AssertConfigurationIsValid();
         }

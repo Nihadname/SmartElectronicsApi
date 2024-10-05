@@ -17,7 +17,7 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] ProductCreateDto productCreateDto)
+        public async Task<IActionResult> Create( ProductCreateDto productCreateDto)
         {
             try
             {
