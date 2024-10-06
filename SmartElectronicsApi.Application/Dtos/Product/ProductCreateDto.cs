@@ -27,8 +27,8 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public int SubcategoryId    { get; set; }
         public List<int> ColorIds { get; set; }
         public List<IFormFile> Images { get; set; }
-        public List<ParametrGroupSelectionDto> ParametrGroupSelections { get; set; }
+
     }
 
 }
-}
+

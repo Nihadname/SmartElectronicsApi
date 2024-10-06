@@ -19,7 +19,5 @@ namespace SmartElectronicsApi.Core.Entities
         public Product Product { get; set; }
         public ICollection<ProductVariationColor> productVariationColors { get; set; }
         public ICollection<ProductImage> productImages { get; set; }
-        public ICollection<ParametrGroup> productParametrGroups { get; set; }
-
     }
 }

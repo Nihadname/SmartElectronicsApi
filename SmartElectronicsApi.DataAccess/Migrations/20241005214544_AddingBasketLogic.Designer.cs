@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241005214544_AddingBasketLogic")]
+    partial class AddingBasketLogic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -550,52 +553,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.ToTable("colors");
                 });
 
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Comment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("comments");
-                });
-
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrGroup", b =>
                 {
                     b.Property<int>("Id")
@@ -620,12 +577,17 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductVariationId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductVariationId");
 
                     b.ToTable("parametrGroups");
                 });
@@ -1081,76 +1043,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.ToTable("subscribers");
                 });
 
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.WishList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AppUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AppUserId")
-                        .IsUnique();
-
-                    b.ToTable("wishLists");
-                });
-
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.WishListProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("WishListId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("WishListId");
-
-                    b.ToTable("wishListProducts");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1262,25 +1154,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Navigation("SubCategory");
                 });
 
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Comment", b =>
-                {
-                    b.HasOne("SmartElectronicsApi.Core.Entities.AppUser", "AppUser")
-                        .WithMany("comments")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartElectronicsApi.Core.Entities.Product", "Product")
-                        .WithMany("comments")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrGroup", b =>
                 {
                     b.HasOne("SmartElectronicsApi.Core.Entities.Product", "Product")
@@ -1289,7 +1162,15 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SmartElectronicsApi.Core.Entities.ProductVariation", "ProductVariation")
+                        .WithMany("productParametrGroups")
+                        .HasForeignKey("ProductVariationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Product");
+
+                    b.Navigation("ProductVariation");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrValue", b =>
@@ -1407,45 +1288,11 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.WishList", b =>
-                {
-                    b.HasOne("SmartElectronicsApi.Core.Entities.AppUser", "AppUser")
-                        .WithOne("wishList")
-                        .HasForeignKey("SmartElectronicsApi.Core.Entities.WishList", "AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.WishListProduct", b =>
-                {
-                    b.HasOne("SmartElectronicsApi.Core.Entities.Product", "Product")
-                        .WithMany("WishListProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartElectronicsApi.Core.Entities.WishList", "WishList")
-                        .WithMany("wishListProducts")
-                        .HasForeignKey("WishListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("WishList");
-                });
-
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.AppUser", b =>
                 {
                     b.Navigation("addresses");
 
                     b.Navigation("basket");
-
-                    b.Navigation("comments");
-
-                    b.Navigation("wishList");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Basket", b =>
@@ -1485,10 +1332,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
 
                     b.Navigation("Variations");
 
-                    b.Navigation("WishListProducts");
-
-                    b.Navigation("comments");
-
                     b.Navigation("parametricGroups");
 
                     b.Navigation("productColors");
@@ -1500,6 +1343,8 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                 {
                     b.Navigation("productImages");
 
+                    b.Navigation("productParametrGroups");
+
                     b.Navigation("productVariationColors");
                 });
 
@@ -1508,11 +1353,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Navigation("Products");
 
                     b.Navigation("brandSubCategories");
-                });
-
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.WishList", b =>
-                {
-                    b.Navigation("wishListProducts");
                 });
 #pragma warning restore 612, 618
         }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006075705_StarAdding")]
+    partial class StarAdding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -620,12 +623,17 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ProductVariationId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("UpdatedTime")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("ProductVariationId");
 
                     b.ToTable("parametrGroups");
                 });
@@ -1289,7 +1297,15 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SmartElectronicsApi.Core.Entities.ProductVariation", "ProductVariation")
+                        .WithMany("productParametrGroups")
+                        .HasForeignKey("ProductVariationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Product");
+
+                    b.Navigation("ProductVariation");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrValue", b =>
@@ -1499,6 +1515,8 @@ namespace SmartElectronicsApi.DataAccess.Migrations
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ProductVariation", b =>
                 {
                     b.Navigation("productImages");
+
+                    b.Navigation("productParametrGroups");
 
                     b.Navigation("productVariationColors");
                 });

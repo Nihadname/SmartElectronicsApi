@@ -30,6 +30,9 @@ namespace SmartElectronicsApi.Core.Entities
         public ICollection<ProductColor> productColors { get; set; }
         public ICollection<ProductImage> productImages { get; set; }
         public ICollection<ParametrGroup> parametricGroups { get; set; }
+        public ICollection<BasketProduct>? BasketProducts { get; set; }
+        public ICollection<WishListProduct>? WishListProducts { get;set; }
+        public ICollection<Comment> comments { get; set; }
 
     }
 }

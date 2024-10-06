@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Core.Entities
 {
-    public class ParametrGroup:BaseEntity
+    public class BasketProduct:BaseEntity
     {
-public string   Name { get; set; }
-        public ICollection<ParametrValue> parametrValues { get; set; }
+        public int Quantity { get; set; }
+        public int BasketId { get; set; }
+        public Basket Basket { get; set; }
         public int ProductId { get; set; }
         public Product Product { get; set; }
-      
     }
 }

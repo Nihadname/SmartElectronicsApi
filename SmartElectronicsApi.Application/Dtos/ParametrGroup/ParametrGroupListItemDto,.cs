@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Dtos.ParametrGroup
 {
-    public class ParametrGroupCreateDto
+    public class ParametrGroupListItemDto
     {
         public string Name { get; set; }
-        public int ProductId { get; set; }
         public List<ParametrValueListItemDto> parametrValues { get; set; }
+
     }
 }

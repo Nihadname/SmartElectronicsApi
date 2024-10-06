@@ -36,10 +36,6 @@ namespace SmartElectronicsApi.Application.Implementations
             // Check if product name already exists
             try
             {
-                //if (productCreateDto.ParametrGroupCreateDtos == null || !productCreateDto.ParametrGroupCreateDtos.Any())
-                //{
-                //    throw new CustomException(400,"ParametrGroupCreateDtos is required.");
-                //}
                 if (await _unitOfWork.productRepository.isExists(s => s.Name.ToLower() == productCreateDto.Name.ToLower()))
                 {
                     throw new CustomException(400, "Name", "This product name already exists.");
@@ -124,51 +120,8 @@ namespace SmartElectronicsApi.Application.Implementations
                     _unitOfWork.Commit();
 
                 }
-                foreach (var groupSelection in productCreateDto.ParametrGroupSelections)
-                {
-                    var parametrGroup = await _unitOfWork.parametricGroupRepository.GetById(groupSelection.ParametrGroupId);
-                    if (parametrGroup == null)
-                    {
-                        throw new CustomException(400, "ParametrGroup", "Invalid parametr group selected.");
-                    }
 
-                    // Attach the ParametrGroup to the product
-                    parametrGroup.ProductId = mappedProduct.Id;
-                    await _unitOfWork.parametricGroupRepository.Update(parametrGroup);
-
-                    // Verify and handle ParametrValues
-                    foreach (var valueId in groupSelection.ParametrValueIds)
-                    {
-                        var parametrValue = await _unitOfWork.parametrValueRepository.GetById(valueId);
-                        if (parametrValue == null || parametrValue.ParametrGroupId != parametrGroup.Id)
-                        {
-                            throw new CustomException(400, "ParametrValue", "Invalid or mismatched parametr value.");
-                        }
-
-                        // You could add additional logic here if needed, like linking ParametrValue to the product.
-                    }
-                }
-
-                //foreach (var groupDto in productCreateDto.ParametrGroupCreateDtos)
-                //{
-                //    var parametrGroup = new ParametrGroup
-                //    {
-                //        Name = groupDto.Name,
-                //        ProductId = mappedProduct.Id,
-                //    };
-                //    await _unitOfWork.parametricGroupRepository.Create(parametrGroup);
-
-                //    foreach (var value in groupDto.parametrValues)
-                //    {
-                //        var parametrValue = new ParametrValue
-                //        {
-                //            Type = value.Type,
-                //            Value = value.Value,
-                //            ParametrGroupId = parametrGroup.Id
-                //        };
-                //        await _unitOfWork.parametrValueRepository.Create(parametrValue);
-                //    }
-                //}
+               
                 _unitOfWork.Commit();
 
                 return productCreateDto;
@@ -183,7 +136,7 @@ namespace SmartElectronicsApi.Application.Implementations
             var TotalCount = (await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false)).Count();
             var products = await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
    {
-        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color)
+        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color).Include(s=>s.parametricGroups)
    });
             var MappedProducts=_mapper.Map<List<ProdutListItemDto>>(products);
             return new PaginatedResponse<ProdutListItemDto>
