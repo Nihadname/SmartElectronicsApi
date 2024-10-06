@@ -34,8 +34,7 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<ProductCreateDto> Create(ProductCreateDto productCreateDto)
         {
             // Check if product name already exists
-            try
-            {
+            
                 if (await _unitOfWork.productRepository.isExists(s => s.Name.ToLower() == productCreateDto.Name.ToLower()))
                 {
                     throw new CustomException(400, "Name", "This product name already exists.");
@@ -107,38 +106,61 @@ namespace SmartElectronicsApi.Application.Implementations
                     await _unitOfWork.ProductColorRepository.Create(productColor);
                     _unitOfWork.Commit();
                 }
+                bool isFirstImage = true;
                 foreach (var item in productCreateDto.Images)
                 {
                     var imagePath = item.Save(Directory.GetCurrentDirectory(), "img");
                     var productImage = new ProductImage
                     {
                         Name = Path.GetFileName(imagePath),
-                        IsMain = false,
+                        IsMain = isFirstImage, 
                         ProductId = mappedProduct.Id,
                     };
                     await _unitOfWork.ProductImageRepository.Create(productImage);
-                    _unitOfWork.Commit();
 
+                    isFirstImage = false;
                 }
 
-               
+
                 _unitOfWork.Commit();
 
                 return productCreateDto;
-            }catch(Exception ex)
-            {
-                throw new Exception(ex.InnerException.Message, ex);
-            }
+            
             
         }
-        public async Task<PaginatedResponse<ProdutListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginatedResponse<ProdutListItemDto>> GetAll(
+           int pageNumber = 1,
+           int pageSize = 10,
+           string searchQuery = null,
+           int? categoryId = null)
         {
-            var TotalCount = (await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false)).Count();
-            var products = await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
-   {
-        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color).Include(s=>s.parametricGroups)
-   });
-            var MappedProducts=_mapper.Map<List<ProdutListItemDto>>(products);
+            var ProductQuery = await _unitOfWork.productRepository.GetQuery(s => s.IsDeleted == false);
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                ProductQuery = ProductQuery.Where(s => s.Name.Contains(searchQuery) || s.Description.Contains(searchQuery));
+            }
+
+            if (categoryId.HasValue)
+            {
+                ProductQuery = ProductQuery.Where(p => p.CategoryId == categoryId);
+            }
+
+            var TotalCount = await ProductQuery.CountAsync();
+
+            var products = await ProductQuery
+                .Include(p => p.Category)
+                .Include(s => s.productImages)
+                .Include(s => s.productColors).ThenInclude(s => s.Color)
+                .Include(s => s.parametricGroups).ThenInclude(s => s.parametrValues)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            
+            var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+
+            
             return new PaginatedResponse<ProdutListItemDto>
             {
                 Data = MappedProducts,
@@ -146,8 +168,9 @@ namespace SmartElectronicsApi.Application.Implementations
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
-
         }
+
+
         public async Task<ProductReturnDto> GetById(int? id)
         {
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
@@ -161,12 +184,75 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<int> Delete(int? id)
         {
-            if (id is null) throw new CustomException(400, "Id", "id cant be null");
-            var product = await _unitOfWork.productRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
-            if (product is null) throw new CustomException(404, "Not found");
-            await _unitOfWork.productRepository.Delete(product);
-            _unitOfWork.Commit();
-            return product.Id;
+           
+                if (id is null) throw new CustomException(400, "Id", "id cant be null");
+                var product = await _unitOfWork.productRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+                if (product is null) throw new CustomException(404, "Not found");
+                var parameterGroups = await _unitOfWork.parametricGroupRepository.GetAll(s => s.ProductId == id);
+                if (parameterGroups.Any()||parameterGroups!=null)
+                {
+                    foreach (var parameterGroup in parameterGroups)
+                    {
+                        await _unitOfWork.parametricGroupRepository.Delete(parameterGroup);
+                        _unitOfWork.Commit();
+                    }
+                }
+                await _unitOfWork.productRepository.Delete(product);
+                    _unitOfWork.Commit();
+                    return product.Id;
+                
+            
+            
         }
+        public async Task<List<ProdutListItemDto>> GetAllNewOnes()
+        {
+            var products = await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false && s.isNew == true, 0,8, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+ {
+        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color).Include(s=>s.parametricGroups).ThenInclude(s=>s.parametrValues)
+ });
+
+            var MappedProducts=_mapper.Map<List<ProdutListItemDto>>(products);
+            return MappedProducts;
+        }
+        public async Task<List<ProdutListItemDto>> GetAllWithTheMostViews(int top = 8)
+        {
+            var ProductQuery = await _unitOfWork.productRepository.GetQuery(s => s.IsDeleted == false);
+
+            var products = await ProductQuery
+      .Include(p => p.Category)
+      .Include(s => s.productImages)
+      .Include(s => s.productColors).ThenInclude(s => s.Color)
+      .Include(s => s.parametricGroups).ThenInclude(s => s.parametrValues)
+      .OrderByDescending(s => s.ViewCount) 
+      .Take(top)  
+      .ToListAsync();
+
+
+            var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+
+            return MappedProducts;
+        }
+        public async Task<List<ProdutListItemDto>> GetAllWithDiscounted()
+        {
+            var products = await _unitOfWork.productRepository.GetAll(
+                s => (s.DiscountPercentage != null || s.DiscountedPrice != null) && s.IsDeleted == false, // Group the discount conditions
+                0,
+                8,
+                includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+                {
+            query => query.Include(p => p.Category)
+                          .Include(s => s.productImages)
+                          .Include(s => s.productColors).ThenInclude(s => s.Color)
+                          .Include(s => s.parametricGroups)
+                }
+            );
+
+            var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+            return MappedProducts;
+        }
+
+
+
+
     }
 }

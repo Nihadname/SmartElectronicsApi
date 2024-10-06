@@ -24,8 +24,7 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<int> Create(ParametrGroupCreateDto parametrGroupCreateDto)
         {
-            try
-            {
+           
 
                 if (!await _unitOfWork.productRepository.isExists(s => s.Id == parametrGroupCreateDto.ProductId))
                 {
@@ -49,12 +48,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
                 return entity.Id;
             }
-            catch (Exception ex)
-            {
-
-                throw new Exception(ex.InnerException.Message, ex);
-            }
+            
         }
 
     }
-}

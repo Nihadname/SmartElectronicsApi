@@ -361,33 +361,51 @@ media (max-width: 576px) {
                             <div class="swiper-wrapper">
                                 <!-- Product List View Item 1 -->
                                 <div class="swiper-slide">
-                                    <div class="product-list2">
-                                        <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" alt="Product Image" class="product-image2">
-                                        <div class="product-details2">
-                                            <div class="product-info2">
-                                                <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
-                                                <span class="badge bg-success">İlkin ödənişsiz</span>
+                                    <div class="product-details2">
+                                        <!-- Discount Ribbon -->
+                                        <div class="discount-ribbon">-45%</div>
+
+                                        <!-- Product Image -->
+                                        <div class="product-image">
+                                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" width="100" height="100" alt="Apple iPhone 15 Pro 128 GB Blue Titanium" class="img-fluid">
+                                        </div>
+
+                                        <div class="product-info2">
+                                            <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
+                                        </div>
+
+                                        <div class="product-actions2">
+                                            <div class="product-price2">
+                                                <span class="old-price">2999 AZN</span> <!-- Original Price -->
+                                                <span class="new-price">2549 AZN</span> <!-- Discounted Price -->
                                             </div>
-                                            <div class="product-actions2">
-                                                <div class="product-price2">2549 AZN</div>
-                                                <button class="btn btn-buy">Bir kliklə al</button>
-                                            </div>
+                                            <button class="btn btn-buy">Bir kliklə al</button>
                                         </div>
                                     </div>
+
+
                                 </div>
                                 <!-- Product List View Item 2 -->
                                 <div class="swiper-slide">
-                                    <div class="product-list2">
-                                        <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" alt="Product Image" class="product-image2">
-                                        <div class="product-details2">
-                                            <div class="product-info2">
-                                                <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
-                                                <span class="badge bg-success">İlkin ödənişsiz</span>
+                                    <div class="product-details2">
+                                        <!-- Discount Ribbon -->
+                                        <div class="discount-ribbon">-45%</div>
+
+                                        <!-- Product Image -->
+                                        <div class="product-image">
+                                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" width="100" height="100" alt="Apple iPhone 15 Pro 128 GB Blue Titanium" class="img-fluid">
+                                        </div>
+
+                                        <div class="product-info2">
+                                            <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
+                                        </div>
+
+                                        <div class="product-actions2">
+                                            <div class="product-price2">
+                                                <span class="old-price">2999 AZN</span> <!-- Original Price -->
+                                                <span class="new-price">2549 AZN</span> <!-- Discounted Price -->
                                             </div>
-                                            <div class="product-actions2">
-                                                <div class="product-price2">2549 AZN</div>
-                                                <button class="btn btn-buy">Bir kliklə al</button>
-                                            </div>
+                                            <button class="btn btn-buy">Bir kliklə al</button>
                                         </div>
                                     </div>
                                 </div>
@@ -408,9 +426,7 @@ media (max-width: 576px) {
             <div class="col-6 col-md-3">
                 <!-- Content for Column 1 -->
                 <div class="SmalCard p-4 rounded-4 bg-white w-100 shadow">
-                    <div class="icon d-flex justify-content-center mb-2">
-                        <img src="https://smartelectronics.az/assets/images/new-blue.png" width="40" height="40" alt="">
-                    </div>
+                  
                     <div class="d-flex TextSide justify-content-center">
                         <span class="text-center" style="
                                  font-style: normal;
@@ -418,7 +434,7 @@ media (max-width: 576px) {
                                  font-size: 22px;
                                  line-height: 27px;
                                  color: #000;
-                                 ">Yeni Məhsullar</span>
+                                 " onclick="GetAllNewOnes()">Yeni Məhsullar</span>
                     </div>
                 </div>
             </div>
@@ -426,9 +442,7 @@ media (max-width: 576px) {
             <div class="col-6 col-md-3">
                 <!-- Content for Column 1 -->
                 <div class="SmalCard p-4 rounded-4 bg-white w-100 shadow">
-                    <div class="icon d-flex justify-content-center mb-2">
-                        <img src="https://smartelectronics.az/assets/images/badge-blue.png" width="40" height="40" alt="">
-                    </div>
+                   
                     <div class="d-flex justify-content-center">
                         <span class="text-center" style="
                                  font-style: normal;
@@ -436,7 +450,7 @@ media (max-width: 576px) {
                                  font-size: 22px;
                                  line-height: 27px;
                                  color: #000;
-                                 ">Ən Çox Baxılanlar</span>
+                                 " onclick="GetTheMostViewedOnes()">Ən Çox Baxılanlar</span>
                     </div>
                 </div>
             </div>
@@ -444,9 +458,7 @@ media (max-width: 576px) {
             <div class="col-6 col-md-3">
                 <!-- Content for Column 1 -->
                 <div class="SmalCard p-4 rounded-4 bg-white w-100 shadow">
-                    <div class="icon d-flex justify-content-center mb-2">
-                        <img src="https://smartelectronics.az/assets/images/discount-blue.png" width="40" height="40" alt="">
-                    </div>
+                    
                     <div class="d-flex justify-content-center">
                         <span class="text-center" style="
                                  font-style: normal;
@@ -454,7 +466,7 @@ media (max-width: 576px) {
                                  font-size: 22px;
                                  line-height: 27px;
                                  color: #000;
-                                 ">Endirimli Məhsullar</span>
+                                 " onclick="GetTheOnesWithDiscount()">Endirimli Məhsullar</span>
                     </div>
                 </div>
             </div>
@@ -462,9 +474,7 @@ media (max-width: 576px) {
             <div class="col-6 col-md-3">
                 <!-- Content for Column 1 -->
                 <div class="SmalCard p-4 rounded-4 bg-white w-100 shadow">
-                    <div class="icon d-flex justify-content-center mb-2">
-                        <img src="https://smartelectronics.az/assets/images/bulb-blue.png" width="40" height="40" alt="">
-                    </div>
+                   
                     <div class="d-flex justify-content-center">
                         <span class="text-center" style="
                                  font-style: normal;
@@ -480,270 +490,9 @@ media (max-width: 576px) {
     </section>
     <section class="mb-5">
         <div class="container">
-            <div class="row g-4">
+            <div class="row g-4 FilterPartinHome">
                 <!-- Product Card -->
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <div class="product-card p-3 shadow-sm">
-                        <!-- Discount Badge -->
-                        <div class="discount-badge-circle">
-                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
-                        </div>
-
-                        <!-- Wishlist Icon -->
-                        <div class="wishlist-icon">
-                            <i class="fa-regular fa-heart wishlist"></i>
-                        </div>
-
-                        <!-- Product Image -->
-                        <div class="product-image text-center mb-3">
-                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
-                        </div>
-
-                        <!-- Product Name -->
-                        <h3 class="product-name text-center mb-1">
-                            LG F4J3VYG6J
-                        </h3>
-
-                        <!-- Reviews and Rating -->
-                        <div class="review-section text-center mb-2">
-                            <span class="rating-stars">
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star-half-alt text-warning"></i>
-                            </span>
-                            <span class="review-count">(57 Reviews)</span>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="price-section text-center mb-2">
-                            <span class="price-old text-muted">1269 AZN</span><br>
-                            <span class="price-new fw-bold">1099 AZN</span>
-                        </div>
-
-                        <!-- Color Choices Section -->
-                        <div class="color-choices text-center my-2">
-                            <span class="color-circle" style="background-color: #000000;"></span>
-                            <span class="color-circle" style="background-color: #3498db;"></span>
-                            <span class="color-circle" style="background-color: #ff4757;"></span>
-                            <span class="color-circle" style="background-color: #f1c40f;"></span>
-                        </div>
-
-                        <!-- Monthly Payment Section -->
-                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                            <span class="installment-option">6 ay</span>
-                            <span class="installment-option selected mx-2">12 ay</span>
-                            <span class="installment-price fw-bold">106 AZN</span>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="action-buttons text-center">
-                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
-                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Product Card -->
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <div class="product-card p-3 shadow-sm">
-                        <!-- Discount Badge -->
-                        <div class="discount-badge-circle">
-                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
-                        </div>
-
-                        <!-- Wishlist Icon -->
-                        <div class="wishlist-icon">
-                            <i class="fa-regular fa-heart wishlist"></i>
-                        </div>
-
-                        <!-- Product Image -->
-                        <div class="product-image text-center mb-3">
-                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
-                        </div>
-
-                        <!-- Product Name -->
-                        <h3 class="product-name text-center mb-1">
-                            LG F4J3VYG6J
-                        </h3>
-
-                        <!-- Reviews and Rating -->
-                        <div class="review-section text-center mb-2">
-                            <span class="rating-stars">
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star-half-alt text-warning"></i>
-                            </span>
-                            <span class="review-count">(57 Reviews)</span>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="price-section text-center mb-2">
-                            <span class="price-old text-muted">1269 AZN</span><br>
-                            <span class="price-new fw-bold">1099 AZN</span>
-                        </div>
-
-                        <!-- Color Choices Section -->
-                        <div class="color-choices text-center my-2">
-                            <span class="color-circle" style="background-color: #000000;"></span>
-                            <span class="color-circle" style="background-color: #3498db;"></span>
-                            <span class="color-circle" style="background-color: #ff4757;"></span>
-                            <span class="color-circle" style="background-color: #f1c40f;"></span>
-                        </div>
-
-                        <!-- Monthly Payment Section -->
-                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                            <span class="installment-option">6 ay</span>
-                            <span class="installment-option selected mx-2">12 ay</span>
-                            <span class="installment-price fw-bold">106 AZN</span>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="action-buttons text-center">
-                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
-                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <div class="product-card p-3 shadow-sm">
-                        <!-- Discount Badge -->
-                        <div class="discount-badge-circle">
-                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
-                        </div>
-
-                        <!-- Wishlist Icon -->
-                        <div class="wishlist-icon">
-                            <i class="fa-regular fa-heart wishlist"></i>
-                        </div>
-
-                        <!-- Product Image -->
-                        <div class="product-image text-center mb-3">
-                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
-                        </div>
-
-                        <!-- Product Name -->
-                        <h3 class="product-name text-center mb-1">
-                            LG F4J3VYG6J
-                        </h3>
-
-                        <!-- Reviews and Rating -->
-                        <div class="review-section text-center mb-2">
-                            <span class="rating-stars">
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star-half-alt text-warning"></i>
-                            </span>
-                            <span class="review-count">(57 Reviews)</span>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="price-section text-center mb-2">
-                            <span class="price-old text-muted">1269 AZN</span><br>
-                            <span class="price-new fw-bold">1099 AZN</span>
-                        </div>
-
-                        <!-- Color Choices Section -->
-                        <div class="color-choices text-center my-2">
-                            <span class="color-circle" style="background-color: #000000;"></span>
-                            <span class="color-circle" style="background-color: #3498db;"></span>
-                            <span class="color-circle" style="background-color: #ff4757;"></span>
-                            <span class="color-circle" style="background-color: #f1c40f;"></span>
-                        </div>
-
-                        <!-- Monthly Payment Section -->
-                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                            <span class="installment-option">6 ay</span>
-                            <span class="installment-option selected mx-2">12 ay</span>
-                            <span class="installment-price fw-bold">106 AZN</span>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="action-buttons text-center">
-                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
-                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Product Card -->
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
-                    <div class="product-card p-3 shadow-sm">
-                        <!-- Discount Badge -->
-                        <div class="discount-badge-circle">
-                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
-                        </div>
-
-                        <!-- Wishlist Icon -->
-                        <div class="wishlist-icon">
-                            <i class="fa-regular fa-heart wishlist"></i>
-                        </div>
-
-                        <!-- Product Image -->
-                        <div class="product-image text-center mb-3">
-                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
-                        </div>
-
-                        <!-- Product Name -->
-                        <h3 class="product-name text-center mb-1">
-                            LG F4J3VYG6J
-                        </h3>
-
-                        <!-- Reviews and Rating -->
-                        <div class="review-section text-center mb-2">
-                            <span class="rating-stars">
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star text-warning"></i>
-                                <i class="fa fa-star-half-alt text-warning"></i>
-                            </span>
-                            <span class="review-count">(57 Reviews)</span>
-                        </div>
-
-                        <!-- Price -->
-                        <div class="price-section text-center mb-2">
-                            <span class="price-old text-muted">1269 AZN</span><br>
-                            <span class="price-new fw-bold">1099 AZN</span>
-                        </div>
-
-                        <!-- Color Choices Section -->
-                        <div class="color-choices text-center my-2">
-                            <span class="color-circle" style="background-color: #000000;"></span>
-                            <span class="color-circle" style="background-color: #3498db;"></span>
-                            <span class="color-circle" style="background-color: #ff4757;"></span>
-                            <span class="color-circle" style="background-color: #f1c40f;"></span>
-                        </div>
-
-                        <!-- Monthly Payment Section -->
-                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                            <span class="installment-option">6 ay</span>
-                            <span class="installment-option selected mx-2">12 ay</span>
-                            <span class="installment-price fw-bold">106 AZN</span>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="action-buttons text-center">
-                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
-                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-4 col-lg-3 mb-3">
+       @*          <div class="col-12 col-md-4 col-lg-3 mb-3">
                     <div class="product-card p-3 shadow-sm">
                         <!-- Discount Badge -->
                         <div class="discount-badge-circle">
@@ -1003,6 +752,267 @@ media (max-width: 576px) {
                         </div>
                     </div>
                 </div>
+
+                <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="product-card p-3 shadow-sm">
+                        <!-- Discount Badge -->
+                        <div class="discount-badge-circle">
+                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
+                        </div>
+
+                        <!-- Wishlist Icon -->
+                        <div class="wishlist-icon">
+                            <i class="fa-regular fa-heart wishlist"></i>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="product-image text-center mb-3">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
+                        </div>
+
+                        <!-- Product Name -->
+                        <h3 class="product-name text-center mb-1">
+                            LG F4J3VYG6J
+                        </h3>
+
+                        <!-- Reviews and Rating -->
+                        <div class="review-section text-center mb-2">
+                            <span class="rating-stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-alt text-warning"></i>
+                            </span>
+                            <span class="review-count">(57 Reviews)</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-section text-center mb-2">
+                            <span class="price-old text-muted">1269 AZN</span><br>
+                            <span class="price-new fw-bold">1099 AZN</span>
+                        </div>
+
+                        <!-- Color Choices Section -->
+                        <div class="color-choices text-center my-2">
+                            <span class="color-circle" style="background-color: #000000;"></span>
+                            <span class="color-circle" style="background-color: #3498db;"></span>
+                            <span class="color-circle" style="background-color: #ff4757;"></span>
+                            <span class="color-circle" style="background-color: #f1c40f;"></span>
+                        </div>
+
+                        <!-- Monthly Payment Section -->
+                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                            <span class="installment-option">6 ay</span>
+                            <span class="installment-option selected mx-2">12 ay</span>
+                            <span class="installment-price fw-bold">106 AZN</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons text-center">
+                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
+                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Product Card -->
+                <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="product-card p-3 shadow-sm">
+                        <!-- Discount Badge -->
+                        <div class="discount-badge-circle">
+                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
+                        </div>
+
+                        <!-- Wishlist Icon -->
+                        <div class="wishlist-icon">
+                            <i class="fa-regular fa-heart wishlist"></i>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="product-image text-center mb-3">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
+                        </div>
+
+                        <!-- Product Name -->
+                        <h3 class="product-name text-center mb-1">
+                            LG F4J3VYG6J
+                        </h3>
+
+                        <!-- Reviews and Rating -->
+                        <div class="review-section text-center mb-2">
+                            <span class="rating-stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-alt text-warning"></i>
+                            </span>
+                            <span class="review-count">(57 Reviews)</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-section text-center mb-2">
+                            <span class="price-old text-muted">1269 AZN</span><br>
+                            <span class="price-new fw-bold">1099 AZN</span>
+                        </div>
+
+                        <!-- Color Choices Section -->
+                        <div class="color-choices text-center my-2">
+                            <span class="color-circle" style="background-color: #000000;"></span>
+                            <span class="color-circle" style="background-color: #3498db;"></span>
+                            <span class="color-circle" style="background-color: #ff4757;"></span>
+                            <span class="color-circle" style="background-color: #f1c40f;"></span>
+                        </div>
+
+                        <!-- Monthly Payment Section -->
+                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                            <span class="installment-option">6 ay</span>
+                            <span class="installment-option selected mx-2">12 ay</span>
+                            <span class="installment-price fw-bold">106 AZN</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons text-center">
+                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
+                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="product-card p-3 shadow-sm">
+                        <!-- Discount Badge -->
+                        <div class="discount-badge-circle">
+                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
+                        </div>
+
+                        <!-- Wishlist Icon -->
+                        <div class="wishlist-icon">
+                            <i class="fa-regular fa-heart wishlist"></i>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="product-image text-center mb-3">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
+                        </div>
+
+                        <!-- Product Name -->
+                        <h3 class="product-name text-center mb-1">
+                            LG F4J3VYG6J
+                        </h3>
+
+                        <!-- Reviews and Rating -->
+                        <div class="review-section text-center mb-2">
+                            <span class="rating-stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-alt text-warning"></i>
+                            </span>
+                            <span class="review-count">(57 Reviews)</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-section text-center mb-2">
+                            <span class="price-old text-muted">1269 AZN</span><br>
+                            <span class="price-new fw-bold">1099 AZN</span>
+                        </div>
+
+                        <!-- Color Choices Section -->
+                        <div class="color-choices text-center my-2">
+                            <span class="color-circle" style="background-color: #000000;"></span>
+                            <span class="color-circle" style="background-color: #3498db;"></span>
+                            <span class="color-circle" style="background-color: #ff4757;"></span>
+                            <span class="color-circle" style="background-color: #f1c40f;"></span>
+                        </div>
+
+                        <!-- Monthly Payment Section -->
+                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                            <span class="installment-option">6 ay</span>
+                            <span class="installment-option selected mx-2">12 ay</span>
+                            <span class="installment-price fw-bold">106 AZN</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons text-center">
+                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
+                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Product Card -->
+                <div class="col-12 col-md-4 col-lg-3 mb-3">
+                    <div class="product-card p-3 shadow-sm">
+                        <!-- Discount Badge -->
+                        <div class="discount-badge-circle">
+                            Nağd alışlarda<br>Endirim<br><strong>170 AZN</strong>
+                        </div>
+
+                        <!-- Wishlist Icon -->
+                        <div class="wishlist-icon">
+                            <i class="fa-regular fa-heart wishlist"></i>
+                        </div>
+
+                        <!-- Product Image -->
+                        <div class="product-image text-center mb-3">
+                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" class="card-img-top" alt="Product Image">
+                        </div>
+
+                        <!-- Product Name -->
+                        <h3 class="product-name text-center mb-1">
+                            LG F4J3VYG6J
+                        </h3>
+
+                        <!-- Reviews and Rating -->
+                        <div class="review-section text-center mb-2">
+                            <span class="rating-stars">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-half-alt text-warning"></i>
+                            </span>
+                            <span class="review-count">(57 Reviews)</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="price-section text-center mb-2">
+                            <span class="price-old text-muted">1269 AZN</span><br>
+                            <span class="price-new fw-bold">1099 AZN</span>
+                        </div>
+
+                        <!-- Color Choices Section -->
+                        <div class="color-choices text-center my-2">
+                            <span class="color-circle" style="background-color: #000000;"></span>
+                            <span class="color-circle" style="background-color: #3498db;"></span>
+                            <span class="color-circle" style="background-color: #ff4757;"></span>
+                            <span class="color-circle" style="background-color: #f1c40f;"></span>
+                        </div>
+
+                        <!-- Monthly Payment Section -->
+                        <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                            <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                            <span class="installment-option">6 ay</span>
+                            <span class="installment-option selected mx-2">12 ay</span>
+                            <span class="installment-price fw-bold">106 AZN</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons text-center">
+                            <button class="btn btn-primary w-100 mb-2">1 kliklə al</button>
+                            <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                        </div>
+                    </div>
+                </div> *@
                 <!-- Repeat Product Card -->
             </div>
         </div>

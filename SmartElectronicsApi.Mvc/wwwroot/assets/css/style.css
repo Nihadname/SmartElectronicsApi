@@ -515,4 +515,82 @@ p {
     position: absolute;
     right: 0; /* Positioned on the right */
 }
- 
+/* Styling for the discount ribbon */
+.discount-ribbon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #ff4757;
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    transform: rotate(45deg);
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for the product image */
+.product-image {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+    .product-image img {
+        max-width: 100%; /* Ensures the image fits inside the container */
+        height: auto;
+        border-radius: 10px;
+    }
+
+/* Styling for the price section */
+.product-price2 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.new-price {
+    color: #e74c3c;
+    font-size: 20px;
+}
+
+/* Styling for the product card */
+.product-details2 {
+    position: relative;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.product-info2 h5 {
+    margin-bottom: 15px;
+    font-size: 18px;
+}
+
+.product-actions2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-buy {
+    background-color: #27ae60;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+    .btn-buy:hover {
+        background-color: #2ecc71;
+    }

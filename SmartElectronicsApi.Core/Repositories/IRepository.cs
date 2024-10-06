@@ -16,6 +16,7 @@ namespace SmartElectronicsApi.Core.Repositories
         Task Delete(T entity);
         Task<bool> isExists(Expression<Func<T, bool>> predicate = null);
         Task Commit();
+        Task<IQueryable<T>> GetQuery(Expression<Func<T, bool>> predicate = null);
   
     }
 }

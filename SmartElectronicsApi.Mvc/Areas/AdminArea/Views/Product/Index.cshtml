@@ -1,0 +1,82 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Product
+@using SmartElectronicsApi.Mvc.ViewModels.pagination
+@model PaginatedResponseVM<ProdutListItemVM>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Product List</h4>
+            <p class="card-description"> Product table with enhanced layout for visual appeal </p>
+
+            <!-- Add scrollable container -->
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th> Product Image </th>
+                            <th> Product Name </th>
+                            <th> Price </th>
+                            <th> Discount </th>
+                            <th> Discounted Price </th>
+                            <th> Stock Status </th>
+                            <th> Category </th>
+                            <th> Actions </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Data)
+                        {
+                            <tr class="ProductTable" data-id="@item.Id">
+                                <td class="py-1">
+                                    <img src="@item.ImageUrls.FirstOrDefault()" alt="Product Image" class="rounded" style="max-width: 80px;">
+                                </td>
+                                <td> @item.Name</td>
+                                <td> $@item.Price </td>
+                                <td> @item.DiscountPercentage% </td>
+                                <td> $@item.DiscountedPrice </td>
+                                <td>
+                                    @if (item.StockQuantity > 25)
+                                    {
+                                        <span class="badge bg-success">In Stock</span>
+                                    }
+                                    else if (item.StockQuantity == 0)
+                                    {
+                                        <span class="badge bg-danger">Out of Stock</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">Low Stock</span>
+                                    }
+                                </td>
+                                <td> @item.Category.Name </td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="DeleteProduct(@item.Id)">Edit</button>
+                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div> <!-- End table-responsive -->
+        </div>
+    </div>
+</div>
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })" tabindex="-1">Previous</a>
+        </li>
+
+        @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.PageNumber == Math.Ceiling((double)Model.TotalRecords / Model.PageSize) ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+        </li>
+    </ul>
+</nav>

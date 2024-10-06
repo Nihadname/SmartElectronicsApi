@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartElectronicsApi.Application.Dtos.Product;
 using SmartElectronicsApi.Application.Interfaces;
@@ -19,24 +21,26 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create( ProductCreateDto productCreateDto)
         {
-            try
-            {
+           
                 return Ok(await _productService.Create(productCreateDto));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.InnerException.Message,ex);
-            }
+            
+            
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
-            return Ok(await _productService.Delete(id));
+            
+                return Ok(await _productService.Delete(id));
+          
+           
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
         [HttpGet]
-        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10, string searchQuery = null,
+           int? categoryId = null)
         {
-            return Ok(await _productService.GetAll(pageNumber, pageSize));
+            return Ok(await _productService.GetAll(pageNumber, pageSize,searchQuery,categoryId));
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int? id)

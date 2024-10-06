@@ -156,7 +156,17 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             }
         }
 
-
+        public Task<IQueryable<T>> GetQuery(Expression<Func<T, bool>> predicate = null)
+        {
+            try
+            {
+                return Task.FromResult(_table.AsQueryable());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error in GetQuery: " + ex.Message, ex);
+            }
+        }
 
         public async Task<bool> isExists(Expression<Func<T, bool>> predicate = null)
         {

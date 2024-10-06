@@ -42,7 +42,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         column: x => x.ProductId,
                         principalTable: "products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

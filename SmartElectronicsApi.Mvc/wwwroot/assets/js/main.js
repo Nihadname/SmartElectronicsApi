@@ -86,28 +86,28 @@ BarMenuOpen.addEventListener("click",function(){
     const cards = document.querySelectorAll('.SmalCard');
 
     // Add click event listener to each card
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            // Remove the active shadow class and reset the color of all cards
-            cards.forEach(c => {
-                c.classList.remove('shadow');
-                // Reset text color and image to default
-                const img = c.querySelector('img');
-                const text = c.querySelector('span');
-                img.style.filter = 'brightness(6.9) invert(1)'; // Assuming the default image is 'default.png'
-                text.style.color = '#000'; // Reset text to black
-            });
+    //cards.forEach(card => {
+    //    card.addEventListener('click', () => {
+    //        // Remove the active shadow class and reset the color of all cards
+    //        cards.forEach(c => {
+    //            c.classList.remove('shadow');
+    //            // Reset text color and image to default
+    //            const img = c.querySelector('img');
+    //            const text = c.querySelector('span');
+    //            img.style.filter = 'brightness(6.9) invert(1)'; // Assuming the default image is 'default.png'
+    //            text.style.color = '#000'; // Reset text to black
+    //        });
     
-            // Add the active shadow class to the clicked card
-            card.classList.add('shadow');
+    //        // Add the active shadow class to the clicked card
+    //        card.classList.add('shadow');
     
-            // Change the image to blue and the text color to blue
-            const clickedImg = card.querySelector('img');
-            const clickedText = card.querySelector('span');
-            clickedImg.style.filter = 'brightness(1) ';
-                        clickedText.style.color = '#007bff'; // Change text to blue
-        });
-    });
+    //        // Change the image to blue and the text color to blue
+    //        const clickedImg = card.querySelector('img');
+    //        const clickedText = card.querySelector('span');
+    //        clickedImg.style.filter = 'brightness(1) ';
+    //                    clickedText.style.color = '#007bff'; // Change text to blue
+    //    });
+    //});
     document.querySelectorAll('.color-circle').forEach(circle => {
         circle.addEventListener('click', function() {
             // Remove 'active' class from all circles
@@ -319,3 +319,296 @@ $("#SubForm").on("submit", function (e) {
         }
     });
 });
+function GetAllNewOnes() {
+    $.ajax({
+        url: 'http://localhost:5246/api/Product/GetTheNewOnes',
+        method: "GET",
+        success: function (response) {
+            console.log(response);
+            var FilterPartinHome = document.querySelector(".FilterPartinHome");
+            FilterPartinHome.innerHTML = '';
+            response.forEach(s => {
+                // Use the first image from imageUrls array, or a default image if not available
+                var productImageUrl = s.imageUrls.length > 0 ? s.imageUrls[0] : 'https://via.placeholder.com/320';
+
+                var product = `
+                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                        <div class="product-card p-3 shadow-sm">
+                            <!-- Discount Badge -->
+                            <div class="discount-badge-circle">
+                                Na?d al??larda<br>Endirim<br><strong>${(s.price - s.discountedPrice).toFixed()} AZN</strong>
+                            </div>
+
+                            <!-- Wishlist Icon -->
+                            <div class="wishlist-icon">
+                                <i class="fa-regular fa-heart wishlist"></i>
+                            </div>
+
+                            <!-- Product Image -->
+                            <div class="product-image text-center mb-3">
+                                <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
+                            </div>
+
+                            <!-- Product Name -->
+                            <h3 class="product-name text-center mb-1">
+                                ${s.name}
+                            </h3>
+
+                            <!-- Reviews and Rating -->
+                            <div class="review-section text-center mb-2">
+                                <span class="rating-stars">
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star-half-alt text-warning"></i>
+                                </span>
+                                <span class="review-count">(57 Reviews)</span>
+                            </div>
+
+                            <!-- Price -->
+                            <div class="price-section text-center mb-2">
+                                <span class="price-old text-muted">${s.price.toFixed()} AZN</span><br>
+                                <span class="price-new fw-bold">${s.discountedPrice.toFixed()} AZN</span>
+                            </div>
+
+                            <!-- Color Choices Section -->
+                            <div class="color-choices text-center my-2">
+                                ${s.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
+                            </div>
+
+                            <!-- Monthly Payment Section -->
+                            <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                                <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                                <span class="installment-option">6 ay</span>
+                                <span class="installment-option selected mx-2">12 ay</span>
+                                <span class="installment-price fw-bold">106 AZN</span>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons text-center">
+                                <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
+                                <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                FilterPartinHome.innerHTML += product;
+            });
+        },
+        error: function (xhr) {
+            console.log(xhr);
+        }
+    });
+}
+
+GetAllNewOnes();
+function GetTheMostViewedOnes() {
+    $.ajax({
+        url: 'http://localhost:5246/api/Product/TheMostViewed',
+        method: "GET",
+        success: function (response) {
+            console.log(response);
+            var FilterPartinHome = document.querySelector(".FilterPartinHome");
+            FilterPartinHome.innerHTML = '';
+            response.forEach(s => {
+                // Use the first image from imageUrls array, or a default image if not available
+                var productImageUrl = s.imageUrls.length > 0 ? s.imageUrls[0] : 'https://via.placeholder.com/320';
+
+                var product = `
+                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                        <div class="product-card p-3 shadow-sm">
+                            <!-- Discount Badge -->
+                            <div class="discount-badge-circle">
+                                Na?d al??larda<br>Endirim<br><strong>${(s.price - s.discountedPrice).toFixed()} AZN</strong>
+                            </div>
+
+                            <!-- Wishlist Icon -->
+                            <div class="wishlist-icon">
+                                <i class="fa-regular fa-heart wishlist"></i>
+                            </div>
+
+                            <!-- Product Image -->
+                            <div class="product-image text-center mb-3">
+                                <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
+                            </div>
+
+                            <!-- Product Name -->
+                            <h3 class="product-name text-center mb-1">
+                                ${s.name}
+                            </h3>
+
+                            <!-- Reviews and Rating -->
+                            <div class="review-section text-center mb-2">
+                                <span class="rating-stars">
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star-half-alt text-warning"></i>
+                                </span>
+                                <span class="review-count">(57 Reviews)</span>
+                            </div>
+
+                            <!-- Price -->
+                            <div class="price-section text-center mb-2">
+                                <span class="price-old text-muted">${s.price.toFixed() } AZN</span><br>
+                                <span class="price-new fw-bold">${s.discountedPrice.toFixed() } AZN</span>
+                            </div>
+
+                            <!-- Color Choices Section -->
+                            <div class="color-choices text-center my-2">
+                                ${s.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
+                            </div>
+
+                            <!-- Monthly Payment Section -->
+                            <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                                <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                                <span class="installment-option">6 ay</span>
+                                <span class="installment-option selected mx-2">12 ay</span>
+                                <span class="installment-price fw-bold">106 AZN</span>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons text-center">
+                                <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
+                                <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                FilterPartinHome.innerHTML += product;
+            });
+        },
+        error: function (xhr) {
+            console.log(xhr);
+        }
+    });
+}
+function GetTheOnesWithDiscount() {
+    $.ajax({
+        url: 'http://localhost:5246/api/Product/WithDiscount',
+        method: "GET",
+        success: function (response) {
+            console.log(response);
+            var FilterPartinHome = document.querySelector(".FilterPartinHome");
+            FilterPartinHome.innerHTML = '';
+            response.forEach(s => {
+                // Use the first image from imageUrls array, or a default image if not available
+                var productImageUrl = s.imageUrls.length > 0 ? s.imageUrls[0] : 'https://via.placeholder.com/320';
+
+                var product = `
+                    <div class="col-12 col-md-4 col-lg-3 mb-3">
+                        <div class="product-card p-3 shadow-sm">
+                            <!-- Discount Badge -->
+                            <div class="discount-badge-circle">
+                                Na?d al??larda<br>Endirim<br><strong>${(s.price - s.discountedPrice).toFixed()} AZN</strong>
+                            </div>
+
+                            <!-- Wishlist Icon -->
+                            <div class="wishlist-icon">
+                                <i class="fa-regular fa-heart wishlist"></i>
+                            </div>
+
+                            <!-- Product Image -->
+                            <div class="product-image text-center mb-3">
+                                <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
+                            </div>
+
+                            <!-- Product Name -->
+                            <h3 class="product-name text-center mb-1">
+                                ${s.name}
+                            </h3>
+
+                            <!-- Reviews and Rating -->
+                            <div class="review-section text-center mb-2">
+                                <span class="rating-stars">
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star text-warning"></i>
+                                    <i class="fa fa-star-half-alt text-warning"></i>
+                                </span>
+                                <span class="review-count">(57 Reviews)</span>
+                            </div>
+
+                            <!-- Price -->
+                            <div class="price-section text-center mb-2">
+                                <span class="price-old text-muted">${s.price.toFixed()} AZN</span><br>
+                                <span class="price-new fw-bold">${s.discountedPrice.toFixed()} AZN</span>
+                            </div>
+
+                            <!-- Color Choices Section -->
+                            <div class="color-choices text-center my-2">
+                                ${s.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
+                            </div>
+
+                            <!-- Monthly Payment Section -->
+                            <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                                <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                                <span class="installment-option">6 ay</span>
+                                <span class="installment-option selected mx-2">12 ay</span>
+                                <span class="installment-price fw-bold">106 AZN</span>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons text-center">
+                                <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
+                                <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                FilterPartinHome.innerHTML += product;
+            });
+        },
+        error: function (xhr) {
+            console.log(xhr);
+        }
+    });
+
+}
+function DeleteProduct(id) {
+    var ProductTable = document.querySelector(`.ProductTable[data-id="${id}"]`);
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with AJAX request if user confirms
+            $.ajax({
+                url: '/Product/Delete/' + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (response) {
+                    Swal.fire(
+                        'Deleted!',
+                        response.message,
+                        'success'
+                    );
+                    // Remove the corresponding address element from the DOM
+                    addressElement.remove();
+                },
+                error: function (error) {
+                    Swal.fire(
+                        'Error!',
+                        'Error: ' + error.responseText,
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+
+}
