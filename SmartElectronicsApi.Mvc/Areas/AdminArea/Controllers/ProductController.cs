@@ -74,5 +74,9 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 }
             }
         }
+        public async Task<IActionResult> Create()
+        {
+            return View();
+        }
     }
 }

@@ -28,5 +28,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
                 throw new Exception(ex.InnerException.Message, ex);
             }
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            return Ok(await _parametrGroupService.Delete(id));
+        }
     }
 }

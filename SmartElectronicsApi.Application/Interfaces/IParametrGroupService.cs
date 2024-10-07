@@ -13,6 +13,7 @@ namespace SmartElectronicsApi.Application.Interfaces
     public interface IParametrGroupService 
     {
         Task<int> Create(ParametrGroupCreateDto parametrGroupCreateDto);
-       
+        Task<int> Delete(int? id);
+        Task<ParametrGroupListItemDto> GetById(int? id);
     }
 }

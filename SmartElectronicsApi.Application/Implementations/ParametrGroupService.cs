@@ -48,7 +48,25 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
                 return entity.Id;
             }
-            
+         public async Task<int> Delete(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var ParametrGroup = await _unitOfWork.parametricGroupRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (ParametrGroup is null) throw new CustomException(404, "Not found");
+            await _unitOfWork.parametricGroupRepository.Delete(ParametrGroup);
+            _unitOfWork.Commit();
+            return ParametrGroup.Id;
+        }
+        public async Task<ParametrGroupListItemDto> GetById(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var ParametrGroup = await _unitOfWork.parametricGroupRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (ParametrGroup is null) throw new CustomException(404, "Not found");
+            var MappedValue=_mapper.Map<ParametrGroupListItemDto>(ParametrGroup);
+            return MappedValue;
+        }
+
+
         }
 
     }

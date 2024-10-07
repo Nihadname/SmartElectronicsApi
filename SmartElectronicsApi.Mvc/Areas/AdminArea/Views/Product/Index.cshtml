@@ -1,7 +1,9 @@
 ﻿@using SmartElectronicsApi.Mvc.ViewModels.Product
 @using SmartElectronicsApi.Mvc.ViewModels.pagination
 @model PaginatedResponseVM<ProdutListItemVM>
-
+<div class="d-flex justify-content-center">
+    <a class="btn btn-sm btn-primary" asp-action="Create" asp-controller="Product">Create</a>
+</div>
 <div class="col-lg-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-body">
@@ -50,8 +52,8 @@
                                 </td>
                                 <td> @item.Category.Name </td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary" onclick="DeleteProduct(@item.Id)">Edit</button>
-                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                    <button class="btn btn-sm btn-primary">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="DeleteProduct(@item.Id) ">Delete</button>
                                 </td>
                             </tr>
                         }

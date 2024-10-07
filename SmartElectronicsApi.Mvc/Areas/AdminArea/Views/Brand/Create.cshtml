@@ -1,0 +1,35 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Brand
+@model BrandCreateVM
+
+<row>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Horizontal Form</h4>
+                <p class="card-description"> Brand Create Page </p>
+                <form asp-action="Create" method="post" class="forms-sample" enctype="multipart/form-data">
+                    <div class="form-group row">
+                        <label asp-for="Name" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <input asp-for="Name" class="form-control" placeholder="Name">
+                            <span class="text-danger " asp-validation-for="Name"></span>
+                        </div>
+                        <label asp-for="Description" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <input asp-for="Description" class="form-control" placeholder="Description">
+                            <span class="text-danger " asp-validation-for="Description"></span>
+                        </div>
+                        <label asp-for="formFile" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <input asp-for="formFile" class="form-control" placeholder="Image">
+                            <span class="text-danger " asp-validation-for="formFile"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                    <button class="btn btn-light">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</row>
