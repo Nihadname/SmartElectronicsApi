@@ -1,0 +1,768 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Product
+@model ProductReturnVM
+
+
+
+<style>
+    * {
+      padding: 0px;
+      margin: 0px;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: #f7f7f7;
+      font-family: Arial, sans-serif;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    swiper-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    swiper-slide img {
+      display: block;
+      height: 70%;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .mySwiper {
+      height: 500px;
+    }
+
+    .mySwiper2 {
+      height: 100px;
+      padding: 10px 0;
+    }
+
+    .mySwiper2 swiper-slide {
+      width: 25%;
+      height: 100%;
+      opacity: 0.4;
+      transition: opacity 0.3s ease;
+    }
+
+    .mySwiper2 .swiper-slide-thumb-active {
+      opacity: 1;
+    }
+
+    /* Animations */
+    keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Product details */
+    .product-details {
+      border: 1px solid #e0e0e0;
+      padding: 20px;
+      border-radius: 10px;
+      background: #fff;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .product-name {
+      font-size: 26px;
+      font-weight: bold;
+      margin-bottom: 15px;
+      color: #333;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .product-description {
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #666;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .product-price {
+      font-size: 22px;
+      font-weight: bold;
+      color: #d32f2f;
+      margin-bottom: 10px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .product-stock {
+      font-size: 14px;
+      color: #388e3c;
+      margin-bottom: 10px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .product-shipping {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 15px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .add-to-cart-btn {
+      width: 100%;
+      background-color: #ff6000;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .add-to-cart-btn:hover {
+      background-color: #d44b00;
+      transform: translateY(-3px);
+    }
+
+    /* Thumbnail cards */
+    .thumbnail-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .thumbnail-card {
+      width: 80px;
+      height: 80px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      border-radius: 5px;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .thumbnail-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .thumbnail-card.active {
+      border-color: #ff6000;
+      transform: scale(1.1);
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .thumbnail-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Review slider */
+    .reviews-section {
+      margin-top: 30px;
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      padding: 20px;
+      border-radius: 10px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    .review-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .swiper-wrapper {
+      display: flex;
+    }
+
+    .swiper-slide {
+      width: 100%;
+    }
+
+    .review {
+      border-top: 1px solid #ddd;
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+
+    .reviewer-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .review-rating {
+      color: #ffb400;
+      margin-bottom: 10px;
+    }
+
+    .review-comment {
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Swiper navigation */
+    .swiper-button-next,
+    .swiper-button-prev {
+      color: #ff6000;
+    }
+
+    .review {
+        border: 1px solid #ddd;
+        padding: 32px;
+        border-radius: 10px;
+        background: #fff;
+        margin-bottom: 20px;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .reviewer-name {
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .review-rating {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .stars {
+        font-size: 18px;
+        color: #FFD700; /* Gold color for filled stars */
+    }
+
+    .review-rating-number {
+        font-size: 16px;
+        color: #666;
+    }
+
+    .review-comment {
+        font-size: 14px;
+        color: #555;
+        margin-top: 10px;
+    }
+    .swiper-pagination-bullet {
+      background-color: #ff6000;
+    }
+
+    .swiper-pagination-bullet-active {
+      background-color: #ff8000;
+    }
+
+    /* Technical Specifications Table */
+    .spec-table-container {
+    margin-top: 50px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Table title */
+  .table-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 2px solid #ff6000;
+    display: inline-block;
+    padding-bottom: 10px;
+  }
+
+  /* Main table design */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    padding: 15px;
+    text-align: left;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  /* Header for each group */
+  .spec-group-header th {
+    background-color: #ff6000;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    text-transform: uppercase;
+    border-radius: 10px;
+  }
+
+  .spec-group-header th {
+    padding: 15px;
+  }
+
+  /* Table row styling */
+  .spec-table td {
+    background-color: #fff;
+    transition: background-color 0.3s ease;
+  }
+
+  .spec-table tr:hover td {
+    background-color: #f2f2f2;
+  }
+
+  /* Last row without border */
+  .spec-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* Accent colors for specs */
+  .spec-table td:first-child {
+    font-weight: bold;
+    color: #555;
+  }
+
+  .spec-table td:last-child {
+    color: #333;
+  }
+
+  /* Responsive design for smaller screens */
+  media (max-width: 768px) {
+    .spec-table-container {
+      padding: 15px;
+    }
+
+    .table-title {
+      font-size: 24px;
+    }
+
+    .spec-table th,
+    .spec-table td {
+      font-size: 14px;
+      padding: 10px;
+    }
+  }
+  .product-rating-cart {
+    margin-top: 20px;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    font-size: 16px;
+    color: #333;
+  }
+
+  .rating-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+  }
+
+  .product-rating {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .stars {
+    color: #FFD700; /* Gold for stars */
+    font-size: 20px;
+  }
+
+  .review-count {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .questions-answers {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .questions-answers img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .cart-added-section {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 10px;
+    color: #333;
+  }
+
+  .cart-icon {
+    font-size: 18px;
+    margin-right: 5px;
+    color: #333;
+  }
+
+  .cart-count {
+    color: #FF6000; /* Highlighted color for the cart count */
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  </style>
+  <div class="container">
+    <div class="row product-section">
+      <!-- Product Details -->
+      <div class="col-12 col-lg-6">
+        <swiper-container style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="mySwiper"
+          thumbs-swiper=".mySwiper2" space-between="10" navigation="true">
+                @foreach(var item in Model.ImageUrls)
+                {
+                    <swiper-slide>
+                        <img src="@item" />
+                    </swiper-slide>
+
+                }
+            </swiper-container>
+        <swiper-container class="mySwiper2" space-between="10" slides-per-view="4" free-mode="true"
+          watch-slides-progress="true">
+
+                @foreach (var item in Model.ImageUrls)
+                {
+                    <swiper-slide>
+                        <img src="@item" />
+                    </swiper-slide>
+
+                }
+        </swiper-container>
+      </div>
+
+      <div class="col-12 col-lg-6 product-details-section">
+            <div class="product-details">
+                <h2 id="product-name">@Model.Name</h2>
+
+                <!-- Product Rating and Cart Section -->
+                <div class="product-rating-cart">
+                    <div class="rating-section">
+                        <span class="product-rating">4.4</span>
+                        <span class="stars">★★★★☆</span>
+                        <span class="review-count">8763 Değerlendirme</span>
+                        <span class="questions-answers">
+                            <img src="https://cdn.dsmcdn.com/mobile/reviewrating/kamera-emoji6x.png" alt="camera icon"> | 151 Soru & Cevap
+                        </span>
+                    </div>
+
+                    <div class="cart-added-section">
+                        <span class="cart-icon">🛒</span>
+                        <span>3 gün ərzində</span>
+                        <span class="cart-count">2,946 nəfər əlavə etdi.</span>
+                    </div>
+                </div>
+
+                <!-- Product Description -->
+                <p class="product-description">@Model.Description</p>
+
+                <!-- Product Code -->
+                <p class="product-code">Product Code: @Model.ProductCode</p>
+
+                <!-- Product Price and Discount -->
+                <p id="product-price" class="product-price">
+                    @if (Model.DiscountPercentage > 0)
+                    {
+                        <span>Discounted Price: $@Model.DiscountedPrice</span>
+                        <span class="original-price"><del>Original Price: $@Model.Price</del></span>
+                        <span class="discount-badge">@Model.DiscountPercentage% Off</span>
+                    }
+                    else
+                    {
+                    <p id="product-price" class="product-price">$@Model.Price</p>
+
+
+                    }
+                </p>
+
+                <!-- Stock Quantity -->
+                <p id="product-stock" class="product-stock">In Stock: @Model.StockQuantity units</p>
+
+                <!-- Shipping Info -->
+                <p class="product-shipping">Product Identified Code:@Model.ProductCode</p>
+
+                <!-- View Count -->
+                <p class="product-view-count">View Count: @Model.ViewCount</p>
+
+                <!-- Thumbnail Cards -->
+                <div class="thumbnail-container">
+                    <div class="thumbnail-card active" data-name="Nature 1" data-price="$100" data-stock="5 units">
+                        <img src="https://swiperjs.com/demos/images/nature-1.jpg" alt="Nature 1">
+                    </div>
+                    <div class="thumbnail-card" data-name="Nature 2" data-price="$200" data-stock="8 units">
+                        <img src="https://swiperjs.com/demos/images/nature-2.jpg" alt="Nature 2">
+                    </div>
+                    <div class="thumbnail-card" data-name="Nature 3" data-price="$300" data-stock="2 units">
+                        <img src="https://swiperjs.com/demos/images/nature-3.jpg" alt="Nature 3">
+                    </div>
+                    <div class="thumbnail-card" data-name="Nature 4" data-price="$400" data-stock="1 unit">
+                        <img src="https://swiperjs.com/demos/images/nature-4.jpg" alt="Nature 4">
+                    </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <button class="add-to-cart-btn">Add to Basket</button>
+            </div>
+
+        <!-- Reviews Section -->
+       
+      </div>
+    </div>
+
+    <!-- Technical Specifications Table -->
+    <div class="spec-table-container">
+        <h3 class="table-title">Technical Specifications</h3>
+        <table class="spec-table">
+            @if (Model.parametrGroupListItemDtos != null && Model.parametrGroupListItemDtos.Any())
+            {
+                @foreach (var paramGroup in Model.parametrGroupListItemDtos)
+                {
+                    if (paramGroup != null && paramGroup.parametrValues != null)
+                    {
+                        <tr>
+                            <th colspan="2">@paramGroup.Name</th>
+                        </tr>
+                        @foreach (var param in paramGroup.parametrValues)
+                        {
+                            if (param != null)
+                            {
+                                <tr>
+                                    <td>@param.Type</td>
+                                    <td>@param.Value</td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2">No specifications available for this product.</td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    <!-- Modal Structure -->
+<!-- Modal Structure -->
+<!-- Modal Structure -->
+<div class="modal fade" id="lightboxModal" tabindex="-1" aria-labelledby="lightboxModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-body p-0 m-0">
+                <img src="" id="lightboxImg" alt="Product Image" class="w-100 h-100" style="object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Reviews Section -->
+    <div class="reviews-section">
+        <h3 class="review-title">Customer Reviews</h3>
+
+        <div class="swiper mySwiperReviews">
+            <div class="swiper-wrapper">
+                <!-- Review 1 -->
+                <div class="swiper-slide">
+                    <div class="review">
+                        <div class="review-header">
+                            <p class="reviewer-name">John Doe</p>
+                            <div class="review-rating">
+                                <!-- Rating Stars (static) -->
+                                <span class="stars">
+                                    ★★★★☆
+                                </span>
+                                <span class="review-rating-number">4/5</span>
+                            </div>
+                        </div>
+                        <p class="review-comment">Amazing product! Quality exceeded my expectations. I highly recommend it!</p>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="swiper-slide">
+                    <div class="review">
+                        <div class="review-header">
+                            <p class="reviewer-name">Jane Smith</p>
+                            <div class="review-rating">
+                                <span class="stars">
+                                    ★★★★★
+                                </span>
+                                <span class="review-rating-number">5/5</span>
+                            </div>
+                        </div>
+                        <p class="review-comment">Fantastic quality and fast shipping. Will definitely buy again.</p>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="swiper-slide">
+                    <div class="review">
+                        <div class="review-header">
+                            <p class="reviewer-name">Mark Wilson</p>
+                            <div class="review-rating">
+                                <span class="stars">
+                                    ★★★☆☆
+                                </span>
+                                <span class="review-rating-number">3/5</span>
+                            </div>
+                        </div>
+                        <p class="review-comment">Good product, but shipping took a bit longer than expected.</p>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="review">
+                        <div class="review-header">
+                            <p class="reviewer-name">John Doe</p>
+                            <div class="review-rating">
+                                <!-- Rating Stars (static) -->
+                                <span class="stars">
+                                    ★★★★☆
+                                </span>
+                                <span class="review-rating-number">4/5</span>
+                            </div>
+                        </div>
+                        <p class="review-comment">Amazing product! Quality exceeded my expectations. I highly recommend it!</p>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="swiper-slide">
+                    <div class="review">
+                        <div class="review-header">
+                            <p class="reviewer-name">Jane Smith</p>
+                            <div class="review-rating">
+                                <span class="stars">
+                                    ★★★★★
+                                </span>
+                                <span class="review-rating-number">5/5</span>
+                            </div>
+                        </div>
+                        <p class="review-comment">Fantastic quality and fast shipping. Will definitely buy again.</p>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="swiper-slide">
+                    <div class="review">
+                        <div class="review-header">
+                            <p class="reviewer-name">Mark Wilson</p>
+                            <div class="review-rating">
+                                <span class="stars">
+                                    ★★★☆☆
+                                </span>
+                                <span class="review-rating-number">3/5</span>
+                            </div>
+                        </div>
+                        <p class="review-comment">Good product, but shipping took a bit longer than expected.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Swiper navigation -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+
+
+  <!-- Swiper JS -->
+ <!-- Swiper JS -->  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+
+ <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // Initialize Swiper for the reviews
+    var reviewSwiper = new Swiper('.mySwiperReviews', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+    });
+
+    // Handle the thumbnail clicks
+    const thumbnailCards = document.querySelectorAll('.thumbnail-card');
+    const productName = document.getElementById('product-name');
+    const productPrice = document.getElementById('product-price');
+    const productStock = document.getElementById('product-stock');
+
+    thumbnailCards.forEach((card) => {
+      card.addEventListener('click', function () {
+        // Remove active class from all cards
+        thumbnailCards.forEach((c) => c.classList.remove('active'));
+        // Add active class to the clicked card
+        this.classList.add('active');
+
+        // Update product details based on the clicked card
+        productName.textContent = this.dataset.name;
+        productPrice.textContent = this.dataset.price;
+        productStock.textContent = `In Stock: ${this.dataset.stock}`;
+      });
+    });
+    const swiperSlides = document.querySelectorAll('swiper-slide img');
+  swiperSlides.forEach(img => {
+    img.addEventListener('click', () => {
+      const modalImg = document.getElementById('lightboxImg');
+      modalImg.src = img.src;
+      const modal = new bootstrap.Modal(document.getElementById('lightboxModal'));
+      modal.show();
+    });
+  });
+        var reviewSwiper = new Swiper('.mySwiperReviews', {
+            slidesPerView: 2,
+            spaceBetween: 10,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+  </script>

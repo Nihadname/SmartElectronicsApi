@@ -1,14 +1,9 @@
-﻿using SmartElectronicsApi.Application.Dtos.Color;
-using SmartElectronicsApi.Application.Dtos.ParametrGroup;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SmartElectronicsApi.Mvc.ViewModels.Color;
+using SmartElectronicsApi.Mvc.ViewModels.ParametrGroup;
 
-namespace SmartElectronicsApi.Application.Dtos.Product
+namespace SmartElectronicsApi.Mvc.ViewModels.Product
 {
-    public class ProductReturnDto
+    public class ProductReturnVM
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -22,9 +17,9 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public bool IsDealOfTheWeek { get; set; }
         public bool IsFeatured { get; set; }
         public int StockQuantity { get; set; }
-        public CategoryInProductListItemDto Category { get; set; }
+        public CategoryInProductListItemVm Category { get; set; }
         public List<string> ImageUrls { get; set; }
-        public List<ColorListItemDto> colorListItemDtos { get; set; }
-        public List<ParametrGroupListItemDto> parametrGroupListItemDtos { get; set; }
+        public List<ColorListItemVM> colorListItemDtos { get; set; }
+        public List<ParametrGroupListItemVM> parametrGroupListItemDtos { get; set; }
     }
 }

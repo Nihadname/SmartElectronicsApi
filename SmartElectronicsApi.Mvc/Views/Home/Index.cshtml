@@ -360,55 +360,37 @@ media (max-width: 576px) {
                         <div class="swiper swiperDeal mb-3">
                             <div class="swiper-wrapper">
                                 <!-- Product List View Item 1 -->
-                                <div class="swiper-slide">
-                                    <div class="product-details2">
-                                        <!-- Discount Ribbon -->
-                                        <div class="discount-ribbon">-45%</div>
+                                @foreach(var item in Model.produtListItemVMs)
+                                {
+                                    <div class="swiper-slide">
+                                        <div class="product-details2">
+                                            <!-- Discount Ribbon -->
+                                            <div class="discount-ribbon">-@item.DiscountPercentage%</div>
 
-                                        <!-- Product Image -->
-                                        <div class="product-image">
-                                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" width="100" height="100" alt="Apple iPhone 15 Pro 128 GB Blue Titanium" class="img-fluid">
-                                        </div>
-
-                                        <div class="product-info2">
-                                            <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
-                                        </div>
-
-                                        <div class="product-actions2">
-                                            <div class="product-price2">
-                                                <span class="old-price">2999 AZN</span> <!-- Original Price -->
-                                                <span class="new-price">2549 AZN</span> <!-- Discounted Price -->
+                                            <!-- Product Image -->
+                                            <div class="product-image">
+                                                <img src="@item.ImageUrls.FirstOrDefault()" width="100" height="100" alt="Apple iPhone 15 Pro 128 GB Blue Titanium" class="img-fluid">
                                             </div>
-                                            <button class="btn btn-buy">Bir kliklə al</button>
+
+                                            <div class="product-info2">
+                                                <h5>@item.Name</h5>
+                                            </div>
+
+                                            <div class="product-actions2">
+                                                <div class="product-price2">
+                                                    <span class="old-price">@item.Price AZN</span> <!-- Original Price -->
+                                                    <span class="new-price">@item.DiscountedPrice AZN</span> <!-- Discounted Price -->
+                                                </div>
+                                                <button class="btn btn-buy">Bir kliklə al</button>
+                                            </div>
                                         </div>
+
+
                                     </div>
+                                }
 
-
-                                </div>
                                 <!-- Product List View Item 2 -->
-                                <div class="swiper-slide">
-                                    <div class="product-details2">
-                                        <!-- Discount Ribbon -->
-                                        <div class="discount-ribbon">-45%</div>
-
-                                        <!-- Product Image -->
-                                        <div class="product-image">
-                                            <img src="https://assets.smartelectronics.az/Assets/cdn-cgi?width=320&amp;height=320&amp;path=70b7863e-b9a3-4443-81e9-d0d486f20881.png" width="100" height="100" alt="Apple iPhone 15 Pro 128 GB Blue Titanium" class="img-fluid">
-                                        </div>
-
-                                        <div class="product-info2">
-                                            <h5>Apple iPhone 15 Pro 128 GB Blue Titanium</h5>
-                                        </div>
-
-                                        <div class="product-actions2">
-                                            <div class="product-price2">
-                                                <span class="old-price">2999 AZN</span> <!-- Original Price -->
-                                                <span class="new-price">2549 AZN</span> <!-- Discounted Price -->
-                                            </div>
-                                            <button class="btn btn-buy">Bir kliklə al</button>
-                                        </div>
-                                    </div>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>

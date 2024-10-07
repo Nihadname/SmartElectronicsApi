@@ -19,5 +19,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<List<ProdutListItemDto>> GetAllNewOnes();
         Task<List<ProdutListItemDto>> GetAllWithTheMostViews(int top = 10);
         Task<List<ProdutListItemDto>> GetAllWithDiscounted();
+        Task<List<ProdutListItemDto>> GetDealOfThisWeek();
     }
 }

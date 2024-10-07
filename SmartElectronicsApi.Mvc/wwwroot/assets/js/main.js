@@ -319,6 +319,74 @@ $("#SubForm").on("submit", function (e) {
         }
     });
 });
+function generateProductHTML(product) {
+    // Use the first image from imageUrls array, or a default image if not available
+    var productImageUrl = product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/320';
+
+    return `
+        <div class="col-12 col-md-4 col-lg-3 mb-3">
+            <div class="product-card p-3 shadow-sm">
+                <!-- Discount Badge -->
+                <div class="discount-badge-circle">
+                    Na?d al??larda<br>Endirim<br><strong>${(product.price - product.discountedPrice).toFixed()} AZN</strong>
+                </div>
+
+                <!-- Wishlist Icon -->
+                <div class="wishlist-icon">
+                    <i class="fa-regular fa-heart wishlist"></i>
+                </div>
+
+                <!-- Product Image -->
+                <div class="product-image text-center mb-3">
+                    <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
+                </div>
+
+                <!-- Product Name -->
+                <h3 class="product-name text-center mb-1">
+                    ${product.name}
+                </h3>
+
+                <!-- Reviews and Rating -->
+                <div class="review-section text-center mb-2">
+                    <span class="rating-stars">
+                        <i class="fa fa-star text-warning"></i>
+                        <i class="fa fa-star text-warning"></i>
+                        <i class="fa fa-star text-warning"></i>
+                        <i class="fa fa-star text-warning"></i>
+                        <i class="fa fa-star-half-alt text-warning"></i>
+                    </span>
+                    <span class="review-count">(57 Reviews)</span>
+                </div>
+
+                <!-- Price -->
+                <div class="price-section text-center mb-2">
+                    <span class="price-old text-muted">${product.price.toFixed()} AZN</span><br>
+                    <span class="price-new fw-bold">${product.discountedPrice.toFixed()} AZN</span>
+                </div>
+
+                <!-- Color Choices Section -->
+                <div class="color-choices text-center my-2">
+                    ${product.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
+                </div>
+
+                <!-- Monthly Payment Section -->
+                <div class="installment-section d-flex justify-content-center align-items-center mb-3">
+                    <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
+                    <span class="installment-option">6 ay</span>
+                    <span class="installment-option selected mx-2">12 ay</span>
+                    <span class="installment-price fw-bold">106 AZN</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons text-center">
+                    <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
+                    <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 function GetAllNewOnes() {
     $.ajax({
         url: 'http://localhost:5246/api/Product/GetTheNewOnes',
@@ -326,75 +394,11 @@ function GetAllNewOnes() {
         success: function (response) {
             console.log(response);
             var FilterPartinHome = document.querySelector(".FilterPartinHome");
-            FilterPartinHome.innerHTML = '';
-            response.forEach(s => {
-                // Use the first image from imageUrls array, or a default image if not available
-                var productImageUrl = s.imageUrls.length > 0 ? s.imageUrls[0] : 'https://via.placeholder.com/320';
+            FilterPartinHome.innerHTML = ''; // Clear previous content
 
-                var product = `
-                    <div class="col-12 col-md-4 col-lg-3 mb-3">
-                        <div class="product-card p-3 shadow-sm">
-                            <!-- Discount Badge -->
-                            <div class="discount-badge-circle">
-                                Na?d al??larda<br>Endirim<br><strong>${(s.price - s.discountedPrice).toFixed()} AZN</strong>
-                            </div>
-
-                            <!-- Wishlist Icon -->
-                            <div class="wishlist-icon">
-                                <i class="fa-regular fa-heart wishlist"></i>
-                            </div>
-
-                            <!-- Product Image -->
-                            <div class="product-image text-center mb-3">
-                                <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
-                            </div>
-
-                            <!-- Product Name -->
-                            <h3 class="product-name text-center mb-1">
-                                ${s.name}
-                            </h3>
-
-                            <!-- Reviews and Rating -->
-                            <div class="review-section text-center mb-2">
-                                <span class="rating-stars">
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star-half-alt text-warning"></i>
-                                </span>
-                                <span class="review-count">(57 Reviews)</span>
-                            </div>
-
-                            <!-- Price -->
-                            <div class="price-section text-center mb-2">
-                                <span class="price-old text-muted">${s.price.toFixed()} AZN</span><br>
-                                <span class="price-new fw-bold">${s.discountedPrice.toFixed()} AZN</span>
-                            </div>
-
-                            <!-- Color Choices Section -->
-                            <div class="color-choices text-center my-2">
-                                ${s.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
-                            </div>
-
-                            <!-- Monthly Payment Section -->
-                            <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                                <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                                <span class="installment-option">6 ay</span>
-                                <span class="installment-option selected mx-2">12 ay</span>
-                                <span class="installment-price fw-bold">106 AZN</span>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="action-buttons text-center">
-                                <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
-                                <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                FilterPartinHome.innerHTML += product;
+            // Only one forEach loop is needed
+            response.forEach(product => {
+                FilterPartinHome.innerHTML += generateProductHTML(product);
             });
         },
         error: function (xhr) {
@@ -404,6 +408,7 @@ function GetAllNewOnes() {
 }
 
 GetAllNewOnes();
+
 function GetTheMostViewedOnes() {
     $.ajax({
         url: 'http://localhost:5246/api/Product/TheMostViewed',
@@ -411,75 +416,11 @@ function GetTheMostViewedOnes() {
         success: function (response) {
             console.log(response);
             var FilterPartinHome = document.querySelector(".FilterPartinHome");
-            FilterPartinHome.innerHTML = '';
-            response.forEach(s => {
-                // Use the first image from imageUrls array, or a default image if not available
-                var productImageUrl = s.imageUrls.length > 0 ? s.imageUrls[0] : 'https://via.placeholder.com/320';
+            FilterPartinHome.innerHTML = ''; // Clear previous content
 
-                var product = `
-                    <div class="col-12 col-md-4 col-lg-3 mb-3">
-                        <div class="product-card p-3 shadow-sm">
-                            <!-- Discount Badge -->
-                            <div class="discount-badge-circle">
-                                Na?d al??larda<br>Endirim<br><strong>${(s.price - s.discountedPrice).toFixed()} AZN</strong>
-                            </div>
-
-                            <!-- Wishlist Icon -->
-                            <div class="wishlist-icon">
-                                <i class="fa-regular fa-heart wishlist"></i>
-                            </div>
-
-                            <!-- Product Image -->
-                            <div class="product-image text-center mb-3">
-                                <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
-                            </div>
-
-                            <!-- Product Name -->
-                            <h3 class="product-name text-center mb-1">
-                                ${s.name}
-                            </h3>
-
-                            <!-- Reviews and Rating -->
-                            <div class="review-section text-center mb-2">
-                                <span class="rating-stars">
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star-half-alt text-warning"></i>
-                                </span>
-                                <span class="review-count">(57 Reviews)</span>
-                            </div>
-
-                            <!-- Price -->
-                            <div class="price-section text-center mb-2">
-                                <span class="price-old text-muted">${s.price.toFixed() } AZN</span><br>
-                                <span class="price-new fw-bold">${s.discountedPrice.toFixed() } AZN</span>
-                            </div>
-
-                            <!-- Color Choices Section -->
-                            <div class="color-choices text-center my-2">
-                                ${s.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
-                            </div>
-
-                            <!-- Monthly Payment Section -->
-                            <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                                <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                                <span class="installment-option">6 ay</span>
-                                <span class="installment-option selected mx-2">12 ay</span>
-                                <span class="installment-price fw-bold">106 AZN</span>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="action-buttons text-center">
-                                <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
-                                <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                FilterPartinHome.innerHTML += product;
+            // Only one forEach loop is needed
+            response.forEach(product => {
+                FilterPartinHome.innerHTML += generateProductHTML(product);
             });
         },
         error: function (xhr) {
@@ -494,75 +435,11 @@ function GetTheOnesWithDiscount() {
         success: function (response) {
             console.log(response);
             var FilterPartinHome = document.querySelector(".FilterPartinHome");
-            FilterPartinHome.innerHTML = '';
-            response.forEach(s => {
-                // Use the first image from imageUrls array, or a default image if not available
-                var productImageUrl = s.imageUrls.length > 0 ? s.imageUrls[0] : 'https://via.placeholder.com/320';
+            FilterPartinHome.innerHTML = ''; // Clear previous content
 
-                var product = `
-                    <div class="col-12 col-md-4 col-lg-3 mb-3">
-                        <div class="product-card p-3 shadow-sm">
-                            <!-- Discount Badge -->
-                            <div class="discount-badge-circle">
-                                Na?d al??larda<br>Endirim<br><strong>${(s.price - s.discountedPrice).toFixed()} AZN</strong>
-                            </div>
-
-                            <!-- Wishlist Icon -->
-                            <div class="wishlist-icon">
-                                <i class="fa-regular fa-heart wishlist"></i>
-                            </div>
-
-                            <!-- Product Image -->
-                            <div class="product-image text-center mb-3">
-                                <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
-                            </div>
-
-                            <!-- Product Name -->
-                            <h3 class="product-name text-center mb-1">
-                                ${s.name}
-                            </h3>
-
-                            <!-- Reviews and Rating -->
-                            <div class="review-section text-center mb-2">
-                                <span class="rating-stars">
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star text-warning"></i>
-                                    <i class="fa fa-star-half-alt text-warning"></i>
-                                </span>
-                                <span class="review-count">(57 Reviews)</span>
-                            </div>
-
-                            <!-- Price -->
-                            <div class="price-section text-center mb-2">
-                                <span class="price-old text-muted">${s.price.toFixed()} AZN</span><br>
-                                <span class="price-new fw-bold">${s.discountedPrice.toFixed()} AZN</span>
-                            </div>
-
-                            <!-- Color Choices Section -->
-                            <div class="color-choices text-center my-2">
-                                ${s.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
-                            </div>
-
-                            <!-- Monthly Payment Section -->
-                            <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                                <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                                <span class="installment-option">6 ay</span>
-                                <span class="installment-option selected mx-2">12 ay</span>
-                                <span class="installment-price fw-bold">106 AZN</span>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="action-buttons text-center">
-                                <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
-                                <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                FilterPartinHome.innerHTML += product;
+            // Only one forEach loop is needed
+            response.forEach(product => {
+                FilterPartinHome.innerHTML += generateProductHTML(product);
             });
         },
         error: function (xhr) {

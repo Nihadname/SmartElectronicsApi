@@ -174,7 +174,10 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<ProductReturnDto> GetById(int? id)
         {
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
-            var product = await _unitOfWork.productRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            var product = await _unitOfWork.productRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+ {
+        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color).Include(s=>s.parametricGroups).ThenInclude(s=>s.parametrValues)
+ });
             if (product is null) throw new CustomException(404, "Not found");
             product.ViewCount ++;
             await _unitOfWork.productRepository.Update(product);
@@ -247,6 +250,22 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
             );
 
+            var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+            return MappedProducts;
+        }
+        public async Task<List<ProdutListItemDto>> GetDealOfThisWeek()
+        {
+            var products=await _unitOfWork.productRepository.GetAll(s=>s.IsDeleted==false&&s.IsDealOfTheWeek==true,
+            0,
+            8,
+            includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+                {
+            query => query.Include(p => p.Category)
+                          .Include(s => s.productImages)
+                          .Include(s => s.productColors).ThenInclude(s => s.Color)
+                          .Include(s => s.parametricGroups)
+                }
+            );
             var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
             return MappedProducts;
         }

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SmartElectronicsApi.Mvc.ViewModels;
 using SmartElectronicsApi.Mvc.ViewModels.Brand;
 using SmartElectronicsApi.Mvc.ViewModels.Category;
+using SmartElectronicsApi.Mvc.ViewModels.Product;
 using SmartElectronicsApi.Mvc.ViewModels.Slider;
 using System.Diagnostics;
 using System.Net;
@@ -23,6 +24,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
             using HttpResponseMessage httpResponseMessage = await client.GetAsync($"Slider/GetSliderForUi/{take}");
             using HttpResponseMessage httpResponseMessage1 = await client.GetAsync("Category/GetAllForUserInterface");
             using HttpResponseMessage httpResponseMessage2 = await client.GetAsync("Brand/GetForUi");
+            using HttpResponseMessage httpResponseMessage3 = await client.GetAsync("Product/DealOfTheWeeks");
 
             if (httpResponseMessage.IsSuccessStatusCode)
             {
@@ -41,6 +43,12 @@ namespace SmartElectronicsApi.Mvc.Controllers
                         var brands = await httpResponseMessage2.Content.ReadAsStringAsync();
                         var FinalResultBrand = JsonConvert.DeserializeObject<List<BrandListItemVM>>(brands);
                         homeViewModel.Brands = FinalResultBrand;
+                        if (httpResponseMessage3.IsSuccessStatusCode)
+                        {
+                            var products= await httpResponseMessage3.Content.ReadAsStringAsync();
+                            var FinalResultProduct = JsonConvert.DeserializeObject<List<ProdutListItemVM>>(products);
+                            homeViewModel.produtListItemVMs = FinalResultProduct;
+                        }
                     }
                 }
                 return View(homeViewModel);

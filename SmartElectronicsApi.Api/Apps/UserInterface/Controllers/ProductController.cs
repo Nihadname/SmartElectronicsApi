@@ -29,5 +29,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _productService.GetAllWithDiscounted());
         }
+        [HttpGet("DealOfTheWeeks")]
+        public async Task<IActionResult> GetAllDealOfTheWeeks()
+        {
+            return Ok(await _productService.GetDealOfThisWeek());
+        }
     }
 }
