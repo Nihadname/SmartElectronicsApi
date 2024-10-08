@@ -87,15 +87,23 @@ namespace SmartElectronicsApi.Application.Implementations
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
             var category = await _unitOfWork.categoryRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (category is null) throw new CustomException(404, "Not found");
-            if (string.IsNullOrWhiteSpace(categoryUpdateDto.Name))
+            //if (string.IsNullOrWhiteSpace(categoryUpdateDto.Name))
+            //{
+            //    throw new CustomException(400, "Name", "Category name can't be empty");
+            //}
+            if (!string.IsNullOrEmpty(categoryUpdateDto.Name))
             {
-                throw new CustomException(400, "Name", "Category name can't be empty");
-            }
-            if (await _unitOfWork.categoryRepository.isExists(s => s.Name.ToLower() == categoryUpdateDto.Name.ToLower()))
-            {
-                throw new CustomException(400, "Name", "this category name already exists");
+                if (!category.Name.ToLower().Equals(categoryUpdateDto.Name.ToLower()))
+                {
+                    if (await _unitOfWork.categoryRepository.isExists(s => s.Name.ToLower() == categoryUpdateDto.Name.ToLower() && s.Id != id))
+                    {
+                        throw new CustomException(400, "Name", "This category name already exists in another category");
+                    }
+                }
 
             }
+
+
             _mapper.Map(categoryUpdateDto, category);
 
             if (categoryUpdateDto.formFile != null)

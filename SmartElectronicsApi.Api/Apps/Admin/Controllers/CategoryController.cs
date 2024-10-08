@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Exceptions;
@@ -21,6 +23,8 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
                 return Ok(await categoryService.Create(categoryCreateDto));
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
         [HttpGet]
         public async Task<IActionResult> get(int pageNumber, int pageSize)
         {

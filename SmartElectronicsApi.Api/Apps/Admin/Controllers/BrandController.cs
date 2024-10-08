@@ -47,6 +47,7 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int? id, BrandUpdateDto updateDto)
         {

@@ -80,11 +80,11 @@ namespace SmartElectronicsApi.Application.Implementations
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
             var brand = await _unitOfWork.brandRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (brand is null) throw new CustomException(404, "Not found");
-            if (!string.IsNullOrEmpty(brandUpdateDto.Name))
+            if (!string.IsNullOrEmpty(brandUpdateDto.Name) && !brand.Name.Equals(brandUpdateDto.Name, StringComparison.OrdinalIgnoreCase))
             {
                 if (await _unitOfWork.brandRepository.isExists(s => s.Name.ToLower() == brandUpdateDto.Name.ToLower()))
                 {
-                    throw new CustomException(400, "Name", "this Brand name already exists");
+                    throw new CustomException(400, "Name", "This Brand name already exists");
                 }
             }
             _mapper.Map(brandUpdateDto, brand);

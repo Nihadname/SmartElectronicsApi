@@ -1,30 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartElectronicsApi.Mvc.ViewModels;
-using SmartElectronicsApi.Mvc.ViewModels.Auth;
 using SmartElectronicsApi.Mvc.ViewModels.Brand;
+using SmartElectronicsApi.Mvc.ViewModels.Category;
 using SmartElectronicsApi.Mvc.ViewModels.pagination;
-using SmartElectronicsApi.Mvc.ViewModels.Product;
-using System.Drawing.Printing;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
     [Area("AdminArea")]
-    public class BrandController : Controller
+
+    public class CategoryController : Controller
     {
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 2)
         {
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
-            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Brand?pageNumber={pageNumber}&pageSize={pageSize}");
+            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Category?pageNumber={pageNumber}&pageSize={pageSize}");
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 string ContentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-                var data = JsonConvert.DeserializeObject<PaginatedResponseVM<BrandAdminReturnVM>>(ContentStream);
+                var data = JsonConvert.DeserializeObject<PaginatedResponseVM<CategoryAdminVM>>(ContentStream);
                 return View(data);
             }
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -45,25 +43,26 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Create(BrandCreateVM BrandCreateVM)
+        public async Task<IActionResult> Create(CategoryCreateVM categoryCreateVM)
         {
             if (!ModelState.IsValid)
             {
-                return View(BrandCreateVM);
-            } 
+                return View(categoryCreateVM);
+            }
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
             var content = new MultipartFormDataContent();
-            content.Add(new StringContent(BrandCreateVM.Name), "Name");
-            content.Add(new StringContent(BrandCreateVM.Description), "Description");
-            if (BrandCreateVM.formFile != null)
+            content.Add(new StringContent(categoryCreateVM.Name), "Name");
+            content.Add(new StringContent(categoryCreateVM.Description), "Description");
+            content.Add(new StringContent(categoryCreateVM.Icon), "Icon");
+            if (categoryCreateVM.formFile != null)
             {
-                var fileContent = new StreamContent(BrandCreateVM.formFile.OpenReadStream());
-                fileContent.Headers.ContentType = new MediaTypeHeaderValue(BrandCreateVM.formFile.ContentType);
-                content.Add(fileContent, nameof(BrandCreateVM.formFile), BrandCreateVM.formFile.FileName);
+                var fileContent = new StreamContent(categoryCreateVM.formFile.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(categoryCreateVM.formFile.ContentType);
+                content.Add(fileContent, nameof(categoryCreateVM.formFile), categoryCreateVM.formFile.FileName);
             }
-            var response = await client.PostAsync("Brand", content);
+            var response = await client.PostAsync("Category", content);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index");
@@ -83,7 +82,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 {
                     ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
-                return View(BrandCreateVM);
+                return View(categoryCreateVM);
             }
         }
         [HttpPost]
@@ -94,15 +93,14 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             var jwtToken = Request.Cookies["JwtToken"];
             if (string.IsNullOrEmpty(jwtToken))
             {
-                // Return a JSON response indicating that the user is not authenticated
                 return Json(new { success = false, message = "User not authenticated." });
             }
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
 
-            var response = await client.DeleteAsync($"http://localhost:5246/api/Brand/{id}");
+            var response = await client.DeleteAsync($"http://localhost:5246/api/Category/{id}");
             if (response.IsSuccessStatusCode)
             {
-                return Json(new { success = true, message = "Branf successfully deleted." });
+                return Json(new { success = true, message = "Category successfully deleted." });
             }
             else
             {
@@ -118,18 +116,17 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                     return Json(new { success = false, message = errorResponse?.Message ?? "An unknown error occurred." });
                 }
             }
-
         }
-        public async Task<IActionResult> Update(int? id)
+        public async Task<IActionResult> Update(int id)
         {
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
-            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Brand/{id}");
+            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Category/{id}");
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 string ContentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-                var data = JsonConvert.DeserializeObject<BrandUpdateVM>(ContentStream);
+                var data = JsonConvert.DeserializeObject<CategoryUpdateVM>(ContentStream);
                 return View(data);
             }
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -144,57 +141,48 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             {
                 return RedirectToAction("Error404", "Home", new { area = "" });
             }
-
-
         }
         [HttpPost]
-        public async Task<IActionResult> Update(int? id, BrandUpdateVM brandUpdateVM)
+        public async Task<IActionResult> Update(int? id,CategoryUpdateVM categoryUpdateVM)
         {
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
-
             var content = new MultipartFormDataContent();
 
 
-            content.Add(new StringContent(brandUpdateVM.Name ?? string.Empty), "Name");
+            content.Add(new StringContent(categoryUpdateVM.Name ?? string.Empty), "Name");
 
-            // Add Description (even if null or empty)
-            content.Add(new StringContent(brandUpdateVM.Description ?? string.Empty), "Description");
-
-            // Add file if available
-            if (brandUpdateVM.formFile != null)
+            content.Add(new StringContent(categoryUpdateVM.Description ?? string.Empty), "Description");
+            content.Add(new StringContent(categoryUpdateVM.Icon ?? string.Empty), "Icon");
+            if (categoryUpdateVM.formFile != null)
             {
-                var fileContent = new StreamContent(brandUpdateVM.formFile.OpenReadStream());
-                fileContent.Headers.ContentType = new MediaTypeHeaderValue(brandUpdateVM.formFile.ContentType);
-                content.Add(fileContent, nameof(brandUpdateVM.formFile), brandUpdateVM.formFile.FileName);
+                var fileContent = new StreamContent(categoryUpdateVM.formFile.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(categoryUpdateVM.formFile.ContentType);
+                content.Add(fileContent, nameof(categoryUpdateVM.formFile), categoryUpdateVM.formFile.FileName);
             }
-
-
-            var response = await client.PutAsync($"Brand/{id}", content);
-                if (response.IsSuccessStatusCode)
+            var response = await client.PutAsync($"Category/{id}", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+                if (errorResponse?.Errors != null)
                 {
-                    return RedirectToAction("Index");
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                    }
                 }
                 else
                 {
-                    var errorResponseString = await response.Content.ReadAsStringAsync();
-                    var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
-                    if (errorResponse?.Errors != null)
-                    {
-                        foreach (var error in errorResponse.Errors)
-                        {
-                            ModelState.AddModelError(error.Key, error.Value);
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
-                    }
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
-
-            return View(brandUpdateVM);
-
+            }
+            return View(categoryUpdateVM);
         }
     }
 }

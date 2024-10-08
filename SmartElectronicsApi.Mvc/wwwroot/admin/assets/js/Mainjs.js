@@ -190,3 +190,43 @@ function DeleteBrand(id) {
         }
     });
 }
+function DeleteCategory(id) {
+    var BrandTable = document.querySelector(`.CategoryTable[data-id="${id}"]`);
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with AJAX request if user confirms
+            $.ajax({
+                url: '/AdminArea/Category/Delete/' + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (response) {
+                    Swal.fire(
+                        'Deleted!',
+                        response.message,
+                        'success'
+                    );
+                    // Remove the corresponding address element from the DOM
+                    BrandTable.remove();
+                },
+                error: function (error) {
+                    Swal.fire(
+                        'Error!',
+                        'Error: ' + error.responseText,
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+}

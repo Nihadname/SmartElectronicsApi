@@ -1,9 +1,6 @@
-﻿@using SmartElectronicsApi.Mvc.ViewModels.Brand
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Category
 @using SmartElectronicsApi.Mvc.ViewModels.pagination
-@model PaginatedResponseVM<BrandAdminReturnVM>
-<h1>frccrfcf</h1>
-
-
+@model PaginatedResponseVM<CategoryAdminVM>
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -12,7 +9,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <h4 class="card-title">Project Status</h4>
                     <!-- Create button -->
-                    <a class="btn btn-primary btn-sm" asp-action="Create" asp-controller="Brand">Create New Brand</a>
+                    <a class="btn btn-primary btn-sm" asp-action="Create" asp-controller="Category">Create New Category</a>
                 </div>
                 <div class="table-responsive">
                     <table class="table">
@@ -21,7 +18,6 @@
                                 <th> # </th>
                                 <th>image</th>
                                 <th> Name </th>
-
                                 <th>Description</th>
                                 <th> Settings </th>
                             </tr>
@@ -29,7 +25,7 @@
                         <tbody>
                             @foreach (var item in Model.Data)
                             {
-                                <tr class="BrandTable" data-id="@item.Id">
+                                <tr class="CategoryTable" data-id="@item.Id">
                                     <td>@item.Id</td>
                                     <td class="py-3">
                                         <img src="@item.ImageUrl" alt="Product Image" class="rounded" style="max-width: 80px;">
@@ -37,8 +33,8 @@
                                     <td>@item.Name</td>
                                     <td>@item.Description</td>
                                     <td>
-                                        <a class="btn btn-sm btn-primary" asp-action="Update" asp-controller="Brand" asp-route-id="@item.Id">Edit</a>
-                                        <button class="btn btn-sm btn-danger" onclick="DeleteBrand(@item.Id) ">Delete</button>
+                                        <a class="btn btn-sm btn-primary" asp-action="Update" asp-controller="Category" asp-route-id="@item.Id">Edit</a>
+                                        <button class="btn btn-sm btn-danger" onclick="DeleteCategory(@item.Id) ">Delete</button>
                                     </td>
                                 </tr>
                             }
