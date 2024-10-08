@@ -1,23 +1,27 @@
-﻿@using SmartElectronicsApi.Mvc.ViewModels.Auth
-@model RolePostVM
-
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Color
+@model ColorVM
 <row>
     <div class="col-md-6 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Horizontal Form</h4>
-                <p class="card-description"> Role Create Page </p>
+                <p class="card-description"> Color Create Page </p>
                 <form asp-action="Create" method="post" class="forms-sample">
                     <div class="form-group row">
                         <label asp-for="Name" class="col-sm-3 col-form-label"></label>
                         <div class="col-sm-9">
-                            <input asp-for="Name" class="form-control"  placeholder="Name">
+                            <input asp-for="Name" class="form-control" placeholder="Name">
                             <span class="text-danger " asp-validation-for="Name"></span>
                         </div>
+                        <label asp-for="Code" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <input asp-for="Code" type="color" class="form-control" placeholder="Code">
+                            <span class="text-danger " asp-validation-for="Code"></span>
+                        </div>
                     </div>
-               
+
                     <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
-                    <button class="btn btn-light" asp-action="Index">Cancel</button>
+                    <button class="btn btn-light">Cancel</button>
                 </form>
             </div>
         </div>

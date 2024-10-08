@@ -1,16 +1,12 @@
 ﻿using FluentValidation;
 using SmartElectronicsApi.Application.Dtos.Color;
 
-internal class ColorUpdateDtoValidator : AbstractValidator<ColorUpdateDto>
+public class ColorUpdateDtoValidator : AbstractValidator<ColorUpdateDto>
 {
     public ColorUpdateDtoValidator()
     {
-        RuleFor(s => s.Name)
-            .MinimumLength(1).MaximumLength(120)
-            .When(s => !string.IsNullOrWhiteSpace(s.Name));
-
-        RuleFor(s => s.Code)
-            .MaximumLength(330)
-            .When(s => !string.IsNullOrWhiteSpace(s.Code));
+        RuleFor(s => s.Name).NotEmpty().WithMessage("not empty")
+                 .MinimumLength(1).MaximumLength(120);
+        RuleFor(s => s.Code).NotEmpty().WithMessage("not empty");
     }
 }

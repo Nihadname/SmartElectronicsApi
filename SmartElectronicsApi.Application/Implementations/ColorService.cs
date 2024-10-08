@@ -79,17 +79,16 @@ namespace SmartElectronicsApi.Application.Implementations
             var color = await _unitOfWork.colorRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
             if (color is null) throw new CustomException(404, "Not found");
 
-            if (!string.IsNullOrEmpty(colorUpdateDto.Code))
+            if (!string.IsNullOrEmpty(colorUpdateDto.Code) && color.Code.ToLower() != colorUpdateDto.Code.ToLower())
             {
                 if (await _unitOfWork.colorRepository.isExists(s => s.Code.ToLower() == colorUpdateDto.Code.ToLower()))
                 {
                     throw new CustomException(400, "Code", "A color with the same code already exists.");
                 }
+
+                color.Code = colorUpdateDto.Code;
             }
-
             color.Name = colorUpdateDto.Name ?? color.Name;
-            color.Code = colorUpdateDto.Code ?? color.Code;
-
             await _unitOfWork.colorRepository.Update(color);
              _unitOfWork.Commit();
 
