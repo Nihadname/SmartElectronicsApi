@@ -110,7 +110,7 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(dest => dest.SubCategoryListItemInBrandDtos, opt => opt.MapFrom(d => d.brandSubCategories.Select(bs => bs.SubCategory)));
                 CreateMap<BrandUpdateDto, Brand>()
                 .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
-
+                CreateMap<Setting, SettingReturnDto>();
             // Product mappings
             CreateMap<Product, ProdutListItemDto>()
                 .ForMember(s => s.Category, map => map.MapFrom(d => d.Category))

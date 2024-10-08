@@ -1,0 +1,29 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Setting
+@model SettingUpdateVM
+row>
+<div class="col-md-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Horizontal Form</h4>
+            <p class="card-description"> Color Create Page </p>
+            <form asp-action="Update" method="post" class="forms-sample">
+                <div class="form-group row">
+                    <label asp-for="Key" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-9">
+                        <input asp-for="Key" class="form-control" placeholder="Key">
+                        <span class="text-danger " asp-validation-for="Key"></span>
+                    </div>
+                    <label asp-for="Value" class="col-sm-3 col-form-label"></label>
+                    <div class="col-sm-9">
+                        <input asp-for="Value" class="form-control" placeholder="Value">
+                        <span class="text-danger " asp-validation-for="Value"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                <button class="btn btn-light" asp-action="Index">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+</row>

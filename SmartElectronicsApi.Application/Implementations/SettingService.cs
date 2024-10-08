@@ -34,12 +34,13 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork.Commit();
             return setting;
         }
-        public async Task<PaginatedResponse<SettingDto>> GetForAdminUi(int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginatedResponse<SettingReturnDto>> GetForAdminUi(int pageNumber = 1, int pageSize = 10)
         {
             var TotalCount = (await _unitOfWork.settingRepository.GetAll()).Count();
-            var settings=await _unitOfWork.settingRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize);  
-            var settingsMapped=_mapper.Map<IEnumerable<SettingDto>>(settings);
-            return new PaginatedResponse<SettingDto >
+            var settings=await _unitOfWork.settingRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize,
+                                                                  pageSize);  
+            var settingsMapped=_mapper.Map<IEnumerable<SettingReturnDto>>(settings);
+            return new PaginatedResponse<SettingReturnDto >
             {
                 Data = settingsMapped,
                 TotalRecords = TotalCount,
