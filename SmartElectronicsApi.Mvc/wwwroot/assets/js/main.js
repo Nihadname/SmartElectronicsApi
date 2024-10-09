@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+﻿document.addEventListener('DOMContentLoaded', function() {
     const menuItems = document.querySelectorAll('.vertical-menu > li');
 
     menuItems.forEach(item => {
@@ -322,9 +322,9 @@ $("#SubForm").on("submit", function (e) {
 function generateProductHTML(product) {
     // Use the first image from imageUrls array, or a default image if not available
     var productImageUrl = product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/320';
-
+    var detailPageUrl = `/Product/Detail/${product.id}`; 
     return `
-        <div class="col-12 col-md-4 col-lg-3 mb-3">
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
             <div class="product-card p-3 shadow-sm">
                 <!-- Discount Badge -->
                 <div class="discount-badge-circle">
@@ -338,7 +338,8 @@ function generateProductHTML(product) {
 
                 <!-- Product Image -->
                 <div class="product-image text-center mb-3">
-                    <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
+                <a href="${detailPageUrl}"> <img src="${productImageUrl}" class="card-img-top" alt="Product Image"></a>
+                    
                 </div>
 
                 <!-- Product Name -->
@@ -370,17 +371,14 @@ function generateProductHTML(product) {
                 </div>
 
                 <!-- Monthly Payment Section -->
-                <div class="installment-section d-flex justify-content-center align-items-center mb-3">
-                    <i class="fa-solid fa-calendar-alt text-muted me-1"></i>
-                    <span class="installment-option">6 ay</span>
-                    <span class="installment-option selected mx-2">12 ay</span>
-                    <span class="installment-price fw-bold">106 AZN</span>
-                </div>
+               
 
                 <!-- Action Buttons -->
                 <div class="action-buttons text-center">
-                    <button class="btn btn-primary w-100 mb-2">1 klikl? al</button>
-                    <a href="#" class="btn btn-outline-secondary w-100">Kredit</a>
+<!-- Add to Basket Button -->
+<a class="btn btn-add-to-basket w-100 mb-2">
+    <i class="fa fa-shopping-cart"></i> 1 Kliklə Al
+</a>
                 </div>
             </div>
         </div>

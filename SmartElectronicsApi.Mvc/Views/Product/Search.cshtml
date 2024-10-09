@@ -1,544 +1,262 @@
 ﻿@using SmartElectronicsApi.Mvc.ViewModels.Product
 @using SmartElectronicsApi.Mvc.ViewModels.pagination
 @model PaginatedResponseVM<ProdutListItemVM>
+
 <style>
     /* product-listing.css */
+    
+    /* Container Styles */
+   
 
-
-/* Filter Card Styling */
-.filter-card {
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #ffffff;
-}
-
-.filter-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.filter-card .card-header {
-    background-color: #007bff;
-    color: #fff;
-    border-radius: 10px 10px 0 0;
-    font-weight: bold;
-    padding: 15px 20px;
-    font-size: 1.2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.filter-card .card-header .reset-filters {
-    background-color: transparent;
-    border: 2px solid #fff;
-    color: #fff;
-    padding: 5px 10px;
-    font-size: 0.8rem;
-    border-radius: 20px;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    cursor: pointer;
-}
-
-.filter-card .card-header .reset-filters:hover {
-    background-color: #fff;
-    color: #007bff;
-    border-color: #007bff;
-}
-
-.filter-card .filter-heading {
-    cursor: pointer;
-    font-weight: 600;
-    padding: 15px 20px;
-    color: #007bff;
-    border-bottom: 1px solid #ddd;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 1rem;
-}
-
-.filter-card .filter-heading i {
-    transition: transform 0.3s ease;
-}
-
-.filter-card .filter-heading:hover {
-    color: #0056b3;
-    background-color: #f0f0f0;
-}
-
-.filter-card .filter-heading.collapsed i {
-    transform: rotate(0deg);
-}
-
-.filter-card .filter-heading:not(.collapsed) i {
-    transform: rotate(180deg);
-}
-
-.filter-card .card-body {
-    padding: 20px;
-}
-
-.filter-card .card-body ul {
-    padding-left: 0;
-}
-
-.filter-card .card-body ul li {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    transition: transform 0.3s ease, background-color 0.3s ease;
-    padding: 8px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.filter-card .card-body ul li:hover {
-    transform: translateX(5px);
-    background-color: #f7f7f7;
-}
-
-.filter-card .card-body ul li label {
-    margin-left: 15px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    flex-grow: 1;
-}
-
-.filter-card .card-body input[type="checkbox"],
-.filter-card .card-body input[type="radio"] {
-    cursor: pointer;
-    width: 18px;
-    height: 18px;
-}
-
-.filter-card .custom-range-slider {
-    width: 100%;
-    margin: 20px 0;
-}
-
-.filter-card .range-value {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.9rem;
-    color: #333;
-}
-
-.filter-card .btn-primary {
-    background-color: #007bff;
-    border: none;
-    font-size: 0.9rem;
-    border-radius: 25px;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    padding: 10px 20px;
-    width: 100%;
-}
-
-.filter-card .btn-primary:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-/* Multi-range slider */
-.range-slider {
-    margin: 20px 0;
-    position: relative;
-}
-
-.range-slider input[type="range"] {
-    position: absolute;
-    pointer-events: none;
-    -webkit-appearance: none;
-    width: 100%;
-    height: 8px;
-    border-radius: 5px;
-    background: #ddd;
-    outline: none;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-}
-
-.range-slider input[type="range"]:hover {
-    opacity: 1;
-}
-
-.range-slider input[type="range"]::-webkit-slider-thumb {
-    pointer-events: all;
-    position: relative;
-    z-index: 1;
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #007bff;
-    cursor: pointer;
-    box-shadow: 0 0 0 3px #ffffff;
-}
-
-.range-slider input[type="range"]::-moz-range-thumb {
-    pointer-events: all;
-    position: relative;
-    z-index: 1;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #007bff;
-    cursor: pointer;
-    box-shadow: 0 0 0 3px #ffffff;
-}
-
-.range-slider input[type="range"]::-ms-thumb {
-    pointer-events: all;
-    position: relative;
-    z-index: 1;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: #007bff;
-    cursor: pointer;
-    box-shadow: 0 0 0 3px #ffffff;
-}
-
-.range-slider .slider-track {
-    position: absolute;
-    height: 8px;
-    border-radius: 5px;
-    background: #007bff;
-}
-
-.range-slider .slider-range {
-    position: absolute;
-    height: 8px;
-    border-radius: 5px;
-    background: #007bff;
-}
-
-/* Additional Styling for Filter Buttons */
-.filter-card .btn-group {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.filter-card .btn-group .btn {
-    font-size: 0.8rem;
-    padding: 8px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.filter-card .btn-group .btn:hover {
-    transform: scale(1.05);
-}
-
-/* Custom Clear Filters Button */
-#clearFiltersBtn {
-    font-size: 0.85rem;
-    padding: 8px 15px;
-    border-radius: 20px;
-    border: 2px solid #ffffff;
-    background-color: transparent;
-    color: #ffffff;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    cursor: pointer;
-}
-
-#clearFiltersBtn:hover {
-    background-color: #ffffff;
-    color: #007bff;
-    border-color: #007bff;
-    transform: scale(1.05);
-}
-
-/* Responsive Design for Filter Section */
-@@media (max-width: 768px) {
+    /* Filter Card Styling */
     .filter-card {
-        margin-bottom: 20px;
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Increased shadow */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: #ffffff;
     }
 
-    .filter-card .card-body {
+    .filter-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-card .card-header {
+        background-color: #4a90e2; /* Softer blue */
+        color: #fff;
+        border-radius: 10px 10px 0 0;
+        font-weight: bold;
         padding: 15px;
-    }
-}
-/* Advanced Sorting Styles */
-.advanced-sorting {
-    position: relative;
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-size: 1rem;
-}
-
-.advanced-sorting label {
-    font-weight: bold;
-    margin-right: 10px;
-    color: #007bff;
-}
-
-.advanced-sorting .sorting-select {
-    position: relative;
-    width: 250px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    transition: border-color 0.3s ease;
-}
-
-.advanced-sorting .sorting-select:hover {
-    border-color: #007bff;
-}
-
-.advanced-sorting .sorting-select select {
-    width: 100%;
-    padding: 10px;
-    border: none;
-    outline: none;
-    appearance: none;
-    cursor: pointer;
-    background: transparent;
-    font-size: 1rem;
-    color: #333;
-}
-
-.advanced-sorting .sorting-select select:hover {
-    color: #007bff;
-}
-
-.advanced-sorting .sorting-select::after {
-    content: '\f078';
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    pointer-events: none;
-    color: #007bff;
-}
-
-.advanced-sorting .secondary-sorting {
-    width: 200px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    transition: border-color 0.3s ease;
-    padding: 10px;
-}
-
-.advanced-sorting .secondary-sorting:hover {
-    border-color: #007bff;
-}
-
-/* Styling for Icons in Sorting Dropdown */
-.sorting-select .sorting-option i {
-    margin-right: 8px;
-    color: #007bff;
-}
-
-.sorting-select .sorting-option span {
-    vertical-align: middle;
-}
-
-/* Multi-level Sorting Controls */
-.multi-sorting-controls {
-    display: flex;
-    gap: 10px;
-}
-
-.multi-sorting-controls label {
-    margin-right: 5px;
-    color: #007bff;
-}
-#productGrid {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-/* Enhanced Product Card */
-.product-card {
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    position: relative;
-    background-color: white;
-    text-align: center;
-    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
-    overflow: hidden; /* Ensure content doesn't overflow */
-    margin-bottom: 20px; /* Space between cards */
-}
-
-.product-card:hover {
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    transform: translateY(-5px);
-}
-
-.product-card img {
-    height: 300px;
-    width: 250px;
-    object-fit: contain;
-    transition: transform 0.3s ease;
-}
-.product-card:hover img {
-    transform: scale(1.05);
-}
-
-.product-card .card-title {
-    font-size: 1.1rem;
-    font-weight: bold;
-}
-
-.product-card .card-text {
-    font-size: 0.9rem;
-    color: #555;
-}
-
-.product-card .card-footer {
-    padding: 10px 15px;
-}
-
-/* Wishlist Icon */
-.wishlist-icon i {
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.wishlist-icon i:hover {
-    color: #ff4757;
-    transform: scale(1.2);
-}
-
-/* Badge for New Products */
-.badge {
-    font-size: 0.75rem;
-    padding: 0.5rem 1rem;
-    letter-spacing: 0.05rem;
-}
-
-.product-card .btn-primary {
-    background-color: #3b7fed;
-    border: none;
-    font-size: 0.9rem;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.product-card .btn-primary:hover {
-    background-color: #335ed3;
-}
-
-/* Responsive Design */
-@@media (max-width: 768px) {
-    .card-body ul {
-        columns: 2;
+        font-size: 1.2rem;
     }
 
-    .product-card .card-title {
+    .filter-card .card-header .reset-filters {
+        background-color: transparent;
+        border: 2px solid #fff;
+        color: #fff;
+        padding: 5px 10px;
+        font-size: 0.8rem;
+        border-radius: 20px;
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .filter-card .filter-heading {
+        cursor: pointer;
+        font-weight: 600;
+        padding: 15px;
+        color: #4a90e2;
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.3s ease, color 0.3s ease;
         font-size: 1rem;
     }
 
-    .product-card .card-text {
-        font-size: 0.8rem;
-    }
-}
-
-/* Rotate Icon on Collapse */
-.rotate-icon {
-    transform: rotate(180deg);
-    transition: transform 0.3s ease;
-}
-
-.card-body ul {
-    padding-left: 0;
-}
-
-.card-body ul li {
-    margin-bottom: 8px;
-}
-
-.card-body ul li label {
-    margin-left: 5px;
-    cursor: pointer;
-}
-
-.card-body input[type="checkbox"],
-.card-body input[type="radio"] {
-    cursor: pointer;
-    transition: 1s;
-}
-.card-body input[type="radio"]:checked {
-    zoom: 1.2;
-}
-
-    .product-card .badge {
-        margin-right: 5px;
+    .filter-card .filter-heading:hover {
+        color: #0056b3;
+        background-color: #f0f0f0;
     }
 
-    .product-card .card-body {
-        padding: 15px;
+    .filter-card .card-body {
+        padding: 20px;
     }
 
-    .product-card .btn-primary {
-        background-color: #007bff; /* Bootstrap primary color */
+    .filter-card .card-body ul {
+        padding-left: 0;
     }
 
-        .product-card .btn-primary:hover {
-            background-color: #0056b3; /* Darker on hover */
+    .filter-card .card-body ul li {
+        margin-bottom: 10px; /* Reduced space between items */
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        padding: 8px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .filter-card .card-body ul li:hover {
+        transform: translateX(5px);
+        background-color: #f7f7f7;
+    }
+
+    /* Product Card Styling */
+    .product-card2 {
+        border: none; /* Remove default border */
+        border-radius: 15px; /* Make corners rounder */
+        transition: box-shadow 0.3s ease, transform 0.3s ease;
+        overflow: hidden; /* Prevent overflow */
+        margin-bottom: 20px; /* Space between cards */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Increased shadow */
+    }
+
+    .product-card2:hover {
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+        transform: translateY(-5px); /* Lift effect */
+    }
+
+    .product-card2 img {
+        height: 250px; /* Set a consistent image height */
+        object-fit: contain; /* Cover the card without distortion */
+        transition: transform 0.3s ease;
+    }
+
+    .product-card2:hover img {
+        transform: scale(1.05); /* Slight zoom effect on hover */
+    }
+
+    .product-card2 .card-title {
+        font-size: 1.1rem; /* Increase font size for title */
+        font-weight: bold; /* Make title bold */
+    }
+
+    .product-card2 .card-text {
+        font-size: 0.85rem; /* Slightly smaller font for description */
+        color: #555; /* Darker text color */
+    }
+
+    .product-card2 .price-info {
+        font-size: 1rem; /* Increase font size for price */
+        color: #4a90e2; /* Price in the same color palette */
+    }
+
+    .product-card2 .card-footer {
+        padding: 10px 15px;
+    }
+
+    .product-card2 .btn-primary {
+        background-color: #4a90e2; /* Primary button color */
+        border: none;
+        font-size: 0.9rem;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        padding: 10px 20px;
+        width: 100%;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-card2 .btn-primary:hover {
+        background-color: #0056b3; /* Darker shade on hover */
+        transform: scale(1.05); /* Scale up slightly */
+    }
+
+    /* Wishlist Icon */
+    .wishlist-icon i {
+        font-size: 1.2rem; /* Increase size for better visibility */
+        cursor: pointer;
+        transition: color 0.3s ease, transform 0.3s ease;
+    }
+
+    .wishlist-icon i:hover {
+        color: #ff4757; /* Change color on hover */
+        transform: scale(1.2); /* Slight scaling effect */
+    }
+
+    /* Badge for New Products */
+    .badge {
+        font-size: 0.75rem; /* Slightly smaller font for badges */
+        padding: 0.4rem 0.8rem; /* More padding for better visibility */
+        border-radius: 10px; /* Rounded corners */
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 768px) {
+        .product-card2 .card-title {
+            font-size: 1rem; /* Adjust title size for smaller screens */
         }
 
-    .product-card .card-title {
-        font-size: 1.2rem;
-        margin-bottom: 10px;
+        .product-card2 .card-text {
+            font-size: 0.85rem; /* Adjust description size */
+        }
     }
 
-    .product-card .card-text {
-        font-size: 0.9rem;
-        color: #555;
+    /* Advanced Sorting Styles */
+    .advanced-sorting {
+        position: relative;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 1rem;
     }
-   
+
+    .advanced-sorting label {
+        font-weight: bold;
+        margin-right: 10px;
+        color: #007bff;
+    }
+
+    .advanced-sorting .sorting-select {
+        position: relative;
+        width: 250px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+        transition: border-color 0.3s ease;
+    }
+
+    .advanced-sorting .sorting-select:hover {
+        border-color: #007bff;
+    }
+
+    .advanced-sorting .sorting-select select {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        outline: none;
+        appearance: none;
+        cursor: pointer;
+        background: transparent;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .advanced-sorting .sorting-select::after {
+        content: '\f078';
+        font-family: 'Font Awesome 5 Free';
+        font-weight: 900;
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #007bff;
+    }
 </style>
 
 <div class="container">
     <div id="loader" class="loader" style="display: none;"></div> <!-- Loader -->
 
     <div class="row">
-        <!-- Sidebar for Filters -->
         <!-- Product Grid -->
         <section class="col-lg-12 col-md-12">
-            <!-- Advanced Sorting Section -->
             <!-- Advanced Sorting Section -->
             <div class="advanced-sorting mb-4">
                 <label for="primarySort">Sort by:</label>
                 <div class="sorting-select">
                     <select id="primarySort" class="form-select" onchange="handleSortChange()">
-                        <!-- Sort by Name -->
                         <option value="name" selected>
                             <i class="fas fa-font"></i> Name
                         </option>
-                        <!-- Sort by Price (Ascending) -->
                         <option value="price-asc">
                             <i class="fas fa-dollar-sign"></i> Price: Low to High
                         </option>
-                        <!-- Sort by Price (Descending) -->
                         <option value="price-desc">
                             <i class="fas fa-dollar-sign"></i> Price: High to Low
                         </option>
-                        <!-- Sort by Created Date -->
                         <option value="createddate">
                             <i class="fas fa-calendar-alt"></i> Created Date
                         </option>
-                        <!-- Sort by View Count -->
                         <option value="viewcount">
                             <i class="fas fa-eye"></i> View Count
                         </option>
                     </select>
                 </div>
             </div>
-
 
             <script>
                 function handleSortChange() {
@@ -558,7 +276,7 @@
                         sortOrder = "desc";
                     } else {
                         sortBy = selectedSort.charAt(0).toUpperCase() + selectedSort.slice(1); // Capitalize first letter
-                        sortOrder = "asc"; // Default sort order
+                        sortOrder = "desc"; // Default sort order
                     }
 
                     const urlParams = new URLSearchParams(window.location.search);
@@ -574,25 +292,19 @@
 
                     // Redirect to the updated URL
                     window.location.href = newUrl;
-
-                    // Hide the loader after redirecting
-                    // Note: This will only be hidden once the new page loads, but it will still show during loading
                 }
             </script>
 
-
-
-
-
             <!-- Product Grid -->
-            <div class="row g-4" id="productGrid" >
-                <!-- Product Card Example -->
+            <div class="row g-4" id="productGrid">
                 @foreach (var item in Model.Data)
                 {
-                    <div class="col-sm-6 col-md-4 col-lg-4">
-                        <div class="card shadow-sm product-card">
+                    <div class="col-sm-6 col-md-4 col-lg-4 mb-4">
+                        <div class="card shadow-sm product-card2">
                             <div class="position-relative overflow-hidden">
-                                <img src="@item.ImageUrls.FirstOrDefault()" alt="Product Image" class="card-img-top">
+                                ,<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.Id">
+                                    <img src="@item.ImageUrls.FirstOrDefault()" alt="Product Image" class="card-img-top">
+                                </a>
                                 @if (item.isNew)
                                 {
                                     <div class="badge bg-success position-absolute top-0 start-0 m-2 p-2 rounded">New</div>
@@ -609,47 +321,36 @@
                                 <div class="price-info mb-2">
                                     <span class="fw-bold text-primary fs-5">@item.DiscountedPrice AZN <del class="text-muted">@item.Price AZN</del></span>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="badge bg-warning">Deal of the Week</span>
-                                    <span class="badge bg-info">@item.ViewCount views</span>
-                                </div>
-                                <small class="text-muted">Stock: @item.StockQuantity</small>
-                                @if (item.IsFeatured)
-                                {
-                                    <div class="mt-1">
-                                        <span class="badge bg-primary">Featured</span>
-                                    </div>
-                                }
+                               
                             </div>
                             <div class="card-footer bg-transparent border-top-0">
-                                <button class="btn btn-primary w-100">Add to Cart</button>
+                                <button class="btn btn-primary w-100">
+                                    <i class="fa fa-cart-plus"></i> Add to Cart
+                                </button>
                             </div>
                         </div>
                     </div>
                 }
-
-
-
             </div>
         </section>
     </div>
-</div>
 
-<nav aria-label="Page navigation">
-    <ul class="pagination justify-content-center">
-        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Search", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })" tabindex="-1">Previous</a>
-        </li>
-
-        @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
-        {
-            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" href="@Url.Action("Search", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Search", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })" tabindex="-1">Previous</a>
             </li>
-        }
 
-        <li class="page-item @(Model.PageNumber == Math.Ceiling((double)Model.TotalRecords / Model.PageSize) ? "disabled" : "")">
-            <a class="page-link" href="@Url.Action("Search", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
-        </li>
-    </ul>
-</nav>
+            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Search", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.PageNumber == Math.Ceiling((double)Model.TotalRecords / Model.PageSize) ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Search", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -72,6 +72,8 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<IProductVariationRepository, ProductVariationRepository>();
+        services.AddScoped<IProductVariationService, ProductVariationService>();
         services.AddScoped<IParametrGroupRepository, ParametrGroupRepository>();
         services.AddScoped<IParametrGroupService, ParametrGroupService>();
         services.AddScoped<IParametrValueRepository, ParametrValueRepository>();

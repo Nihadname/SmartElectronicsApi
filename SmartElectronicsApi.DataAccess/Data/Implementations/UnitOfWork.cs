@@ -27,7 +27,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IParametrGroupRepository parametricGroupRepository { get; private set; }
 
         public IParametrValueRepository parametrValueRepository { get; private set; }
-
+        public IProductVariationRepository productVariationRepository { get; private set; }
 
         public UnitOfWork(SmartElectronicsDbContext smartElectronicsDbContext)
         {
@@ -44,6 +44,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             ProductImageRepository= new ProductImageRepository(smartElectronicsDbContext);
             parametricGroupRepository = new ParametrGroupRepository(smartElectronicsDbContext);
             parametrValueRepository = new ParametrValueRepository(smartElectronicsDbContext);
+            productVariationRepository= new ProductVariationRepository(smartElectronicsDbContext);
         _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 

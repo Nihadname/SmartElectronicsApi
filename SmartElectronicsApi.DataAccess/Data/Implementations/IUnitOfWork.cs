@@ -22,6 +22,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IProductImageRepository ProductImageRepository { get; }
         public IParametrGroupRepository parametricGroupRepository { get; }
         public IParametrValueRepository parametrValueRepository { get; }
+        public IProductVariationRepository productVariationRepository { get; }
         public void Commit();
 
     }
