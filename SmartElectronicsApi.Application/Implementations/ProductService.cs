@@ -52,7 +52,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
                 var subcategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == productCreateDto.SubcategoryId, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
                 {
-        query => query.Include(sc => sc.brandSubCategories)
+        query => query.Include(sc => sc.brandSubCategories).ThenInclude(s=>s.Brand)
                 });
                 if (subcategory == null)
                 {
@@ -66,12 +66,13 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
 
 
-                if (!subcategory.brandSubCategories.Any(b => b.Id == productCreateDto.BrandId))
+                if (!subcategory.brandSubCategories.Select(s=>s.Brand).Any(s=>s.Id==productCreateDto.BrandId))
                 {
-                    throw new CustomException(400, "Brand", "The selected brand is not associated with the chosen subcategory.");
-                }
+                var availableBrands = subcategory.brandSubCategories.Select(b => b.Id).ToList();
+                throw new CustomException(400, "Brand", $"The selected brand ID {productCreateDto.BrandId} is not associated with the chosen subcategory. Available brands: {string.Join(", ", availableBrands)}");
+            }
 
-                if (productCreateDto.DiscountPercentage.HasValue)
+            if (productCreateDto.DiscountPercentage.HasValue)
                 {
                     productCreateDto.DiscountedPrice = productCreateDto.Price - (productCreateDto.Price * productCreateDto.DiscountPercentage.Value) / 100;
                 }

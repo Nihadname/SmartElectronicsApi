@@ -8,6 +8,8 @@
                 <h4 class="card-title">Product Create Page</h4>
                 <p class="card-description">Create a new product</p>
                 <form asp-action="Create" method="post" class="forms-sample" enctype="multipart/form-data">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
                     <div class="form-group row">
                         <label asp-for="Name" class="col-sm-3 col-form-label">Name</label>
                         <div class="col-sm-9">
@@ -189,11 +191,11 @@
     async function fetchBrands() {
         const subcategoryId = document.getElementById("subcategorySelect").value;
 
-        // Fetch the category details again to get the brands
+        // Fetch the subcategory details to get the associated brands
         const response = await fetch(`http://localhost:5246/api/Subcategory/${subcategoryId}`);
         if (response.ok) {
             const subcategoryData = await response.json();
-            const brands = subcategoryData.brandListItemDtos; // Adjusted according to the data structure
+            const brands = subcategoryData.brandListItemDtos; // Adjusted according to your data structure
 
             const brandSelect = document.getElementById("brandSelect");
             brandSelect.innerHTML = ""; // Clear previous options

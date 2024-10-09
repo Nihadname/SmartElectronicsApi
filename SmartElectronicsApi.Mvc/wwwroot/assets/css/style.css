@@ -537,9 +537,10 @@ p {
 }
 
     .product-image img {
-        max-width: 250px; /* Ensures the image fits inside the container */
-        height: auto;
+        max-width: 250px;
+        height: 200px;
         border-radius: 10px;
+        object-fit: contain;
     }
 
 /* Styling for the price section */
