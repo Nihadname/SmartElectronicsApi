@@ -18,8 +18,8 @@
                         @ViewBag.FullName
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navLink5">
-                        <li><a class="dropdown-item" href="/account">Account</a></li>
-                        <li><a class="dropdown-item" href="/orders">Orders</a></li>
+                        <li><a class="dropdown-item" asp-action="Index" asp-controller="Profile">Account</a></li>
+                        <li><a class="dropdown-item" asp-action="Orders" asp-controller="Profile">Orders</a></li>
                         <li><a class="dropdown-item" href="/settings">Settings</a></li>
                         <li><a class="dropdown-item" asp-action="Logout" asp-controller="Account">Logout</a></li>
                     </ul>
@@ -44,7 +44,7 @@
             <a class="navbar-brand customLogo BarMenuOpen" style="display: none;" href="#">
                 <i class="fa-solid fa-bars"></i>
             </a>
-            <a class="navbar-brand customLogo" href="#">
+            <a class="navbar-brand customLogo" asp-action="Index" asp-controller="Home">
                 <img src="https://smartelectronics.az/assets/images/logo.svg" alt="Company Logo">
             </a>
             <!-- Centered Search Bar -->

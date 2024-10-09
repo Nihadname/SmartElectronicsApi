@@ -292,5 +292,9 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return Json(new { success = false, message = errorResponse ?? "Failed to update address." });
             }
         }
+        public IActionResult Orders()
+        {
+            return View();
+        }
     }
 }
