@@ -199,6 +199,7 @@
             <h5>Populyar Məhsullar</h5>
             <hr>
             <div class="row">
+                <a href=""></a>
                 <!-- Dynamically loaded search results will be inserted here -->
             </div>
         </div>
@@ -206,6 +207,21 @@
 </div>
 
 <script>
+    function GetProduct(product) {
+        var detailPageUrl = `/Product/Detail/${product.id}`;
+
+        const productCard = `
+                                                    <div class="col-6 col-md-4 col-lg-3 mb-3">
+                                                        <div class="small-card">
+                                                                     <a href=${detailPageUrl}><img src="${product.imageUrls[0]}" class="img-fluid" alt="${product.name}"></a>
+                                                                    
+                                                                <p>${product.name}</p>
+                                                                    <span>${product.discountedPrice.toFixed(2)} ₼ <del>${product.price.toFixed(2)} ₼</del></span>
+                                                                <p class="text-success">${product.discountPercentage}% OFF</p>
+                                                        </div>
+                                                    </div>`;
+        return productCard;
+    }
     const loader = document.querySelector('.loader');
     let timeout; 
 
@@ -259,16 +275,8 @@
 
                     if (data.data && data.data.length > 0) {
                         data.data.forEach(item => {
-                            const productCard = `
-                                                <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                                    <div class="small-card">
-                                                        <img src="${item.imageUrls[0]}" class="img-fluid" alt="${item.name}">
-                                                        <p>${item.name}</p>
-                                                        <span>${item.discountedPrice.toFixed(2)} ₼ <del>${item.price.toFixed(2)} ₼</del></span>
-                                                        <p class="text-success">${item.discountPercentage}% OFF</p>
-                                                    </div>
-                                                </div>`;
-                            resultsContainer.innerHTML += productCard; 
+                           
+                            resultsContainer.innerHTML += GetProduct(item);
                         });
                     } else {
                         resultsContainer.innerHTML = '<p>No results found.</p>'; 
@@ -294,16 +302,8 @@
 
                     if (data.data && data.data.length > 0) {
                         data.data.forEach(item => {
-                            const productCard = `
-                                                <div class="col-6 col-md-4 col-lg-3 mb-3">
-                                                    <div class="small-card">
-                                                        <img src="${item.imageUrls[0]}" class="img-fluid" alt="${item.name}">
-                                                        <p>${item.name}</p>
-                                                        <span>${item.discountedPrice.toFixed(2)} ₼ <del>${item.price.toFixed(2)} ₼</del></span>
-                                                        <p class="text-success">${item.discountPercentage}% OFF</p>
-                                                    </div>
-                                                </div>`;
-                            resultsContainer.innerHTML += productCard; 
+                         
+                            resultsContainer.innerHTML += GetProduct(item);
                         });
                     } else {
                         resultsContainer.innerHTML = '<p>No results found.</p>';

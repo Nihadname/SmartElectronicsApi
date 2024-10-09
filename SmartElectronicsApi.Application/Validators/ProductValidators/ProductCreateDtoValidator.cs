@@ -69,6 +69,36 @@ namespace SmartElectronicsApi.Application.Validators.ProductValidators
             RuleFor(x => x.CreatedTime)
                 .LessThanOrEqualTo(DateTime.Now).WithMessage("Created time must be in the past.")
                 .When(x => x.CreatedTime.HasValue);
+            RuleFor(s => s).Custom((c, context) =>
+            {
+                long maxSizeInBytes = 15 * 1024 * 1024; // 15 MB
+                if (c.Images != null && c.Images.Count() > 0)
+                {
+                    foreach (var image in c.Images)
+                    {
+                        if (image == null)
+                        {
+                            context.AddFailure("Images", "Image cannot be null.");
+                            continue; 
+                        }
+
+                        if (!image.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.AddFailure("Images", "Only image files are accepted.");
+                        }
+
+                        if (image.Length > maxSizeInBytes)
+                        {
+                            context.AddFailure("Images", $"Image '{image.FileName}' exceeds the maximum allowed size of 15 MB.");
+                        }
+                    }
+                }
+                else
+                {
+                    context.AddFailure("Images", "At least one image must be uploaded.");
+                }
+            });
+
         }
     }
 }

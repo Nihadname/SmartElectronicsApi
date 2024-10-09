@@ -94,6 +94,12 @@ namespace SmartElectronicsApi.Application.Implementations
 
             return color;
         }
+        public async Task<List<ColorListItemDto>> GetAll()
+        {
+           var colors=await _unitOfWork.colorRepository.GetAll();
+            var MappedColors=_mapper.Map<List<ColorListItemDto>>(colors);
+            return MappedColors;
+        }
 
     }
 }

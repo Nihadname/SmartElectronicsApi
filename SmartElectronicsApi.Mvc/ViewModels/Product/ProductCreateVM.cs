@@ -1,4 +1,7 @@
-﻿namespace SmartElectronicsApi.Mvc.ViewModels.Product
+﻿using SmartElectronicsApi.Mvc.ViewModels.Category;
+using SmartElectronicsApi.Mvc.ViewModels.Color;
+
+namespace SmartElectronicsApi.Mvc.ViewModels.Product
 {
     public class ProductCreateVM
     {
@@ -17,6 +20,8 @@
         public int SubcategoryId { get; set; }
         public List<int> ColorIds { get; set; }
         public List<IFormFile> Images { get; set; }
+     
+
 
     }
 }

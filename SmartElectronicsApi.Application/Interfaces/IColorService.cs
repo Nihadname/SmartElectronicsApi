@@ -16,5 +16,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<PaginatedResponse<ColorListItemDto>> GetAllForAdminUi(int pageNumber = 1, int pageSize = 10);
         Task<ColorListItemDto> GetById(int? id);
         Task<Color> Update(int? id, ColorUpdateDto colorUpdateDto);
+        Task<List<ColorListItemDto>> GetAll();
     }
 }

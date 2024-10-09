@@ -1,6 +1,207 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-<h1>fe</h1>
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Product
+@model ProductCreateVM
+
+<row>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Product Create Page</h4>
+                <p class="card-description">Create a new product</p>
+                <form asp-action="Create" method="post" class="forms-sample" enctype="multipart/form-data">
+                    <div class="form-group row">
+                        <label asp-for="Name" class="col-sm-3 col-form-label">Name</label>
+                        <div class="col-sm-9">
+                            <input asp-for="Name" class="form-control" placeholder="Enter product name" />
+                            <span class="text-danger" asp-validation-for="Name"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <textarea asp-for="Description" class="form-control" placeholder="Enter product description"></textarea>
+                            <span class="text-danger" asp-validation-for="Description"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="Price" class="col-sm-3 col-form-label">Price</label>
+                        <div class="col-sm-9">
+                            <input asp-for="Price" class="form-control" placeholder="Enter product price" />
+                            <span class="text-danger" asp-validation-for="Price"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Discount Percentage</label>
+                        <div class="col-sm-9">
+                            <input type="range" asp-for="DiscountPercentage" min="0" max="100" class="form-range" id="discountSlider" oninput="updateDiscountValue()" />
+                            <span class="text-danger" asp-validation-for="DiscountPercentage"></span>
+                            <div class="d-flex justify-content-between">
+                                <span>0%</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="mt-2">
+                                <strong>Selected Discount: <span id="discountValue">0</span>%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="isNew" class="col-sm-3 col-form-label">Is New?</label>
+                        <div class="col-sm-9">
+                            <input asp-for="isNew" type="checkbox" class="form-check-input" />
+                            <label class="form-check-label" asp-for="isNew"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="IsDealOfTheWeek" class="col-sm-3 col-form-label">Deal of the Week?</label>
+                        <div class="col-sm-9">
+                            <input asp-for="IsDealOfTheWeek" type="checkbox" class="form-check-input" />
+                            <label class="form-check-label" asp-for="IsDealOfTheWeek"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="IsFeatured" class="col-sm-3 col-form-label">Featured?</label>
+                        <div class="col-sm-9">
+                            <input asp-for="IsFeatured" type="checkbox" class="form-check-input" />
+                            <label class="form-check-label" asp-for="IsFeatured"></label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="StockQuantity" class="col-sm-3 col-form-label">Stock Quantity</label>
+                        <div class="col-sm-9">
+                            <input asp-for="StockQuantity" class="form-control" placeholder="Enter stock quantity" />
+                            <span class="text-danger" asp-validation-for="StockQuantity"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="ViewCount" class="col-sm-3 col-form-label">View Count</label>
+                        <div class="col-sm-9">
+                            <input asp-for="ViewCount" class="form-control" placeholder="Enter view count" />
+                            <span class="text-danger" asp-validation-for="ViewCount"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="CreatedTime" class="col-sm-3 col-form-label">Created Time</label>
+                        <div class="col-sm-9">
+                            <input asp-for="CreatedTime" class="form-control" type="datetime-local" />
+                            <span class="text-danger" asp-validation-for="CreatedTime"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="CategoryId" class="col-sm-3 col-form-label">Category</label>
+                        <div class="col-sm-9">
+                            <select asp-for="CategoryId" class="form-control" id="categorySelect" onchange="fetchSubcategories()">
+                                <option value="">Select Category</option>
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    <option value="@category.Value">@category.Text</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="CategoryId"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="SubcategoryId" class="col-sm-3 col-form-label">Subcategory</label>
+                        <div class="col-sm-9">
+                            <select asp-for="SubcategoryId" class="form-control" id="subcategorySelect" onchange="fetchBrands()">
+                                <option value="">Select Subcategory</option>
+                                <!-- Subcategories will be populated here -->
+                            </select>
+                            <span class="text-danger" asp-validation-for="SubcategoryId"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label asp-for="BrandId" class="col-sm-3 col-form-label">Brand</label>
+                        <div class="col-sm-9">
+                            <select asp-for="BrandId" class="form-control" id="brandSelect">
+                                <option value="">Select Brand</option>
+                                <!-- Brands will be populated here -->
+                            </select>
+                            <span class="text-danger" asp-validation-for="BrandId"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="ColorIds" class="col-sm-3 col-form-label">Color</label>
+                        <div class="col-sm-9">
+                            <select asp-for="ColorIds" class="form-control">
+                                <option value="">Select Colors</option>
+                                @foreach (var category in ViewBag.Colors)
+                                {
+                                    <option value="@category.Value">@category.Text</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="ColorIds"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="Images" class="col-sm-3 col-form-label">Images</label>
+                        <div class="col-sm-9">
+                            <input asp-for="Images" type="file" class="form-control" multiple />
+                            <span class="text-danger" asp-validation-for="Images"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                    <button class="btn btn-light" asp-action="Index">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</row>
+<script>
+    function updateDiscountValue() {
+        var slider = document.getElementById("discountSlider");
+        var valueDisplay = document.getElementById("discountValue");
+        valueDisplay.textContent = slider.value; // Update the displayed value
+    }
+    async function fetchSubcategories() {
+        const categoryId = document.getElementById("categorySelect").value;
+
+        // Fetch category details based on selected category
+        const response = await fetch(`http://localhost:5246/api/Category/${categoryId}`);
+        if (response.ok) {
+            const categoryData = await response.json();
+            const subcategories = categoryData.subCategories;
+
+            const subcategorySelect = document.getElementById("subcategorySelect");
+            subcategorySelect.innerHTML = ""; // Clear previous options
+            subcategorySelect.insertAdjacentHTML('beforeend', `<option value="">Select Subcategory</option>`);
+
+            subcategories.forEach(subcategory => {
+                subcategorySelect.insertAdjacentHTML('beforeend', `<option value="${subcategory.id}">${subcategory.name}</option>`);
+            });
+
+            // Clear brands when changing categories
+            document.getElementById("brandSelect").innerHTML = `<option value="">Select Brand</option>`;
+        }
+    }
+
+    async function fetchBrands() {
+        const subcategoryId = document.getElementById("subcategorySelect").value;
+
+        // Fetch the category details again to get the brands
+        const response = await fetch(`http://localhost:5246/api/Subcategory/${subcategoryId}`);
+        if (response.ok) {
+            const subcategoryData = await response.json();
+            const brands = subcategoryData.brandListItemDtos; // Adjusted according to the data structure
+
+            const brandSelect = document.getElementById("brandSelect");
+            brandSelect.innerHTML = ""; // Clear previous options
+            brandSelect.insertAdjacentHTML('beforeend', `<option value="">Select Brand</option>`);
+
+            brands.forEach(brand => {
+                brandSelect.insertAdjacentHTML('beforeend', `<option value="${brand.id}">${brand.name}</option>`);
+            });
+        }
+    }
+</script>

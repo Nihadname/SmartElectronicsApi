@@ -42,5 +42,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _colorService.Update(id, colorUpdateDto));
         }
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _colorService.GetAll());    
+        }
     }
 }

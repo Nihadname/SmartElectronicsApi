@@ -141,8 +141,7 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<List<CategoryListItemDto>> GetAllForUserInterface(int skip, int take)
         {
-            try
-            {
+          
                 var categories = await _unitOfWork.categoryRepository.GetAll(
                s => s.IsDeleted == false,
                skip,
@@ -158,11 +157,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 var categoryItemDto = _mapper.Map<List<CategoryListItemDto>>(categories);
                 return categoryItemDto;
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+           
 
 
         }
