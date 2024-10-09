@@ -270,8 +270,66 @@ namespace SmartElectronicsApi.Application.Implementations
             return MappedProducts;
         }
 
+        public async Task<PaginatedResponse<ProdutListItemDto>> Search(
+    int pageNumber = 1,
+    int pageSize = 10,
+    string searchQuery = null,
+   
+    string sortBy = "Name", // Default sort property
+    string sortOrder = "asc"
+)
+        {
+            var productQuery = await _unitOfWork.productRepository.GetQuery(s => s.IsDeleted == false);
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                productQuery = productQuery.Where(s => s.Name.Contains(searchQuery) || s.Description.Contains(searchQuery));
+            }
+            
+            // Apply sorting
+            switch (sortBy.ToLower())
+            {
+                case "name":
+                    productQuery = sortOrder.ToLower() == "desc" ? productQuery.OrderByDescending(p => p.Name) : productQuery.OrderBy(p => p.Name);
+                    break;
+                case "price":
+                    productQuery = sortOrder.ToLower() == "desc" ? productQuery.OrderByDescending(p => p.Price) : productQuery.OrderBy(p => p.Price);
+                    break;
+                case "createddate":
+                    productQuery = sortOrder.ToLower() == "desc" ? productQuery.OrderByDescending(p => p.CreatedTime) : productQuery.OrderBy(p => p.CreatedTime);
+                    break;
+                case "viewcount":
+                    productQuery = sortOrder.ToLower() == "desc" ? productQuery.OrderByDescending(p => p.ViewCount) : productQuery.OrderBy(p => p.ViewCount);
+                    break;
+                default:
+                    productQuery = productQuery.OrderBy(p => p.Name); 
+                    break;
+            }
+
+            // Pagination
+            var totalCount = await productQuery.CountAsync();
+            var products = await productQuery
+                .Include(p => p.Category)
+                .Include(s => s.productImages)
+                .Include(s => s.productColors).ThenInclude(s => s.Color)
+                .Include(s => s.parametricGroups).ThenInclude(s => s.parametrValues)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Map the result to DTOs
+            var mappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+
+            return new PaginatedResponse<ProdutListItemDto>
+            {
+                Data = mappedProducts,
+                TotalRecords = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
 
 
-
+            
     }
 }

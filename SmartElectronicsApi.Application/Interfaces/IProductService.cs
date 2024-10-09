@@ -20,5 +20,12 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<List<ProdutListItemDto>> GetAllWithTheMostViews(int top = 10);
         Task<List<ProdutListItemDto>> GetAllWithDiscounted();
         Task<List<ProdutListItemDto>> GetDealOfThisWeek();
+         Task<PaginatedResponse<ProdutListItemDto>> Search(
+    int pageNumber = 1,
+    int pageSize = 10,
+    string searchQuery = null,
+    string sortBy = "Name", 
+    string sortOrder = "asc"
+);
     }
 }

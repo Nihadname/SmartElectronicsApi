@@ -34,5 +34,14 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _productService.GetDealOfThisWeek());
         }
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search(int pageNumber = 1,
+    int pageSize = 10,
+    string searchQuery = null,
+    string sortBy = "Name", // Default sort property
+    string sortOrder = "asc")
+        {
+            return Ok(await _productService.Search(pageNumber, pageSize, searchQuery, sortBy, sortOrder));
+        }
     }
 }
