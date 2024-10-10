@@ -10,6 +10,7 @@ using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using SmartElectronicsApi.Application.Dtos.ParametrValue;
 using SmartElectronicsApi.Application.Dtos.Product;
+using SmartElectronicsApi.Application.Dtos.ProductVariation;
 using SmartElectronicsApi.Application.Dtos.Role;
 using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Dtos.Slider;
@@ -138,6 +139,7 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<IdentityRole, RoleListItemDto>();
                 CreateMap<RoleDto, IdentityRole>();
                 CreateMap<ProductCreateDto, Product>();
+                CreateMap<ProductVariationCreateDto, ProductVariation>();
 
                 //.ForMember(s => s.parametricGroups, map => map.MapFrom(d => d.ParametrGroupCreateDtos));
                 // .ForMember(dest => dest.productColors, opt => opt.MapFrom(src => src.ColorIds.Select(cid => new ProductColor { ColorId = cid })));

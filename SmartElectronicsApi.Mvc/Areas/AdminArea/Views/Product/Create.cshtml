@@ -34,20 +34,44 @@
                         </div>
                     </div>
 
-                    <div class="form-group row">
-                        <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Discount Percentage</label>
-                        <div class="col-sm-9">
-                            <input type="range" asp-for="DiscountPercentage" min="0" max="100" class="form-range" id="discountSlider" oninput="updateDiscountValue()" />
-                            <span class="text-danger" asp-validation-for="DiscountPercentage"></span>
-                            <div class="d-flex justify-content-between">
-                                <span>0%</span>
-                                <span>100%</span>
-                            </div>
-                            <div class="mt-2">
-                                <strong>Selected Discount: <span id="discountValue">0</span>%</strong>
-                            </div>
-                        </div>
-                    </div>
+                  <div class="form-group row">
+    <label class="col-sm-3 col-form-label">Discount Type</label>
+    <div class="col-sm-9">
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="discountType" id="percentageDiscount" value="percentage" onclick="toggleDiscountFields()">
+            <label class="form-check-label" for="percentageDiscount">Percentage</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="discountType" id="priceDiscount" value="price" onclick="toggleDiscountFields()">
+            <label class="form-check-label" for="priceDiscount">Discounted Price</label>
+        </div>
+    </div>
+</div>
+
+<!-- Discount Percentage -->
+<div class="form-group row" id="discountPercentageRow" style="display: none;">
+    <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Discount Percentage</label>
+    <div class="col-sm-9">
+        <input type="range" asp-for="DiscountPercentage" min="0" max="100" class="form-range" id="discountSlider" oninput="updateDiscountValue()" />
+        <span class="text-danger" asp-validation-for="DiscountPercentage"></span>
+        <div class="d-flex justify-content-between">
+            <span>0%</span>
+            <span>100%</span>
+        </div>
+        <div class="mt-2">
+            <strong>Selected Discount: <span id="discountValue">0</span>%</strong>
+        </div>
+    </div>
+</div>
+
+<!-- Discounted Price -->
+<div class="form-group row" id="discountPriceRow" style="display: none;">
+    <label asp-for="DiscountedPrice" class="col-sm-3 col-form-label">Discounted Price</label>
+    <div class="col-sm-9">
+        <input asp-for="DiscountedPrice" class="form-control" placeholder="Enter discounted price" />
+        <span class="text-danger" asp-validation-for="DiscountedPrice"></span>
+    </div>
+</div>
 
                     <div class="form-group row">
                         <label asp-for="isNew" class="col-sm-3 col-form-label">Is New?</label>
@@ -161,6 +185,11 @@
     </div>
 </row>
 <script>
+    function toggleDiscountFields() {
+        const percentageDiscount = document.getElementById("percentageDiscount").checked;
+        document.getElementById("discountPercentageRow").style.display = percentageDiscount ? "block" : "none";
+        document.getElementById("discountPriceRow").style.display = percentageDiscount ? "none" : "block";
+    }
     function updateDiscountValue() {
         var slider = document.getElementById("discountSlider");
         var valueDisplay = document.getElementById("discountValue");
