@@ -310,3 +310,124 @@ function DeleteSetting(id) {
         }
     });
 }
+function DeleteProductVariation(id) {
+    var BrandTable = document.querySelector(`.ProductVariationTable[data-id="${id}"]`);
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with AJAX request if user confirms
+            $.ajax({
+                url: '/AdminArea/ProductVariation/Delete/' + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (response) {
+                    Swal.fire(
+                        'Deleted!',
+                        response.message,
+                        'success'
+                    );
+                    // Remove the corresponding address element from the DOM
+                    BrandTable.remove();
+                },
+                error: function (error) {
+                    Swal.fire(
+                        'Error!',
+                        'Error: ' + error.responseText,
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+}
+function DeleteParametrGroupTable(id) {
+    var BrandTable = document.querySelector(`.ParametrGroupTable[data-id="${id}"]`);
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with AJAX request if user confirms
+            $.ajax({
+                url: '/AdminArea/ParametrGroup/Delete/' + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (response) {
+                    Swal.fire(
+                        'Deleted!',
+                        response.message,
+                        'success'
+                    );
+                    // Remove the corresponding address element from the DOM
+                    BrandTable.remove();
+                },
+                error: function (error) {
+                    Swal.fire(
+                        'Error!',
+                        'Error: ' + error.responseText,
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+}
+
+function DeleteSubCategory(id) {
+    var BrandTable = document.querySelector(`.SubCategoryTable[data-id="${id}"]`);
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Proceed with AJAX request if user confirms
+            $.ajax({
+                url: '/AdminArea/SubCategory/Delete/' + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+
+                success: function (response) {
+                    Swal.fire(
+                        'Deleted!',
+                        response.message,
+                        'success'
+                    );
+                    // Remove the corresponding address element from the DOM
+                    BrandTable.remove();
+                },
+                error: function (error) {
+                    Swal.fire(
+                        'Error!',
+                        'Error: ' + error.responseText,
+                        'error'
+                    );
+                }
+            });
+        }
+    });
+}

@@ -72,11 +72,14 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400, "Brand", $"The selected brand ID {productCreateDto.BrandId} is not associated with the chosen subcategory. Available brands: {string.Join(", ", availableBrands)}");
             }
 
-            if (productCreateDto.DiscountPercentage.HasValue)
+            if (productCreateDto.DiscountPercentage.HasValue&&productCreateDto.DiscountPercentage!=0)
                 {
                     productCreateDto.DiscountedPrice = productCreateDto.Price - (productCreateDto.Price * productCreateDto.DiscountPercentage.Value) / 100;
                 }
-
+            if (productCreateDto.DiscountedPrice == null)
+            {
+                productCreateDto.DiscountedPrice = 0;
+            }
 
                 productCreateDto.ProductCode = productCreateDto.Name.Length >= 5
                     ? productCreateDto.Name.Substring(0, 5) + Guid.NewGuid().ToString().Substring(0, 15)
@@ -175,10 +178,24 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<ProductReturnDto> GetById(int? id)
         {
             if (id is null) throw new CustomException(400, "Id", "id cant be null");
-            var product = await _unitOfWork.productRepository.GetEntity(s => s.Id == id && s.IsDeleted == false, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
- {
-        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color).Include(s=>s.parametricGroups).ThenInclude(s=>s.parametrValues)
- });
+            var product = await _unitOfWork.productRepository.GetEntity(
+    s => s.Id == id && s.IsDeleted == false,
+    includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+    {
+        query => query
+            .Include(p => p.Category)
+            .Include(p => p.productImages)
+            .Include(p => p.productColors)
+                .ThenInclude(pc => pc.Color)
+            .Include(p => p.parametricGroups)
+                .ThenInclude(pg => pg.parametrValues)
+            .Include(p => p.Variations)
+                .ThenInclude(v => v.productImages)
+            .Include(p => p.Variations)
+                .ThenInclude(v => v.productVariationColors)
+                    .ThenInclude(pvc => pvc.Color)
+    });
+
             if (product is null) throw new CustomException(404, "Not found");
             product.ViewCount ++;
             await _unitOfWork.productRepository.Update(product);
@@ -201,6 +218,19 @@ namespace SmartElectronicsApi.Application.Implementations
                         _unitOfWork.Commit();
                     }
                 }
+                var productImages=await _unitOfWork.ProductImageRepository.GetAll(s => s.ProductId == id);
+            if (productImages.Any() || productImages != null)
+            {
+                foreach(var productImage in productImages)
+                {
+                    if (!string.IsNullOrEmpty(productImage.Name))
+                    {
+                        productImage.Name.DeleteFile();
+                    }
+                    await _unitOfWork.ProductImageRepository.Delete(productImage);
+                    _unitOfWork.Commit();
+                }
+            }
                 await _unitOfWork.productRepository.Delete(product);
                     _unitOfWork.Commit();
                     return product.Id;
@@ -330,7 +360,12 @@ namespace SmartElectronicsApi.Application.Implementations
             };
         }
 
-
+        public async Task<List<ProdutListItemDto>> Get()
+        {
+            var products = await _unitOfWork.productRepository.GetAll();
+            var MappedProducts =_mapper.Map<List<ProdutListItemDto>>(products);
+            return MappedProducts;
+        }
             
     }
 }

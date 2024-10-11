@@ -24,7 +24,21 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductVariationCreateDto productVariationCreateDto)
         {
-            return Ok(await productVariationService.Create(productVariationCreateDto));
+            try
+            {
+                return Ok(await productVariationService.Create(productVariationCreateDto));
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception(ex.InnerException.Message, ex);
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Get(int pageNumber = 1,
+          int pageSize = 10)
+        {
+            return Ok(await productVariationService.GetAll(pageNumber, pageSize));
         }
     }
 }

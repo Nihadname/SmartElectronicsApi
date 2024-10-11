@@ -140,7 +140,9 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<RoleDto, IdentityRole>();
                 CreateMap<ProductCreateDto, Product>();
                 CreateMap<ProductVariationCreateDto, ProductVariation>();
-
+                CreateMap<ProductVariation, ProductVariationListItemDto>()
+                .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.productImages.Select(pi => url + "img/" + pi.Name)))
+                    .ForMember(dest => dest.colorListItemDtos, opt => opt.MapFrom(src => src.productVariationColors.Select(s => s.Color)));
                 //.ForMember(s => s.parametricGroups, map => map.MapFrom(d => d.ParametrGroupCreateDtos));
                 // .ForMember(dest => dest.productColors, opt => opt.MapFrom(src => src.ColorIds.Select(cid => new ProductColor { ColorId = cid })));
 
@@ -149,8 +151,8 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(s => s.Category, map => map.MapFrom(d => d.Category))
     .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.productImages.Select(pi => url + "img/" + pi.Name)))
                     .ForMember(dest => dest.colorListItemDtos, opt => opt.MapFrom(src => src.productColors.Select(s => s.Color)))
-                     .ForMember(s => s.parametrGroupListItemDtos, map => map.MapFrom(d => d.parametricGroups));
-
+                     .ForMember(s => s.parametrGroupListItemDtos, map => map.MapFrom(d => d.parametricGroups))
+                  .ForMember(s => s.productVariationListItemDtos, map => map.MapFrom(d => d.Variations));
                 CreateMap<ParametrGroupCreateDto, ParametrGroup>()
      .ForMember(s => s.parametrValues, map => map.MapFrom(d => d.parametrValues));
 

@@ -9,6 +9,7 @@ namespace SmartElectronicsApi.Application.Dtos.ParametrGroup
 {
     public class ParametrGroupListItemDto
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public List<ParametrValueListItemDto> parametrValues { get; set; }
 

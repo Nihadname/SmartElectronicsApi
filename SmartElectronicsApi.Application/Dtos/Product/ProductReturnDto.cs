@@ -1,5 +1,6 @@
 ﻿using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
+using SmartElectronicsApi.Application.Dtos.ProductVariation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +27,6 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public List<string> ImageUrls { get; set; }
         public List<ColorListItemDto> colorListItemDtos { get; set; }
         public List<ParametrGroupListItemDto> parametrGroupListItemDtos { get; set; }
+        public List<ProductVariationListItemDto > productVariationListItemDtos { get; set; }
     }
 }

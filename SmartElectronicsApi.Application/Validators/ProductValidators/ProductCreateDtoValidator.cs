@@ -74,6 +74,11 @@ namespace SmartElectronicsApi.Application.Validators.ProductValidators
                 long maxSizeInBytes = 15 * 1024 * 1024; // 15 MB
                 if (c.Images != null && c.Images.Count() > 0)
                 {
+                    if(c.Images.Count() > 4)
+                    {
+                        context.AddFailure("Images", "Image cannot be more than 4");
+
+                    }
                     foreach (var image in c.Images)
                     {
                         if (image == null)
@@ -81,7 +86,7 @@ namespace SmartElectronicsApi.Application.Validators.ProductValidators
                             context.AddFailure("Images", "Image cannot be null.");
                             continue; 
                         }
-
+                        
                         if (!image.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
                         {
                             context.AddFailure("Images", "Only image files are accepted.");

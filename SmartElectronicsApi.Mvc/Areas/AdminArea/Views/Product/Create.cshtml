@@ -49,21 +49,20 @@
 </div>
 
 <!-- Discount Percentage -->
-<div class="form-group row" id="discountPercentageRow" style="display: none;">
-    <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Discount Percentage</label>
-    <div class="col-sm-9">
-        <input type="range" asp-for="DiscountPercentage" min="0" max="100" class="form-range" id="discountSlider" oninput="updateDiscountValue()" />
-        <span class="text-danger" asp-validation-for="DiscountPercentage"></span>
-        <div class="d-flex justify-content-between">
-            <span>0%</span>
-            <span>100%</span>
-        </div>
-        <div class="mt-2">
-            <strong>Selected Discount: <span id="discountValue">0</span>%</strong>
-        </div>
-    </div>
-</div>
-
+                    <div class="form-group row" id="discountPercentageRow" style="display: none;">
+                        <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Discount Percentage</label>
+                        <div class="col-sm-9">
+                            <input type="range" asp-for="DiscountPercentage" min="0" max="100" value="0" class="form-range" id="discountSlider" oninput="updateDiscountValue()" />
+                            <span class="text-danger" asp-validation-for="DiscountPercentage"></span>
+                            <div class="d-flex justify-content-between">
+                                <span>0%</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="mt-2">
+                                <strong>Selected Discount: <span id="discountValue">0</span>%</strong>
+                            </div>
+                        </div>
+                    </div>
 <!-- Discounted Price -->
 <div class="form-group row" id="discountPriceRow" style="display: none;">
     <label asp-for="DiscountedPrice" class="col-sm-3 col-form-label">Discounted Price</label>
@@ -189,12 +188,24 @@
         const percentageDiscount = document.getElementById("percentageDiscount").checked;
         document.getElementById("discountPercentageRow").style.display = percentageDiscount ? "block" : "none";
         document.getElementById("discountPriceRow").style.display = percentageDiscount ? "none" : "block";
+
+        // Reset discount slider to 0 if percentage is selected
+        if (percentageDiscount) {
+            document.getElementById("discountSlider").value = 0;
+            document.getElementById("discountValue").textContent = 0;
+        }
     }
     function updateDiscountValue() {
         var slider = document.getElementById("discountSlider");
         var valueDisplay = document.getElementById("discountValue");
         valueDisplay.textContent = slider.value; // Update the displayed value
     }
+
+    // Set initial discount percentage to 0 on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("discountSlider").value = 0;
+        document.getElementById("discountValue").textContent = 0;
+    });
     async function fetchSubcategories() {
         const categoryId = document.getElementById("categorySelect").value;
 

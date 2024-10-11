@@ -33,5 +33,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _parametrGroupService.Delete(id));
         }
+        [HttpGet]
+        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10)
+        {
+            return Ok(await _parametrGroupService.GetAll(pageNumber, pageSize));
+        }
     }
 }

@@ -27,5 +27,6 @@ namespace SmartElectronicsApi.Application.Interfaces
     string sortBy = "Name", 
     string sortOrder = "asc"
 );
+        Task<List<ProdutListItemDto>> Get();
     }
 }

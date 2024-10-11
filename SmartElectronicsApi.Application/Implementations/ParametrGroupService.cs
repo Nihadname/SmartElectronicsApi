@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using SmartElectronicsApi.Application.Dtos;
+using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
@@ -65,8 +67,20 @@ namespace SmartElectronicsApi.Application.Implementations
             var MappedValue=_mapper.Map<ParametrGroupListItemDto>(ParametrGroup);
             return MappedValue;
         }
-
-
+        public async Task<PaginatedResponse<ParametrGroupListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10)
+        {
+            var totalCount = (await _unitOfWork.parametricGroupRepository.GetAll()).Count();
+            var ParametrGroup = await _unitOfWork.parametricGroupRepository.GetAll(s=>s.IsDeleted == false);
+            var MappedValue = _mapper.Map<List<ParametrGroupListItemDto>>(ParametrGroup);
+            return new PaginatedResponse<ParametrGroupListItemDto>
+            {
+                Data = MappedValue,
+                TotalRecords = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
+
+    }
 
     }

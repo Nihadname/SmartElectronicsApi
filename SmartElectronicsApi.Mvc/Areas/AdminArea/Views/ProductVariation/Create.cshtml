@@ -1,0 +1,143 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.ProductVariation
+@model ProductVariationLCreateVM
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Product Create Page</h4>
+                <p class="card-description">Create a new product</p>
+                <form asp-action="Create" method="post" class="forms-sample" enctype="multipart/form-data">
+                    <div asp-validation-summary="All" class="text-danger"></div>
+
+                    <div class="form-group row">
+                        <label asp-for="VariationName" class="col-sm-3 col-form-label">Name</label>
+                        <div class="col-sm-9">
+                            <input asp-for="VariationName" class="form-control" placeholder="Enter product name" />
+                            <span class="text-danger" asp-validation-for="VariationName"></span>
+                        </div>
+                    </div>
+
+                
+
+                    <div class="form-group row">
+                        <label asp-for="Price" class="col-sm-3 col-form-label">Price</label>
+                        <div class="col-sm-9">
+                            <input asp-for="Price" class="form-control" placeholder="Enter product price" />
+                            <span class="text-danger" asp-validation-for="Price"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Discount Type</label>
+                        <div class="col-sm-9">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="discountType" id="percentageDiscount" value="percentage" onclick="toggleDiscountFields()">
+                                <label class="form-check-label" for="percentageDiscount">Percentage</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="discountType" id="priceDiscount" value="price" onclick="toggleDiscountFields()">
+                                <label class="form-check-label" for="priceDiscount">Discounted Price</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discount Percentage -->
+                    <div class="form-group row" id="discountPercentageRow" style="display: none;">
+                        <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Discount Percentage</label>
+                        <div class="col-sm-9">
+                            <input type="range" asp-for="DiscountPercentage" min="0" max="100" value="0" class="form-range" id="discountSlider" oninput="updateDiscountValue()" />
+                            <span class="text-danger" asp-validation-for="DiscountPercentage"></span>
+                            <div class="d-flex justify-content-between">
+                                <span>0%</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="mt-2">
+                                <strong>Selected Discount: <span id="discountValue">0</span>%</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Discounted Price -->
+                    <div class="form-group row" id="discountPriceRow" style="display: none;">
+                        <label asp-for="DiscountedPrice" class="col-sm-3 col-form-label">Discounted Price</label>
+                        <div class="col-sm-9">
+                            <input asp-for="DiscountedPrice" class="form-control" placeholder="Enter discounted price" />
+                            <span class="text-danger" asp-validation-for="DiscountedPrice"></span>
+                        </div>
+                    </div>
+
+                   
+
+                    
+
+                    <div class="form-group row">
+                        <label asp-for="StockQuantity" class="col-sm-3 col-form-label">Stock Quantity</label>
+                        <div class="col-sm-9">
+                            <input asp-for="StockQuantity" class="form-control" placeholder="Enter stock quantity" />
+                            <span class="text-danger" asp-validation-for="StockQuantity"></span>
+                        </div>
+                    </div>
+                     <div class="form-group row">
+                        <label asp-for="ProductId" class="col-sm-3 col-form-label">Product</label>
+                        <div class="col-sm-9">
+                            <select asp-for="ProductId" class="form-control">
+                                <option value="">Select ProductId</option>
+                                @foreach (var category in ViewBag.products)
+                                {
+                                    <option value="@category.Value">@category.Text</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="ColorIds"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="ColorIds" class="col-sm-3 col-form-label">Color</label>
+                        <div class="col-sm-9">
+                            <select asp-for="ColorIds" class="form-control">
+                                <option value="">Select Colors</option>
+                                @foreach (var category in ViewBag.Colors)
+                                {
+                                    <option value="@category.Value">@category.Text</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="ColorIds"></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label asp-for="Images" class="col-sm-3 col-form-label">Images</label>
+                        <div class="col-sm-9">
+                            <input asp-for="Images" type="file" class="form-control" multiple />
+                            <span class="text-danger" asp-validation-for="Images"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                    <button class="btn btn-light" asp-action="Index">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+<script>
+    function toggleDiscountFields() {
+        const percentageDiscount = document.getElementById("percentageDiscount").checked;
+        document.getElementById("discountPercentageRow").style.display = percentageDiscount ? "block" : "none";
+        document.getElementById("discountPriceRow").style.display = percentageDiscount ? "none" : "block";
+
+        // Reset discount slider to 0 if percentage is selected
+        if (percentageDiscount) {
+            document.getElementById("discountSlider").value = 0;
+            document.getElementById("discountValue").textContent = 0;
+        }
+    }
+    function updateDiscountValue() {
+        var slider = document.getElementById("discountSlider");
+        var valueDisplay = document.getElementById("discountValue");
+        valueDisplay.textContent = slider.value; // Update the displayed value
+    }
+
+    // Set initial discount percentage to 0 on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("discountSlider").value = 0;
+        document.getElementById("discountValue").textContent = 0;
+    });
+ 
+</script>

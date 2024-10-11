@@ -1,4 +1,5 @@
-﻿using SmartElectronicsApi.Application.Dtos.ProductVariation;
+﻿using SmartElectronicsApi.Application.Dtos;
+using SmartElectronicsApi.Application.Dtos.ProductVariation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,8 @@ namespace SmartElectronicsApi.Application.Interfaces
     {
         Task<int> Delete(int? id);
         Task<ProductVariationCreateDto> Create(ProductVariationCreateDto productVariationCreateDto);
+        Task<PaginatedResponse<ProductVariationListItemDto>> GetAll(
+         int pageNumber = 1,
+         int pageSize = 10);
     }
 }

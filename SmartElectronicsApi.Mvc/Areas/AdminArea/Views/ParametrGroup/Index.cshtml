@@ -1,0 +1,70 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.ParametrGroup
+@using SmartElectronicsApi.Mvc.ViewModels.pagination
+@model PaginatedResponseVM<ParametrGroupListItemVM>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Project Status</h4>
+                    <!-- Create button -->
+                    <a class="btn btn-primary btn-sm" asp-action="Create" asp-controller="Category">Create New Category</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th> # </th>
+                                <th> Name </th>
+                             
+                                <th> Settings </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Data)
+                            {
+                                <tr class="ParametrGroupTable" data-id="@item.Id">
+                                    <td>@item.Id</td>
+                                   
+                                    <td>@item.Name</td>
+                                    
+                                    <td>
+                                        <a class="btn btn-sm btn-primary" asp-action="Update" asp-controller="Category" asp-route-id="@item.Id">Edit</a>
+                                        <button class="btn btn-sm btn-danger" onclick="DeleteParametrGroupTable(@item.Id) ">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })" tabindex="-1">Previous</a>
+        </li>
+
+        @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.PageNumber == Math.Ceiling((double)Model.TotalRecords / Model.PageSize) ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+        </li>
+    </ul>
+</nav>

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
@@ -15,5 +16,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<int> Create(ParametrGroupCreateDto parametrGroupCreateDto);
         Task<int> Delete(int? id);
         Task<ParametrGroupListItemDto> GetById(int? id);
+        Task<PaginatedResponse<ParametrGroupListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10);
     }
 }

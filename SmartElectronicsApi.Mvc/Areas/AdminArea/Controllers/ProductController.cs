@@ -112,6 +112,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductCreateVM productCreateVM)
         {
+            await LoadViewBagData();
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization =
@@ -217,7 +218,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 using HttpResponseMessage httpResponseMessage = await client.PostAsync("http://localhost:5246/api/Product", content);
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
-                    return RedirectToAction("Index", "Role");
+                    return RedirectToAction("Index", "Product");
                 }
                 else
                 {
