@@ -13,12 +13,15 @@ namespace SmartElectronicsApi.Application.Dtos.SubsCategory
         public string Name { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
+        public int CategoryId   { get; set; }
+        public List<int> BrandIds { get; set; }
         public CategoryInSubcategoryReturnDto  CategoryInSubcategoryReturn { get; set; }
         public List<BrandListItemDto> brandListItemDtos { get; set; }
         public List<ProdutListItemDto> produtListItemDtos { get; set; }
     }
 
     public class CategoryInSubcategoryReturnDto {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string Icon { get; set; }

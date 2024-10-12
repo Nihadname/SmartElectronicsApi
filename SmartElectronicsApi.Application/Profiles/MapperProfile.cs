@@ -84,6 +84,7 @@ namespace SmartElectronicsApi.Application.Profiles
                  .ForMember(dest => dest.Image, opt => opt.MapFrom(src => url + "img/" + src.Image))
        .ForMember(dest => dest.produtListItemDtos, opt => opt.MapFrom(src => src.Products));
             CreateMap<SubCategory, SubCategoryReturnDto>()
+                .ForMember(s => s.BrandIds, map => map.MapFrom(d => d.brandSubCategories.Select(s=>s.Brand.Id)))
                 .ForMember(s => s.CategoryInSubcategoryReturn, map => map.MapFrom(d => d.Category))
                 .ForMember(s => s.produtListItemDtos, map => map.MapFrom(d => d.Products))
                 .ForMember(s => s.brandListItemDtos, map => map.MapFrom(d => d.brandSubCategories.Select(bs => bs.Brand))); // Map brands from join table
