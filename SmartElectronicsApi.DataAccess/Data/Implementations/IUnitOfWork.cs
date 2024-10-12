@@ -24,6 +24,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IParametrValueRepository parametrValueRepository { get; }
         public IProductVariationRepository productVariationRepository { get; }
         public IProductVariationColorRepository ProductVariationColorRepository { get; }
+        public IContactRepository ContactRepository { get; }
         public void Commit();
 
     }

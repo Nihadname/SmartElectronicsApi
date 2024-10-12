@@ -366,6 +366,37 @@ namespace SmartElectronicsApi.Application.Implementations
             var MappedProducts =_mapper.Map<List<ProdutListItemDto>>(products);
             return MappedProducts;
         }
-            
+        public async Task<List<ProdutListItemDto>> GetAllProductsWithBrandId(int? id)
+        {
+            var products = await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false  && s.BrandId == id,
+         0,
+         8,
+         includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+             {
+            query => query.Include(p => p.Category)
+                          .Include(s => s.productImages)
+                          .Include(s => s.productColors).ThenInclude(s => s.Color)
+                          .Include(s => s.parametricGroups)
+             }
+         );
+            var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+            return MappedProducts;
+        }
+        public async Task<List<ProdutListItemDto>> GetDealOfTheWeekInBrand(int? brandId)
+        {
+            var products = await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false && s.IsDealOfTheWeek == true&&s.BrandId==brandId,
+          0,
+          8,
+          includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+              {
+            query => query.Include(p => p.Category)
+                          .Include(s => s.productImages)
+                          .Include(s => s.productColors).ThenInclude(s => s.Color)
+                          .Include(s => s.parametricGroups)
+              }
+          );
+            var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+return MappedProducts;  
+        }
     }
 }

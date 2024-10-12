@@ -19,5 +19,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _brandService.getAllForUi(skip, take));
         }
+        [HttpGet("Ui/{id}")]
+        public async Task<IActionResult> Get(int? id)
+        {
+            return Ok(await _brandService.GetById(id));
+        }
     }
 }

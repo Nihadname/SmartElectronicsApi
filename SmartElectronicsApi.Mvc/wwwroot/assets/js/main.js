@@ -38,6 +38,60 @@ const swiper = new Swiper('.swiperMain', {
         prevEl: null,
     }
 });
+var swiperSa = new Swiper(".NewBrandProducts", {
+    slidesPerView: 3, // Adjust the number of visible slides
+    spaceBetween: 30,
+    loop: true, // Allows continuous scrolling
+    freeMode: true, // Enables free scrolling without snapping to slides
+    autoplay: {
+        delay: 3000, // Optional: Auto-scroll every 3 seconds
+        disableOnInteraction: false,
+    },
+    breakpoints: {
+        // when window width is >= 0px (for mobile devices)
+        0: {
+            slidesPerView: 1, // Show 1 slide at a time on small screens
+            spaceBetween: 20,
+        },
+        // when window width is >= 768px (for tablets and larger devices)
+        768: {
+            slidesPerView: 2, // Show 2 slides at a time on medium screens
+            spaceBetween: 30,
+        },
+        // when window width is >= 1024px (for desktops)
+        1024: {
+            slidesPerView: 3, // Show 3 slides at a time on larger screens
+            spaceBetween: 30,
+        }
+    }
+});
+var swiperSa2 = new Swiper(".NewBrandProducts2", {
+    slidesPerView: 3, // Adjust the number of visible slides
+    spaceBetween: 30,
+    loop: true, // Allows continuous scrolling
+    freeMode: true, // Enables free scrolling without snapping to slides
+    autoplay: {
+        delay: 3000, // Optional: Auto-scroll every 3 seconds
+        disableOnInteraction: false,
+    },
+    breakpoints: {
+        // when window width is >= 0px (for mobile devices)
+        0: {
+            slidesPerView: 1, // Show 1 slide at a time on small screens
+            spaceBetween: 20,
+        },
+        // when window width is >= 768px (for tablets and larger devices)
+        768: {
+            slidesPerView: 2, // Show 2 slides at a time on medium screens
+            spaceBetween: 30,
+        },
+        // when window width is >= 1024px (for desktops)
+        1024: {
+            slidesPerView: 3, // Show 3 slides at a time on larger screens
+            spaceBetween: 30,
+        }
+    }
+});
 var SwiperDeal = new Swiper('.swiperDeal', {
     loop: true,
 
@@ -382,6 +436,7 @@ function generateProductHTML(product) {
                 </div>
             </div>
         </div>
+
     `;
 }
 
@@ -425,3 +480,7 @@ function GetTheOnesWithDiscount() {
     });
 
 }
+
+document.getElementById('seeMoreButton').addEventListener('click', function () {
+        window.location.href = '/Product'; // Redirect to the product page
+});

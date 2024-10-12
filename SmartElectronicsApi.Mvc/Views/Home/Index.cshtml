@@ -1,9 +1,12 @@
 ﻿@model HomeViewModel
+<html lang="az">
+<meta charset="UTF-8">
 @section scripts {
     <script asp-append-version="true" src="~/assets/js/Home.js"></script>
 }
-<style>
-  /* General list view styling */
+
+@* <style>
+/*   /* General list view styling */
 .product-list2 {
     display: flex;
     align-items: center;
@@ -212,8 +215,8 @@ media (max-width: 576px) {
             left: 0;
             width: 100%;
             height: 100%;
-        }
-</style>
+        } */
+</style> *@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-3 thisPart">
@@ -458,13 +461,15 @@ media (max-width: 576px) {
                 <div class="SmalCard p-4 rounded-4 bg-white w-100 shadow">
                    
                     <div class="d-flex justify-content-center">
-                        <span class="text-center" style="
+                        <a class="text-decoration-none" asp-action="Index" asp-controller="Kampanyalar">
+                            <span class="text-center" style="
                                  font-style: normal;
                                  font-weight: 600;
                                  font-size: 22px;
                                  line-height: 27px;
                                  color: #000;
                                  ">Kampaniyalar</span>
+                       </a>
                     </div>
                 </div>
             </div>
@@ -997,8 +1002,18 @@ media (max-width: 576px) {
                 </div> *@
                 <!-- Repeat Product Card -->
             </div>
+          
+            
+            <div class="col-12 text-center mt-4">
+                <div class="loader2"></div>
+                <button id="seeMoreButton" class="btn btn-secondary btn-sm">
+                    See More
+                </button>
+            </div>
+
         </div>
     </section>
+   
     <section class="mb-5">
         <div class="row g-4">
 
@@ -1070,7 +1085,7 @@ media (max-width: 576px) {
      padding: 15px 15px;
         ">
 
-                        <img style="height:60px; width:60px;" src="@item.ImageUrl" alt="" class="img-fluid">
+                        <a asp-action="Index" asp-controller="Brand" asp-route-id="@item.Id">  <img style="height:60px; width:60px;" src="@item.ImageUrl" alt="" class="img-fluid"></a>
                     </div>
 
                 }

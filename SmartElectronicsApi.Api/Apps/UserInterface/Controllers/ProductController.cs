@@ -43,5 +43,15 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _productService.Search(pageNumber, pageSize, searchQuery, sortBy, sortOrder));
         }
+        [HttpGet("GetDealOfTheWeekInBrand/{brandId}")]
+        public async Task<IActionResult> GetDealOfTheWeekInBrand(int? brandId)
+        {
+            return Ok(await _productService.GetDealOfTheWeekInBrand(brandId));
+        }
+        [HttpGet("GetAllProductsWithBrandId/{brandId}")]
+        public async Task<IActionResult> GetAllProductsWithBrandId(int? brandId)
+        {
+            return Ok(await _productService.GetAllProductsWithBrandId(brandId));
+        }
     }
 }

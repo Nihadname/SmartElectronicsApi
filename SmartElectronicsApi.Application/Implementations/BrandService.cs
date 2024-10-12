@@ -105,7 +105,7 @@ namespace SmartElectronicsApi.Application.Implementations
         {
             var Brands = await _unitOfWork.brandRepository.GetAll(s => s.IsDeleted == false, skip, take, includes: new Func<IQueryable<Brand>, IQueryable<Brand>>[]
             {
-                query => query.Include(c => c.Products)
+                query => query.Include(c => c.Products).Include(s=>s.brandSubCategories).ThenInclude(s=>s.SubCategory)
 
             });
             var MappedBrands=_mapper.Map<List<BrandListItemDto>>(Brands);

@@ -1,0 +1,143 @@
+﻿@model BrandDetailVM
+<style>
+    .product-card img {
+        max-width: 220px;
+        height: 220px;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .product-card {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .product-name {
+        font-weight: medium;
+        margin-top: 10px;
+        font-size: 18px;
+    }
+
+    .no-subcategories {
+        text-align: center;
+        padding: 20px;
+        margin-top: 50px;
+        background-color: #f8f9fa;
+        border: 2px dashed #ccc;
+        border-radius: 10px;
+        font-size: 20px;
+        color: #555;
+    }
+</style>
+
+<div class="container mt-5">
+    <h1 class="mb-4">@Model.BrandListItem.Name</h1>
+
+    @if (Model.BrandListItem.SubCategoryListItemInBrandDtos != null && Model.BrandListItem.SubCategoryListItemInBrandDtos.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var item in Model.BrandListItem.SubCategoryListItemInBrandDtos)
+            {
+                <div class="col">
+                    <div class="card product-card">
+                        <img src="@item.Image" alt="@item.Name" class="card-img-top">
+                        <p class="product-name">@item.Name</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-subcategories">
+            <p>There are no subcategories available for this brand.</p>
+        </div>
+    }
+</div>
+
+<div class="container mt-5">
+    <h2>Brand Products</h2>
+    <div class="swiper NewBrandProducts">
+        <div class="swiper-wrapper">
+            @foreach (var item in Model.produtListItemVMs)
+            {
+                <div class="swiper-slide">
+                  
+                        <div class="card shadow-sm product-card2">
+                            <div class="position-relative overflow-hidden">
+                                ,<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.Id">
+                                    <img src="@item.ImageUrls.FirstOrDefault()" alt="Product Image" class="card-img-top">
+                                </a>
+                                @if (item.isNew)
+                                {
+                                    <div class="badge bg-success position-absolute top-0 start-0 m-2 p-2 rounded">New</div>
+                                }
+                                <div class="wishlist-icon position-absolute top-0 end-0 m-2 p-2">
+                                    <i class="fa fa-heart fa-lg text-danger"></i>
+                                </div>
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 class="card-title">@item.Name</h5>
+                                <p class="card-text">
+                                    @(item.Description.Length >= 40 ? item.Description.Substring(0, 40) + "..." : item.Description)
+                                </p>
+                                <div class="price-info mb-2">
+                                    <span class="fw-bold text-primary fs-5">@item.DiscountedPrice AZN <del class="text-muted">@item.Price AZN</del></span>
+                                </div>
+
+                            </div>
+                            <div class="card-footer bg-transparent border-top-0">
+                                <button class="btn btn-primary w-100">
+                                    <i class="fa fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+              
+            }
+        </div>
+    </div>
+    <h2>
+        Endirimli məhsullar
+    </h2>
+    <div class="swiper NewBrandProducts2">
+        <div class="swiper-wrapper">
+            @foreach (var item in Model.produtListItemVMsWithDealOfTheWeek)
+            {
+                <div class="swiper-slide">
+
+                    <div class="card shadow-sm product-card2">
+                        <div class="position-relative overflow-hidden">
+                            ,<a asp-action="Detail" asp-controller="Product" asp-route-id="@item.Id">
+                                <img src="@item.ImageUrls.FirstOrDefault()" alt="Product Image" class="card-img-top">
+                            </a>
+                            @if (item.isNew)
+                            {
+                                <div class="badge bg-success position-absolute top-0 start-0 m-2 p-2 rounded">New</div>
+                            }
+                            <div class="wishlist-icon position-absolute top-0 end-0 m-2 p-2">
+                                <i class="fa fa-heart fa-lg text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text">
+                                @(item.Description.Length >= 40 ? item.Description.Substring(0, 40) + "..." : item.Description)
+                            </p>
+                            <div class="price-info mb-2">
+                                <span class="fw-bold text-primary fs-5">@item.DiscountedPrice AZN <del class="text-muted">@item.Price AZN</del></span>
+                            </div>
+
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <button class="btn btn-primary w-100">
+                                <i class="fa fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>

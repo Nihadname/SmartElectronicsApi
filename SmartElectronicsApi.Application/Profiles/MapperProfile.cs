@@ -7,6 +7,7 @@ using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Color;
+using SmartElectronicsApi.Application.Dtos.Contact;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using SmartElectronicsApi.Application.Dtos.ParametrValue;
 using SmartElectronicsApi.Application.Dtos.Product;
@@ -160,6 +161,8 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<ParametrValueListItemDto, ParametrValue>();
                 CreateMap<ParametrValue, ParametrValueListItemDto>();
                 CreateMap<ParametrGroup,ParametrGroupListItemDto>();
+                CreateMap<ContactCreateDto, Contact>();
+                CreateMap<Contact,ContactDto>();
             });
             configuration.AssertConfigurationIsValid();
         }

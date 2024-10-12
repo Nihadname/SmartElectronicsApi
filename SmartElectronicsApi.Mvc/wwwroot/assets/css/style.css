@@ -240,11 +240,7 @@ p {
     border-radius: 10px;
 }
 
-.swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+
 
 .thisSpecial  img {
     width: 100%;
@@ -634,3 +630,354 @@ p {
     }
     
 /* Pulse Animation */
+#seeMoreButton {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+    #seeMoreButton:hover {
+        background-color: #2980b9;
+    }
+
+/* Loader Styles */
+.loader2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+    .loader2:before {
+        content: '';
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+@@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* General list view styling */
+.product-list2 {
+    display: flex;
+    align-items: center;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+    width: 1308px;
+}
+
+    .product-list2:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+.product-image2 {
+    flex-shrink: 0;
+    width: 100px;
+    height: auto;
+    margin-right: 15px;
+}
+
+.product-details2 {
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.product-info2 {
+    flex: 1;
+    min-width: 200px;
+}
+
+.product-actions2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-price2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.product-actions2 button {
+    background-color: #1e2a48;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+    .product-actions2 button:hover {
+        background-color: #162038;
+    }
+
+/* Responsive adjustments */
+media (max-width: 768px) {
+    .product-list2
+
+{
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px;
+}
+
+
+.product-image2 {
+    width: 100%;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.product-details2 {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.product-info2 {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.product-actions2 {
+    width: 100%;
+    justify-content: space-between;
+}
+
+    .product-actions2 button {
+        width: 48%;
+    }
+
+}
+
+/* Extra small screen adjustments */
+media (max-width: 576px) {
+    .product-list2
+
+{
+    padding: 10px;
+}
+
+.product-info2 h5 {
+    font-size: 1rem;
+}
+
+.product-image2 {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.product-actions2 {
+    flex-direction: column;
+    width: 100%;
+}
+
+    .product-actions2 button {
+        width: 100%;
+        margin-bottom: 5px;
+        margin-left: 22px;
+    }
+
+}
+
+.deal-of-week-title {
+    font-size: 28px; /* Adjust font size as needed */
+    font-weight: bold; /* Make the text bold */
+    color: #007bff; /* Custom color (Bootstrap primary color) */
+    text-align: center; /* Center align the text */
+    margin-top: 20px; /* Add some space above the heading */
+    margin-bottom: 20px; /* Add some space below the heading */
+    letter-spacing: 1px; /* Adds some space between letters */
+    text-transform: uppercase; /* Converts text to uppercase */
+    border-bottom: 2px solid #007bff; /* Adds a border below the heading */
+    padding-bottom: 10px; /* Adds some space between text and border */
+    display: inline-block; /* Makes border fit the text width */
+}
+
+.category-item {
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #eee;
+    background: #f6f6f6;
+    border-radius: 8px;
+    height: 100%; /* Ensure full height for grid alignment */
+    transition: all 0.3s ease;
+}
+
+    .category-item img {
+        width: 100%;
+        height: auto;
+        max-width: 200px;
+        margin-bottom: 15px;
+    }
+
+    .category-item:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+.section-title {
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1.2;
+}
+
+.section-subtitle {
+    font-size: 18px;
+    color: #6c757d;
+}
+
+.card-img {
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+    .card-img:hover {
+        transform: scale(1.05);
+    }
+
+/* Styling the modal for responsive video */
+.modal-dialog {
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+
+
+.embed-responsive {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+    .embed-responsive::before {
+        display: block;
+        content: '';
+        padding-top: 56.25%; /* 16:9 ratio */
+    }
+
+    .embed-responsive iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+/* Product Card Styling */
+.product-card2 {
+    border: none; /* Remove default border */
+    border-radius: 15px; /* Make corners rounder */
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    overflow: hidden; /* Prevent overflow */
+    margin-bottom: 20px; /* Space between cards */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Increased shadow */
+}
+
+    .product-card2:hover {
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
+        transform: translateY(-5px); /* Lift effect */
+    }
+
+    .product-card2 img {
+        height: 250px; /* Set a consistent image height */
+        object-fit: contain; /* Cover the card without distortion */
+        transition: transform 0.3s ease;
+    }
+
+    .product-card2:hover img {
+        transform: scale(1.05); /* Slight zoom effect on hover */
+    }
+
+    .product-card2 .card-title {
+        font-size: 1.1rem; /* Increase font size for title */
+        font-weight: bold; /* Make title bold */
+    }
+
+    .product-card2 .card-text {
+        font-size: 0.85rem; /* Slightly smaller font for description */
+        color: #555; /* Darker text color */
+    }
+
+    .product-card2 .price-info {
+        font-size: 1rem; /* Increase font size for price */
+        color: #4a90e2; /* Price in the same color palette */
+    }
+
+    .product-card2 .card-footer {
+        padding: 10px 15px;
+    }
+
+    .product-card2 .btn-primary {
+        background-color: #4a90e2; /* Primary button color */
+        border: none;
+        font-size: 0.9rem;
+        border-radius: 25px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        padding: 10px 20px;
+        width: 100%;
+        color: white;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .product-card2 .btn-primary:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+            transform: scale(1.05); /* Scale up slightly */
+        }
+
+/* Wishlist Icon */
+.wishlist-icon i {
+    font-size: 1.2rem; /* Increase size for better visibility */
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+    .wishlist-icon i:hover {
+        color: #ff4757; /* Change color on hover */
+        transform: scale(1.2); /* Slight scaling effect */
+    }
+
+/* Badge for New Products */
+.badge {
+    font-size: 0.75rem; /* Slightly smaller font for badges */
+    padding: 0.4rem 0.8rem; /* More padding for better visibility */
+    border-radius: 10px; /* Rounded corners */
+}
+
+/* Responsive Design */
+@@media (max-width: 768px) {
+    .product-card2 .card-title {
+        font-size: 1rem; /* Adjust title size for smaller screens */
+    }
+
+    .product-card2 .card-text {
+        font-size: 0.85rem; /* Adjust description size */
+    }
+}

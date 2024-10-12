@@ -37,6 +37,7 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<WishList> wishLists { get; set; }
         public DbSet<WishListProduct> wishListProducts { get; set; }
         public DbSet<Comment> comments { get; set; }    
+        public DbSet<Contact> contacts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

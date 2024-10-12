@@ -16,6 +16,7 @@
     <Folder Include="Models\" />
     <Folder Include="wwwroot\assets\img\" />
     <Folder Include="wwwroot\assets\admin\" />
+    <Folder Include="wwwroot\assets\fonts\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -19,6 +19,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
 
         public async Task<IActionResult> Index(int take = 7)
         {
+
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             using HttpResponseMessage httpResponseMessage = await client.GetAsync($"Slider/GetSliderForUi/{take}");

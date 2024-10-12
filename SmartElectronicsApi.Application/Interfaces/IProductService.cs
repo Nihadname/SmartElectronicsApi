@@ -28,5 +28,7 @@ namespace SmartElectronicsApi.Application.Interfaces
     string sortOrder = "asc"
 );
         Task<List<ProdutListItemDto>> Get();
+        Task<List<ProdutListItemDto>> GetDealOfTheWeekInBrand(int? brandId);
+        Task<List<ProdutListItemDto>> GetAllProductsWithBrandId(int? id);
     }
 }
