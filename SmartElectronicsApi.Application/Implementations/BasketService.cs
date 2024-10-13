@@ -64,17 +64,17 @@ query => query
                 throw new CustomException(400, "User ID cannot be null");
 
             var user = await _userManager.FindByIdAsync(userId);
-            var ExistedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
-            if (ExistedProduct is null)
+            var existedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
+            if (existedProduct is null)
                 throw new CustomException(404, "Product not found");
 
-            ProductVariation ExistedVariation = null;
+            ProductVariation existedVariation = null;
 
             // Check if a variation was provided
             if (variationId.HasValue)
             {
-                ExistedVariation = await _unitOfWork.productVariationRepository.GetEntity(s => s.Id == variationId && s.ProductId == productId);
-                if (ExistedVariation == null)
+                existedVariation = await _unitOfWork.productVariationRepository.GetEntity(s => s.Id == variationId && s.ProductId == productId);
+                if (existedVariation == null)
                     throw new CustomException(404, "Variation not found");
             }
 
@@ -85,32 +85,36 @@ query => query
                       .ThenInclude(p => p.Variations)
             });
 
-            var BasketProduct = await _unitOfWork.BasketProductRepository.GetEntity(s =>
+            // Check if both ProductId and VariationId already exist in the basket
+            var basketProduct = await _unitOfWork.BasketProductRepository.GetEntity(s =>
                 s.ProductId == productId &&
-                (!variationId.HasValue || s.ProductVariationId == variationId) &&
+                (variationId.HasValue ? s.ProductVariationId == variationId : s.ProductVariationId == null) &&
                 s.Basket.AppUserId == user.Id
             );
 
-            if (BasketProduct != null)
+            if (basketProduct != null)
             {
-                BasketProduct.Quantity++;
+                // If the product and variation exist, increment the quantity
+                basketProduct.Quantity++;
                 _unitOfWork.Commit();
-                return BasketProduct.Id;
+                return basketProduct.Id;
             }
 
+            // If a basket exists but no matching product/variation is found, create a new basket product entry
             if (existedBasket is not null)
             {
                 existedBasket.BasketProducts.Add(new BasketProduct()
                 {
                     Quantity = 1,
                     BasketId = existedBasket.Id,
-                    ProductId = ExistedProduct.Id,
-                    ProductVariationId = ExistedVariation?.Id  // Set the variation only if it exists
+                    ProductId = existedProduct.Id,
+                    ProductVariationId = existedVariation?.Id  // Set the variation only if it exists
                 });
                 _unitOfWork.Commit();
                 return existedBasket.Id;
             }
 
+            // If no basket exists, create a new basket and basket product
             Basket newBasket = new()
             {
                 AppUserId = user.Id,
@@ -122,8 +126,8 @@ query => query
             {
                 Quantity = 1,
                 BasketId = newBasket.Id,
-                ProductId = ExistedProduct.Id,
-                ProductVariationId = ExistedVariation?.Id  // Set the variation only if it exists
+                ProductId = existedProduct.Id,
+                ProductVariationId = existedVariation?.Id  // Set the variation only if it exists
             };
             await _unitOfWork.BasketProductRepository.Create(newBasketProduct);
             _unitOfWork.Commit();
