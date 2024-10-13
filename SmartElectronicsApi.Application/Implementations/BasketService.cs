@@ -39,16 +39,15 @@ namespace SmartElectronicsApi.Application.Implementations
             var Basket = await _unitOfWork.BasketRepository.GetEntity(s => s.AppUserId == userId, includes: new Func<IQueryable<Basket>, IQueryable<Basket>>[] {
 query => query
     .Include(s => s.BasketProducts)
-        .ThenInclude(bp => bp.Product)// Include Category
-        .ThenInclude(p => p.productImages) // Include Product Images
+        .ThenInclude(bp => bp.Product)
+        .ThenInclude(p => p.productImages) 
     .Include(s => s.BasketProducts)
-        .ThenInclude(bp => bp.ProductVariation) // Include Product Variation
+        .ThenInclude(bp => bp.ProductVariation) 
         .ThenInclude(pv => pv.productImages)
          .Include(s => s.BasketProducts)
         .ThenInclude(bp => bp.Product)
-                    .ThenInclude(p => p.Category) // Include Category
+                    .ThenInclude(p => p.Category) 
 
-        // Include Variation Images
         });
             if (Basket == null) throw new CustomException(404, " Not found.");
             var userBasketDto = _mapper.Map<UserBasketDto>(Basket);
@@ -56,6 +55,7 @@ query => query
         }
         public async Task<int> Add(int? productId, int? variationId = null)
         {
+            
             if (productId == null)
                 throw new CustomException(400, "ProductId cannot be null");
 
@@ -85,7 +85,6 @@ query => query
                       .ThenInclude(p => p.Variations)
             });
 
-            // Check if both ProductId and VariationId already exist in the basket
             var basketProduct = await _unitOfWork.BasketProductRepository.GetEntity(s =>
                 s.ProductId == productId &&
                 (variationId.HasValue ? s.ProductVariationId == variationId : s.ProductVariationId == null) &&
@@ -94,13 +93,14 @@ query => query
 
             if (basketProduct != null)
             {
-                // If the product and variation exist, increment the quantity
                 basketProduct.Quantity++;
                 _unitOfWork.Commit();
-                return basketProduct.Id;
+                var updatedBasket = await GetUserBasket();
+                var basketCount = updatedBasket.BasketProducts.Sum(item => item.Quantity);
+
+                return basketCount;
             }
 
-            // If a basket exists but no matching product/variation is found, create a new basket product entry
             if (existedBasket is not null)
             {
                 existedBasket.BasketProducts.Add(new BasketProduct()
@@ -108,13 +108,15 @@ query => query
                     Quantity = 1,
                     BasketId = existedBasket.Id,
                     ProductId = existedProduct.Id,
-                    ProductVariationId = existedVariation?.Id  // Set the variation only if it exists
+                    ProductVariationId = existedVariation?.Id  
                 });
                 _unitOfWork.Commit();
-                return existedBasket.Id;
+                var updatedBasket1 = await GetUserBasket();
+                var basketCount1 = updatedBasket1.BasketProducts.Sum(item => item.Quantity);
+
+                return basketCount1;
             }
 
-            // If no basket exists, create a new basket and basket product
             Basket newBasket = new()
             {
                 AppUserId = user.Id,
@@ -131,7 +133,66 @@ query => query
             };
             await _unitOfWork.BasketProductRepository.Create(newBasketProduct);
             _unitOfWork.Commit();
-            return newBasketProduct.Id;
+
+            var updatedBasket2 = await GetUserBasket();
+            var basketCount2 = updatedBasket2.BasketProducts.Sum(item => item.Quantity);
+
+            return basketCount2;
         }
+        public async Task<int> ChangeQuantity(int? productId, int? variationId = null, int quantityChange = 1)
+        {
+            if (productId == null)
+                throw new CustomException(400, "ProductId cannot be null");
+
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new CustomException(400, "User ID cannot be null");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            var existedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
+            if (existedProduct == null)
+                throw new CustomException(404, "Product not found");
+
+            ProductVariation existedVariation = null;
+
+            // Check if a variation was provided
+            if (variationId.HasValue)
+            {
+                existedVariation = await _unitOfWork.productVariationRepository.GetEntity(s => s.Id == variationId && s.ProductId == productId);
+                if (existedVariation == null)
+                    throw new CustomException(404, "Variation not found");
+            }
+
+            var basketProduct = await _unitOfWork.BasketProductRepository.GetEntity(s =>
+                s.ProductId == productId &&
+                (variationId.HasValue ? s.ProductVariationId == variationId : s.ProductVariationId == null) &&
+                s.Basket.AppUserId == user.Id
+            );
+
+            if (basketProduct == null)
+                throw new CustomException(404, "Product not found in the basket");
+
+            // Modify the quantity based on the provided change value
+            basketProduct.Quantity += quantityChange;
+
+            // Ensure the quantity doesn't go below 1
+            if (basketProduct.Quantity <= 0)
+            {
+                // Remove the item from the basket if the quantity drops to 0 or below
+                _unitOfWork.BasketProductRepository.Delete(basketProduct);
+            }
+            else
+            {
+                _unitOfWork.BasketProductRepository.Update(basketProduct);
+            }
+
+            _unitOfWork.Commit();
+
+            var updatedBasket = await GetUserBasket();
+            var basketCount = updatedBasket.BasketProducts.Sum(item => item.Quantity);
+
+            return basketCount;
+        }
+
     }
 }

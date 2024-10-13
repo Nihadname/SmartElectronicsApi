@@ -30,6 +30,11 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _basketService.Add(productId,VariationId));
         }
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPut]
+        public async Task<IActionResult> ChangeQuantity(int? productId, int? variationId = null, int quantityChange = 1)
+        {
+            return Ok(await _basketService.ChangeQuantity(productId, variationId, quantityChange));
+        }
     }
 }

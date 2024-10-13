@@ -63,7 +63,12 @@ namespace SmartElectronicsApi.Mvc.Controllers
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
-                    return Json(new { success = true, message = "Product added to the basket."});
+                    var responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                    // If you expect a specific number from the API (e.g., basket count), you can parse it
+                    int basketCount = int.Parse(responseBody);
+
+                    return Json(new { success = true, message = "Product added to the basket.",basketCount });
                 }
                 else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
                 {
@@ -83,5 +88,54 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> ChangeQuantity(int? productId, int? variationId = null, int quantityChange=1)
+        {
+            try
+            {
+                using var client = new HttpClient();
+
+                var token = Request.Cookies["JwtToken"];
+                if (string.IsNullOrEmpty(token))
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var url = variationId.HasValue
+                    ? $"http://localhost:5246/api/Basket/?productId={productId}&variationId={variationId}&quantityChange={quantityChange}"
+                    : $"http://localhost:5246/api/Basket/?productId={productId}&quantityChange={quantityChange}";
+
+                using HttpResponseMessage httpResponseMessage = await client.PostAsync(url, null);
+
+                if (httpResponseMessage.IsSuccessStatusCode)
+                {
+                    var responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                    // Assuming that the API returns the updated basket count
+                    int updatedBasketCount = int.Parse(responseBody);
+
+                    return Json(new { success = true, message = "Quantity updated successfully.", basketCount = updatedBasketCount });
+                }
+                else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+                {
+                    return RedirectToAction("AccessDenied", "Account");
+                }
+                else
+                {
+                    return Json(new { success = false, message = "An error occurred while changing the quantity." });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
     }
 }

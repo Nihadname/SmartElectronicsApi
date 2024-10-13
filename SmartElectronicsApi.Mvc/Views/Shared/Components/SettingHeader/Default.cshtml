@@ -177,11 +177,12 @@
                 <a class="nav-link customNavIcon" href="#">
                     <i class="fa-regular fa-heart"></i>
                     <span class="badge position-absolute top-0 start-100 translate-middle badge-notification">3</span>
-                </a>
-                <a class="nav-link customNavIcon" href="#">
+                </a> 
+                <a class="nav-link customNavIcon" asp-action="Index" asp-controller="Basket">
                     <i class="fa-solid fa-bag-shopping"></i>
-                    <span class="badge position-absolute top-0 start-100 translate-middle badge-notification">3</span>
+                    <span class=" basket-badge badge position-absolute top-0 start-100 translate-middle badge-notification">@ViewBag.Count</span>
                 </a>
+
             </div>
         </div>
     </nav>

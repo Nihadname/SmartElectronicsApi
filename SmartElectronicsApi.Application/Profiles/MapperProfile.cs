@@ -165,9 +165,13 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<ContactCreateDto, Contact>();
                 CreateMap<Contact,ContactDto>();
                 CreateMap<Basket, UserBasketDto>()
-               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.AppUserId))  
-               .ForMember(dest => dest.BasketProducts, opt => opt.MapFrom(src => src.BasketProducts));
+               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.AppUserId))
+                
+               .ForMember(dest => dest.BasketProducts, opt => opt.MapFrom(src => src.BasketProducts))
+               .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.BasketProducts.Count()));
                 CreateMap<BasketProduct, BasketListItemDto>()
+                .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+                 .ForMember(dest => dest.VariationId, opt => opt.MapFrom(src => src.ProductVariationId))
     .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ProductVariation != null
         ? url + "img/" + src.ProductVariation.productImages.FirstOrDefault().Name // Use variation image if exists
         : url + "img/" + src.Product.productImages.FirstOrDefault().Name)) // Fall back to product image

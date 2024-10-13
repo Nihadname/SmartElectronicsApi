@@ -21,12 +21,115 @@
                     response.message,
                     'success'
                 );
+                console.log(response);
+                let badge = document.querySelector('.basket-badge');
+                console.log(badge);
+                console.log(response)
+                badge.innerText = response.basketCount;
             } else {
-                alert(response.message);
+                Swal.fire(
+                    'Error!',
+                    'Error: ' + "User has not logined",
+                    'error'
+                );
             }
         },
         error: function (xhr, status, error) {
-            alert('An error occurred: ' + error);
+            Swal.fire(
+                'Error!',
+                'Error: ' + error.responseText,
+                'error'
+            );
         }
     });
 }
+function changeQuantity(productId, variationId, quantityChange) {
+    var data = {
+        productId: productId,
+        quantityChange: quantityChange
+    };
+
+    // If variationId is provided, add it to the data object
+    if (variationId !== null && variationId !== undefined) {
+        data.variationId = variationId;
+    } else {
+        variationId = "0"; // Use '0' when variationId is null to ensure unique IDs
+    }
+
+    $.ajax({
+        url: `/Basket/ChangeQuantity?productId=${data.productId}&quantityChange=${data.quantityChange}${data.variationId ? `&variationId=${data.variationId}` : ''}`,
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data),
+        success: function (response) {
+            if (response.success) {
+                Swal.fire(
+                    'Success!',
+                    response.message,
+                    'success'
+                );
+
+                // Update the specific basket item quantity dynamically
+                let basketItem = $(`#basket-item-${productId}-${variationId}`);
+                let quantityInput = basketItem.find('input[type="number"]');
+                let newQuantity = parseInt(quantityInput.val()) + quantityChange;
+
+                if (newQuantity <= 0) {
+                    basketItem.remove();  // Remove the basket item from the DOM
+                } else {
+                    // Update the quantity input and subtotal for the item
+                    quantityInput.val(newQuantity);
+
+                    // Get the price and discounted price from the data attributes
+                    let price = parseFloat(basketItem.attr('data-price')) || 0;
+                    let discountedPrice = parseFloat(basketItem.attr('data-discounted-price')) || 0;
+
+                    // Update the subtotal for this item
+                    let newSubtotal = discountedPrice > 0 ? discountedPrice * newQuantity : price * newQuantity;
+                    basketItem.find('.price').text(`${newSubtotal.toFixed(2)} AZN`);
+                }
+
+                // Recalculate and update total price, discount, and final sale price dynamically
+                updateTotals();
+            } else {
+                Swal.fire(
+                    'Error!',
+                    response.message,
+                    'error'
+                );
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire(
+                'Error!',
+                'Error: ' + xhr.responseText,
+                'error'
+            );
+        }
+    });
+}
+
+function updateTotals() {
+    let totalPrice = 0;
+    let totalSalePrice = 0;
+
+    // Loop through all basket items and calculate the totals
+    $('.basket-item').each(function () {
+        let quantity = parseInt($(this).find('input[type="number"]').val()) || 0;
+        let price = parseFloat($(this).attr('data-price')) || 0;
+        let discountedPrice = parseFloat($(this).attr('data-discounted-price')) || 0;
+
+        // Use discounted price if available, otherwise use the original price
+        totalPrice += price * quantity;
+        totalSalePrice += (discountedPrice > 0 ? discountedPrice : price) * quantity;
+    });
+
+    // Calculate the discount
+    let discount = totalPrice - totalSalePrice;
+
+    // Update the totals in the HTML
+    $('#total-price').text(`${totalPrice.toFixed(2)} AZN`);
+    $('#total-sale-price').text(`${totalSalePrice.toFixed(2)} AZN`);
+    $('#discount').text(`${discount.toFixed(2)} AZN`);
+}
+

@@ -264,7 +264,11 @@
             <!-- Basket Item -->
             @foreach (var item in Model.BasketProducts)
             {
-                <div class="basket-item">
+                <div class="basket-item"
+                     id="basket-item-@item.ProductId-@(item.VariationId?.ToString() ?? "0")"
+                     data-price="@item.Price"
+                     data-discounted-price="@item.DiscountedPrice"
+                     data-quantity="@item.Quantity">
                     <div class="product-info">
                         <img src="@item.Image" alt="Product Image">
                         <div class="product-details">
@@ -277,9 +281,9 @@
                         </div>
                     </div>
                     <div class="product-quantity">
-                        <button>-</button>
-                        <input type="number" value="@item.Quantity">
-                        <button>+</button>
+                        <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), -1)">-</button>
+                        <input type="number" value="@item.Quantity" readonly>
+                        <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), 1)">+</button>
                     </div>
                     <!-- Delete Button -->
                     <div class="product-remove">
@@ -287,8 +291,8 @@
                     </div>
                 </div>
             }
-          
-        
+
+
         </div>
 
         <!-- Right Side (col-4) -->
@@ -298,18 +302,17 @@
                 <h4>Məhsullar</h4>
                 <div class="details">
                     <span>Ümumi məbləğ</span>
-                    <span>@Model.TotalPrice AZN</span>
+                    <span id="total-price">@Model.TotalPrice AZN</span>
                 </div>
                 <div class="details">
                     <span>Endirim</span>
-                    <span>-@Model.Discount AZN</span>
+                    <span id="discount">@Model.Discount AZN</span>
                 </div>
                 <hr>
                 <div class="details total">
                     <span>Yekun məbləğ</span>
-                    <span>@Model.TotalSalePrice AZN</span>
+                    <span id="total-sale-price">@Model.TotalSalePrice AZN</span>
                 </div>
-                <button>Sifarişi rəsmiləşdir</button>
             </div>
         </div>
     </div>

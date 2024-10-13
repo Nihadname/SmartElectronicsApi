@@ -8,6 +8,8 @@ namespace SmartElectronicsApi.Application.Dtos.Basket
 {
     public class BasketListItemDto
     {
+        public int? ProductId { get; set; }
+        public int? VariationId { get; set; }
         public string Image { get; set; }
         public string Name { get; set; }
         public string CategoryName { get; set; }
