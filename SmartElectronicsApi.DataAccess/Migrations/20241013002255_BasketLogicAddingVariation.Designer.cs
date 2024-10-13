@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241013002255_BasketLogicAddingVariation")]
+    partial class BasketLogicAddingVariation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -361,10 +364,10 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductVariationId")
+                    b.Property<int>("ProductVariationId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -1284,11 +1287,15 @@ namespace SmartElectronicsApi.DataAccess.Migrations
 
                     b.HasOne("SmartElectronicsApi.Core.Entities.Product", "Product")
                         .WithMany("BasketProducts")
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SmartElectronicsApi.Core.Entities.ProductVariation", "ProductVariation")
                         .WithMany("BasketProducts")
-                        .HasForeignKey("ProductVariationId");
+                        .HasForeignKey("ProductVariationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Basket");
 

@@ -20,9 +20,9 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
-        public async Task<IActionResult> Add(int? productId)
+        public async Task<IActionResult> Add(int? productId,int? VariationId)
         {
-            return Ok(await _basketService.Add(productId));
+            return Ok(await _basketService.Add(productId,VariationId));
         }
 
     }

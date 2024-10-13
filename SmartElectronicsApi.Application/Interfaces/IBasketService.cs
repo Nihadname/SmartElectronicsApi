@@ -8,6 +8,6 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IBasketService
     {
-        Task<int> Add(int? productId);
+        Task<int> Add(int? productId, int? variationId);
     }
 }

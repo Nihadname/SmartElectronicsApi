@@ -26,32 +26,50 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<int> Add(int? productId)
+        public async Task<int> Add(int? productId, int? variationId = null)
         {
-            if (productId == null) throw new CustomException(400, "productId can not be null");
+            if (productId == null)
+                throw new CustomException(400, "ProductId cannot be null");
+
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-            {
-                throw new CustomException(400, "Id", "User ID cannot be null");
-            }
+                throw new CustomException(400, "User ID cannot be null");
+
             var user = await _userManager.FindByIdAsync(userId);
-            var ExistedProduct=await _unitOfWork.productRepository.GetEntity(s=>s.Id==productId);
-            if(ExistedProduct is null) throw new CustomException(404, "Not found");
+            var ExistedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
+            if (ExistedProduct is null)
+                throw new CustomException(404, "Product not found");
+
+            ProductVariation ExistedVariation = null;
+
+            // Check if a variation was provided
+            if (variationId.HasValue)
+            {
+                ExistedVariation = await _unitOfWork.productVariationRepository.GetEntity(s => s.Id == variationId && s.ProductId == productId);
+                if (ExistedVariation == null)
+                    throw new CustomException(404, "Variation not found");
+            }
+
             var existedBasket = await _unitOfWork.BasketRepository.GetEntity(s => s.AppUserId == user.Id, includes: new Func<IQueryable<Basket>, IQueryable<Basket>>[]
-                {
+            {
         query => query.Include(c => c.BasketProducts)
-                   
-                      //.ThenInclude(sc => sc.brandSubCategories) // Include BrandSubCategories
-                      //.ThenInclude(bsc => bsc.Brand)
-                      //.ThenInclude(s=>s.Products)
-                });
-            var BasketProduct=await _unitOfWork.BasketProductRepository.GetEntity(s=>s.ProductId==productId&&s.Basket.AppUserId==user.Id);
+                      .ThenInclude(bp => bp.Product)
+                      .ThenInclude(p => p.Variations)
+            });
+
+            var BasketProduct = await _unitOfWork.BasketProductRepository.GetEntity(s =>
+                s.ProductId == productId &&
+                (!variationId.HasValue || s.ProductVariationId == variationId) &&
+                s.Basket.AppUserId == user.Id
+            );
+
             if (BasketProduct != null)
             {
                 BasketProduct.Quantity++;
                 _unitOfWork.Commit();
                 return BasketProduct.Id;
             }
+
             if (existedBasket is not null)
             {
                 existedBasket.BasketProducts.Add(new BasketProduct()
@@ -59,26 +77,29 @@ namespace SmartElectronicsApi.Application.Implementations
                     Quantity = 1,
                     BasketId = existedBasket.Id,
                     ProductId = ExistedProduct.Id,
+                    ProductVariationId = ExistedVariation?.Id  // Set the variation only if it exists
                 });
                 _unitOfWork.Commit();
                 return existedBasket.Id;
             }
-           
+
             Basket newBasket = new()
             {
                 AppUserId = user.Id,
             };
             await _unitOfWork.BasketRepository.Create(newBasket);
             _unitOfWork.Commit();
-            BasketProduct basketProduct = new()
+
+            BasketProduct newBasketProduct = new()
             {
                 Quantity = 1,
                 BasketId = newBasket.Id,
                 ProductId = ExistedProduct.Id,
+                ProductVariationId = ExistedVariation?.Id  // Set the variation only if it exists
             };
-            await _unitOfWork.BasketProductRepository.Create(basketProduct);
+            await _unitOfWork.BasketProductRepository.Create(newBasketProduct);
             _unitOfWork.Commit();
-            return basketProduct.Id;
+            return newBasketProduct.Id;
         }
     }
 }
