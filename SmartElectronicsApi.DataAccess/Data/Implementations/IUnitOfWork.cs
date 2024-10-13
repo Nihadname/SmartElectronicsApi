@@ -25,6 +25,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IProductVariationRepository productVariationRepository { get; }
         public IProductVariationColorRepository ProductVariationColorRepository { get; }
         public IContactRepository ContactRepository { get; }
+        public IBasketRepository BasketRepository { get; }
+        public IBasketProductRepository BasketProductRepository { get; }
         public void Commit();
 
     }

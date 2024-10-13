@@ -30,7 +30,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IProductVariationRepository productVariationRepository { get; private set; }
         public IProductVariationColorRepository ProductVariationColorRepository { get; private set; }
         public IContactRepository ContactRepository { get; private set; }
-
+        public IBasketRepository BasketRepository { get; private set; }
+        public IBasketProductRepository BasketProductRepository { get; private set; }
         public UnitOfWork(SmartElectronicsDbContext smartElectronicsDbContext)
         {
             categoryRepository= new CategoryRepository(smartElectronicsDbContext);
@@ -49,6 +50,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             productVariationRepository= new ProductVariationRepository(smartElectronicsDbContext);
             ProductVariationColorRepository= new ProductVariationColorRepository(   smartElectronicsDbContext);
             ContactRepository= new ContactRepository(smartElectronicsDbContext);
+            BasketRepository= new BasketRepository(smartElectronicsDbContext);
+            BasketProductRepository= new BasketProductRepository(smartElectronicsDbContext);
         _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 
