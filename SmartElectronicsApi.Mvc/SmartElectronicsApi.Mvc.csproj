@@ -9,6 +9,7 @@
   <ItemGroup>
     <Content Remove="Views\Home\Error404.cshtml" />
     <Content Remove="wwwroot\admin\assets\js\Mainjs.js" />
+    <Content Remove="wwwroot\assets\js\Basket.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +37,7 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Home\Error404.cshtml" />
     <_ContentIncludedByDefault Remove="wwwroot\admin\assets\js\Mainjs.js" />
+    <_ContentIncludedByDefault Remove="wwwroot\assets\js\Basket.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -109,6 +111,7 @@
     <None Include="wwwroot\admin\gulp-tasks\serve.js" />
     <None Include="wwwroot\admin\gulp-tasks\vendors.js" />
     <None Include="wwwroot\admin\PSD\Purple_dashboard_free.psd" />
+    <None Include="wwwroot\assets\js\Basket.js" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using SmartElectronicsApi.Api.Apps.UserInterface.Dtos.Auth;
 using SmartElectronicsApi.Application.Dtos.Address;
 using SmartElectronicsApi.Application.Dtos.Auth;
+using SmartElectronicsApi.Application.Dtos.Basket;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Color;
@@ -163,6 +164,31 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<ParametrGroup,ParametrGroupListItemDto>();
                 CreateMap<ContactCreateDto, Contact>();
                 CreateMap<Contact,ContactDto>();
+                CreateMap<Basket, UserBasketDto>()
+               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.AppUserId))  
+               .ForMember(dest => dest.BasketProducts, opt => opt.MapFrom(src => src.BasketProducts));
+                CreateMap<BasketProduct, BasketListItemDto>()
+    .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.ProductVariation != null
+        ? url + "img/" + src.ProductVariation.productImages.FirstOrDefault().Name // Use variation image if exists
+        : url + "img/" + src.Product.productImages.FirstOrDefault().Name)) // Fall back to product image
+    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProductVariation != null
+        ?   src.ProductVariation.VariationName  // Use variation name if exists
+        : src.Product.Name)) // Fall back to product name
+    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Product.Category.Name)) // Map category name
+    .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ProductVariation != null
+        ? src.ProductVariation.Price // Use variation price if exists
+        : src.Product.Price)) // Fall back to product price
+    .ForMember(dest => dest.DiscountedPrice, opt => opt.MapFrom(src => src.ProductVariation != null
+        ? src.ProductVariation.DiscountedPrice ?? src.ProductVariation.Price // Use variation discounted price if exists
+        : src.Product.DiscountedPrice ?? src.Product.Price)) // Fall back to product discounted price
+    .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity));// Map quantity
+    // Leave null if no variation
+
+                //.ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Product.Price * src.Quantity))
+
+                //.ForMember(dest => dest.TotalSalePrice, opt => opt.MapFrom(src => (src.Product.DiscountedPrice ?? src.Product.Price) * src.Quantity))
+
+                //.ForMember(dest => dest.Discount, opt => opt.MapFrom(src => src.Product.Price - (src.Product.DiscountedPrice ?? src.Product.Price)));
             });
             configuration.AssertConfigurationIsValid();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartElectronicsApi.Application.Dtos.Basket;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace SmartElectronicsApi.Application.Interfaces
     public interface IBasketService
     {
         Task<int> Add(int? productId, int? variationId);
+        Task<UserBasketDto> GetUserBasket();
     }
 }

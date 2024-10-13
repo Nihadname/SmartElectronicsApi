@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using SmartElectronicsApi.Application.Dtos.Basket;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
@@ -19,13 +21,39 @@ namespace SmartElectronicsApi.Application.Implementations
         private readonly IHttpContextAccessor _httpContextAccessor;
         private UserManager<AppUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
-        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IUnitOfWork unitOfWork)
+        private readonly IMapper _mapper ;
+        public BasketService(IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
+        public async Task<UserBasketDto> GetUserBasket()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new CustomException(400, "User ID cannot be null");
 
+            var user = await _userManager.FindByIdAsync(userId);
+            var Basket = await _unitOfWork.BasketRepository.GetEntity(s => s.AppUserId == userId, includes: new Func<IQueryable<Basket>, IQueryable<Basket>>[] {
+query => query
+    .Include(s => s.BasketProducts)
+        .ThenInclude(bp => bp.Product)// Include Category
+        .ThenInclude(p => p.productImages) // Include Product Images
+    .Include(s => s.BasketProducts)
+        .ThenInclude(bp => bp.ProductVariation) // Include Product Variation
+        .ThenInclude(pv => pv.productImages)
+         .Include(s => s.BasketProducts)
+        .ThenInclude(bp => bp.Product)
+                    .ThenInclude(p => p.Category) // Include Category
+
+        // Include Variation Images
+        });
+            if (Basket == null) throw new CustomException(404, " Not found.");
+            var userBasketDto = _mapper.Map<UserBasketDto>(Basket);
+            return userBasketDto;
+        }
         public async Task<int> Add(int? productId, int? variationId = null)
         {
             if (productId == null)

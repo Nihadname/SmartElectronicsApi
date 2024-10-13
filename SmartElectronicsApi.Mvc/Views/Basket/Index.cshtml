@@ -1,0 +1,316 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Basket
+@* @section Scripts {
+    <script asp-append-version="true" src="~/assets/js/Basket.js"></script>
+}
+ *@
+ @model UserBasketGetVM
+<style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9;
+    }
+
+    
+    .basket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      color: #444;
+    }
+
+    .basket-header h1 {
+      font-weight: bold;
+      font-size: 36px;
+      color: #333;
+    }
+
+    .basket-header a {
+      color: #5a6afc;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+
+    .basket-header a:hover {
+      color: #3949ab;
+    }
+
+    .basket-item {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  transition: 0.3s;
+  box-shadow: 0 0px 10px 0px #d7d7d7;
+  position: relative;
+  width: 100%; /* Already set to full width */
+  max-width: 100%; /* Ensure it stays within the container limits */
+}
+
+
+
+/* Optional: Add padding to make the layout feel more spacious */
+.basket-item {
+  padding: 25px 40px; /* Increase padding if needed for more space around the content */
+}
+
+    .basket-item:hover {
+      box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 23px;
+      margin-top: 23px;
+    }
+
+    .product-info img {
+      width: 160px;
+      height: 160px;
+      border-radius: 10px;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .product-info img:hover {
+      transform: scale(1.05);
+    }
+
+    .product-details {
+      margin-left: 20px;
+      margin-bottom: 23px;
+      margin-top: 23px;
+    }
+
+    .product-details h5 {
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 8px;
+    }
+
+    .product-details small {
+      color: #777;
+    }
+
+    .product-details .price {
+      font-weight: bold;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+
+    .product-details .old-price {
+      text-decoration: line-through;
+      color: #aaa;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    .product-details .badge {
+      background-color: #e3c099;
+      color: #177a43;
+      font-weight: 600;
+      border-radius: 5px;
+      padding: 6px 12px;
+      margin-top: 10px;
+    }
+
+    .product-quantity {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .product-quantity button {
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 20px;
+      padding: 0 12px;
+      cursor: pointer;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .product-quantity button:hover {
+      background-color: #e2e6ea;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-quantity input {
+      width: 50px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    .product-remove {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 40px;
+      height: 40px;
+    border:2px solid #f9f7f7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: black;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .product-remove:hover {
+      background-color: black;
+      
+      color: #b6b2b2;
+    }
+
+   .summary {
+  background-color: #fff;
+  padding: 30px 20px; /* Increased padding for better spacing */
+  border-radius: 12px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Softer shadow for better depth */
+  margin-top: 30px; /* Add margin on top to create more space from the basket items */
+  position: sticky; /* Stick to the top when scrolling */
+  top: 20px;
+}
+
+.summary h4 {
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-size: 22px; /* Slightly larger title */
+}
+
+.summary .details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #444;
+  font-size: 16px;
+}
+
+.summary .total {
+  font-weight: bold;
+  font-size: 24px; /* Make total amount stand out */
+  color: #3949ab; /* Highlight the final price */
+}
+
+.summary button {
+  width: 100%;
+  padding: 15px;
+  background-color: #3949ab;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  margin-top: 20px; /* Add space before the button */
+}
+
+.summary button:hover {
+  background-color: #283593;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+@@media (max-width: 768px) {
+  .summary {
+    margin-top: 30px;
+    position: relative; /* Remove sticky behavior on smaller screens */
+  }
+}
+
+
+    @@media (max-width: 768px) {
+      .basket-item {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .product-info {
+        flex-direction: column;
+      }
+
+      .product-details {
+        margin-left: 0;
+        margin-top: 10px;
+      }
+
+      .summary {
+        margin-top: 30px;
+      }
+    }
+  </style>
+
+<div class="container">
+    <div class="row">
+        <!-- Left Side (col-8) -->
+        <div class="col-12 col-lg-8">
+            <!-- Basket Header -->
+            <div class="basket-header">
+                <h1>Səbət</h1>
+                <a href="#">Hamısını sil</a>
+            </div>
+
+            <!-- Basket Item -->
+            @foreach (var item in Model.BasketProducts)
+            {
+                <div class="basket-item">
+                    <div class="product-info">
+                        <img src="@item.Image" alt="Product Image">
+                        <div class="product-details">
+                            <small>@item.CategoryName</small>
+                            <h5>@item.Name.Trim()</h5>
+                            <div class="price-wrapper">
+                                <span class="old-price">@item.Price AZN</span>
+                                <span class="price">@item.DiscountedPrice AZN</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-quantity">
+                        <button>-</button>
+                        <input type="number" value="@item.Quantity">
+                        <button>+</button>
+                    </div>
+                    <!-- Delete Button -->
+                    <div class="product-remove">
+                        <i class="fa fa-xmark" style="font-size: 18px;"></i> <!-- Black X inside a circle -->
+                    </div>
+                </div>
+            }
+          
+        
+        </div>
+
+        <!-- Right Side (col-4) -->
+        <div class="col-12 col-lg-4">
+            <!-- Summary Section -->
+            <div class="summary">
+                <h4>Məhsullar</h4>
+                <div class="details">
+                    <span>Ümumi məbləğ</span>
+                    <span>@Model.TotalPrice AZN</span>
+                </div>
+                <div class="details">
+                    <span>Endirim</span>
+                    <span>-@Model.Discount AZN</span>
+                </div>
+                <hr>
+                <div class="details total">
+                    <span>Yekun məbləğ</span>
+                    <span>@Model.TotalSalePrice AZN</span>
+                </div>
+                <button>Sifarişi rəsmiləşdir</button>
+            </div>
+        </div>
+    </div>
+</div>

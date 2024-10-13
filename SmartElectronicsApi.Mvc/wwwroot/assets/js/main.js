@@ -481,6 +481,6 @@ function GetTheOnesWithDiscount() {
 
 }
 
-document.getElementById('seeMoreButton').addEventListener('click', function () {
-        window.location.href = '/Product'; // Redirect to the product page
-});
+//document.getElementById('seeMoreButton').addEventListener('click', function () {
+//        window.location.href = '/Product'; // Redirect to the product page
+//});

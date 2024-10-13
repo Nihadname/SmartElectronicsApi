@@ -17,7 +17,13 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             _basketService = basketService;
         }
+        [HttpGet]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
+        public async Task<IActionResult> GetUserBasket()
+        {
+            return Ok(await _basketService.GetUserBasket());
+        }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         public async Task<IActionResult> Add(int? productId,int? VariationId)
