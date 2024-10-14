@@ -12,5 +12,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<int> Add(int? productId, int? variationId);
         Task<UserBasketDto> GetUserBasket();
         Task<int> ChangeQuantity(int? productId, int? variationId = null, int quantityChange = 1);
+        Task<int> Delete(int? productId, int? variationId = null);
     }
 }

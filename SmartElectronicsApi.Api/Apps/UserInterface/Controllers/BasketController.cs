@@ -36,5 +36,11 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _basketService.ChangeQuantity(productId, variationId, quantityChange));
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int? productId, int? variationId = null)
+        {
+            return Ok(await _basketService.Delete(productId, variationId));
+        }
     }
 }

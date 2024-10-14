@@ -4,12 +4,8 @@
 }
  *@
  @model UserBasketGetVM
-<style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: #f9f9f9;
-    }
-
+  <style>
+   
     
     .basket-header {
       display: flex;
@@ -50,7 +46,6 @@
   width: 100%; /* Already set to full width */
   max-width: 100%; /* Ensure it stays within the container limits */
 }
-
 
 
 /* Optional: Add padding to make the layout feel more spacious */
@@ -286,7 +281,7 @@
                         <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), 1)">+</button>
                     </div>
                     <!-- Delete Button -->
-                    <div class="product-remove">
+                    <div class="product-remove" onclick="deleteFromBasket(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"))">
                         <i class="fa fa-xmark" style="font-size: 18px;"></i> <!-- Black X inside a circle -->
                     </div>
                 </div>
@@ -313,6 +308,8 @@
                     <span>Yekun məbləğ</span>
                     <span id="total-sale-price">@Model.TotalSalePrice AZN</span>
                 </div>
+                <button>Sifarişi rəsmiləşdir</button>
+
             </div>
         </div>
     </div>

@@ -136,6 +136,44 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return Json(new { success = false, message = ex.Message });
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int? productId, int? variationId = null)
+        {
+            using var client = new HttpClient();
 
+            var token = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var url = variationId.HasValue
+                ? $"http://localhost:5246/api/Basket/?productId={productId}&variationId={variationId}"
+                : $"http://localhost:5246/api/Basket/?productId={productId}";
+            using HttpResponseMessage httpResponseMessage = await client.DeleteAsync(url);
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                var responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                int updatedBasketCount = int.Parse(responseBody);
+
+                return Json(new { success = true, message = "Basket Deleted successfully.", basketCount = updatedBasketCount });
+            }
+            else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction("AccessDenied", "Account");
+            }
+            else
+            {
+                return Json(new { success = false, message = "An error occurred while changing the quantity." });
+            }
+
+        }
     }
 }

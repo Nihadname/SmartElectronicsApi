@@ -193,6 +193,36 @@ query => query
 
             return basketCount;
         }
+        public async Task<int> Delete(int? productId, int? variationId = null)
+        {
+            if (productId == null)
+                throw new CustomException(400, "ProductId cannot be null");
+
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new CustomException(400, "User ID cannot be null");
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var basketProduct = await _unitOfWork.BasketProductRepository.GetEntity(s =>
+                s.ProductId == productId &&
+                (variationId.HasValue ? s.ProductVariationId == variationId : s.ProductVariationId == null) &&
+                s.Basket.AppUserId == user.Id
+            );
+
+            if (basketProduct == null)
+                throw new CustomException(404, "Product not found in the basket");
+
+            // Remove the product from the basket
+            _unitOfWork.BasketProductRepository.Delete(basketProduct);
+            _unitOfWork.Commit();
+
+            // Return the updated basket count
+            var updatedBasket = await GetUserBasket();
+            var basketCount = updatedBasket.BasketProducts.Sum(item => item.Quantity);
+
+            return basketCount;
+        }
 
     }
 }

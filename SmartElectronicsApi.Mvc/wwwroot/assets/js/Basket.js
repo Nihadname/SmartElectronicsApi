@@ -108,6 +108,71 @@ function changeQuantity(productId, variationId, quantityChange) {
         }
     });
 }
+function deleteFromBasket(productId, variationId) {
+    var data = {
+        productId: productId
+    };
+
+    if (variationId !== null && variationId !== undefined && variationId !== "null") {
+        data.variationId = variationId;
+    }
+
+    $.ajax({
+        url: `/Basket/Delete?productId=${data.productId}${data.variationId ? `&variationId=${data.variationId}` : ''}`,
+        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+            if (response.success) {
+                Swal.fire(
+                    'Deleted!',
+                    'The product has been removed from the basket.',
+                    'success'
+                );
+
+                // Use '0' for variationId if it's null or undefined, to match the HTML ID
+                let variationIdText = variationId !== null && variationId !== undefined && variationId !== "null" ? variationId : "0";
+
+                // Dynamically construct the selector based on productId and variationId
+                let basketItemSelector = `#basket-item-${productId}-${variationIdText}`;
+
+                // Find and remove the basket item
+                let basketItem = $(basketItemSelector);
+
+                if (basketItem.length) {
+                    basketItem.remove();
+                } else {
+                    console.error('Basket item not found:', basketItemSelector);
+                }
+
+                // Update the basket badge count
+                let badge = document.querySelector('.basket-badge');
+                if (badge) {
+                    badge.innerText = response.basketCount;
+                }
+
+                // Recalculate and update total price, discount, and final sale price dynamically
+                updateTotals();
+
+                // Check if the basket is empty after removing an item
+               
+
+            } else {
+                Swal.fire(
+                    'Error!',
+                    'An error occurred while removing the product.',
+                    'error'
+                );
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire(
+                'Error!',
+                'An error occurred while removing the product.',
+                'error'
+            );
+        }
+    });
+}
 
 function updateTotals() {
     let totalPrice = 0;
