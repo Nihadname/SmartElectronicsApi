@@ -42,5 +42,17 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _basketService.Delete(productId, variationId));
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+
+        [HttpDelete("DeleteAll")]
+        public async Task<IActionResult> DeleteAll()
+        {
+            return Ok(await _basketService.DeleteAll());
+        }
+        [HttpGet("GetUsersWhoAddedProduct")]
+        public async Task<IActionResult> GetUsersWhoAddedProduct(int productId, DateTime startDate)
+        {
+            return Ok(await _basketService.GetUsersWhoAddedProduct(productId, startDate));
+        }
     }
 }

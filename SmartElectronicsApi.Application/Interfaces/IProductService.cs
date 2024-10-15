@@ -30,5 +30,14 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<List<ProdutListItemDto>> Get();
         Task<List<ProdutListItemDto>> GetDealOfTheWeekInBrand(int? brandId);
         Task<List<ProdutListItemDto>> GetAllProductsWithBrandId(int? id);
+        Task<List<ProdutListItemDto>> GetProductsByCategoryIdAndBrandId(int? categoryId, int? BrandId, int excludeProductId);
+        Task<PaginatedResponse<ProdutListItemDto>> GetFilteredProducts(
+       int? categoryId,
+       int? subCategoryId,
+       int? brandId,
+       List<int> colorIds,
+       int pageNumber,
+       int pageSize,
+       string sortOrder = "asc");
     }
 }

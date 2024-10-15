@@ -53,5 +53,27 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _productService.GetAllProductsWithBrandId(brandId));
         }
+        [HttpGet("GetProductsByCategoryIdAndBrandId")]
+        public async Task<IActionResult> GetProductsByCategoryIdAndBrandId(int? categoryId, int? BrandId, int excludeProductId)
+        {
+            return Ok(await _productService.GetProductsByCategoryIdAndBrandId(categoryId, BrandId, excludeProductId));
+
+        }
+        [HttpGet("Filter")]
+
+        public async Task<IActionResult> GetFilteredProducts(
+    [FromQuery] int? categoryId = null,
+    [FromQuery] int? subCategoryId = null,
+    [FromQuery] int? brandId = null,
+    [FromQuery] List<int> colorIds = null,
+    [FromQuery] int pageNumber = 1,
+    [FromQuery] int pageSize = 10,
+   [FromQuery] string sortOrder = "asc")
+        {
+            var result = await _productService.GetFilteredProducts(categoryId, subCategoryId, brandId, colorIds, pageNumber, pageSize,sortOrder);
+            return Ok(result);
+        }
+
+
     }
 }

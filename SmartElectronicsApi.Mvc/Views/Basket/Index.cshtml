@@ -244,6 +244,44 @@
         margin-top: 30px;
       }
     }
+
+    .empty-basket {
+        text-align: center;
+        margin-top: 50px;
+    }
+
+        .empty-basket img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .empty-basket h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .empty-basket p {
+            font-size: 16px;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .empty-basket .btn {
+            background-color: #5a6afc;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+            .empty-basket .btn:hover {
+                background-color: #3949ab;
+            }
   </style>
 
 <div class="container">
@@ -253,39 +291,52 @@
             <!-- Basket Header -->
             <div class="basket-header">
                 <h1>Səbət</h1>
-                <a href="#">Hamısını sil</a>
+                <a onclick="DeleteAll()">Hamısını sil</a>
             </div>
 
-            <!-- Basket Item -->
-            @foreach (var item in Model.BasketProducts)
+            @if (!Model.BasketProducts.Any())
             {
-                <div class="basket-item"
-                     id="basket-item-@item.ProductId-@(item.VariationId?.ToString() ?? "0")"
-                     data-price="@item.Price"
-                     data-discounted-price="@item.DiscountedPrice"
-                     data-quantity="@item.Quantity">
-                    <div class="product-info">
-                        <img src="@item.Image" alt="Product Image">
-                        <div class="product-details">
-                            <small>@item.CategoryName</small>
-                            <h5>@item.Name.Trim()</h5>
-                            <div class="price-wrapper">
-                                <span class="old-price">@item.Price AZN</span>
-                                <span class="price">@item.DiscountedPrice AZN</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="product-quantity">
-                        <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), -1)">-</button>
-                        <input type="number" value="@item.Quantity" readonly>
-                        <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), 1)">+</button>
-                    </div>
-                    <!-- Delete Button -->
-                    <div class="product-remove" onclick="deleteFromBasket(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"))">
-                        <i class="fa fa-xmark" style="font-size: 18px;"></i> <!-- Black X inside a circle -->
-                    </div>
+                <div class="empty-basket" id="empty-basket">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQsb1Dkx7BxYs1iqJ-O3NhetFxwy0w2RFEw4A&s" alt="Empty Basket" />
+                    <h2>Səbətiniz boşdur</h2>
+                    <p>Məhsulları səbətə əlavə edin və alış-verişə başlayın!</p>
+                    <a href="/" class="btn btn-primary">Alış-verişə davam edin</a>
                 </div>
             }
+            else
+            {
+                @foreach (var item in Model.BasketProducts)
+                {
+                    <div class="basket-item"
+                         id="basket-item-@item.ProductId-@(item.VariationId?.ToString() ?? "0")"
+                         data-price="@item.Price"
+                         data-discounted-price="@item.DiscountedPrice"
+                         data-quantity="@item.Quantity">
+                        <div class="product-info">
+                            <img src="@item.Image" alt="Product Image">
+                            <div class="product-details">
+                                <small>@item.CategoryName</small>
+                                <h5>@item.Name.Trim()</h5>
+                                <div class="price-wrapper">
+                                    <span class="old-price">@item.Price AZN</span>
+                                    <span class="price">@item.DiscountedPrice AZN</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-quantity">
+                            <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), -1)">-</button>
+                            <input type="number" value="@item.Quantity" readonly>
+                            <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), 1)">+</button>
+                        </div>
+                        <!-- Delete Button -->
+                        <div class="product-remove" onclick="deleteFromBasket(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"))">
+                            <i class="fa fa-xmark" style="font-size: 18px;"></i> <!-- Black X inside a circle -->
+                        </div>
+                    </div>
+                }
+            }
+            <!-- Basket Item -->
+           
 
 
         </div>

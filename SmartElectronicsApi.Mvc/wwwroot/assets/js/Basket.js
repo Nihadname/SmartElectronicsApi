@@ -197,4 +197,62 @@ function updateTotals() {
     $('#total-sale-price').text(`${totalSalePrice.toFixed(2)} AZN`);
     $('#discount').text(`${discount.toFixed(2)} AZN`);
 }
+function getJwtTokenFromCookie() {
+    const name = "JwtToken=";
+    const decodedCookie = decodeURIComponent(document.cookie);
+    const cookies = decodedCookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        while (cookie.charAt(0) === ' ') {
+            cookie = cookie.substring(1);
+        }
+        if (cookie.indexOf(name) === 0) {
+            return cookie.substring(name.length, cookie.length);
+        }
+    }
+    return "";
+}
+
+function DeleteAll() {
+    const token = getJwtTokenFromCookie();
+    $.ajax({
+        url: `http://localhost:5246/api/Basket/DeleteAll`,
+        type: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        contentType: 'application/json; charset=utf-8',
+        success: function (response) {
+            Swal.fire(
+                'Deleted!',
+                'All products have been removed from the basket.',
+                'success'
+            );
+
+            // Remove all basket items from the DOM
+            $('.basket-item').each(function () {
+                $(this).remove();
+            });
+
+            // Update the basket badge count to 0
+            let badge = document.querySelector('.basket-badge');
+            if (badge) {
+                badge.innerText = 0;
+            }
+
+            // Recalculate and update total price, discount, and final sale price dynamically
+            updateTotals();
+
+            
+        },
+        error: function (xhr, status, error) {
+            Swal.fire(
+                'Error!',
+                `${xhr.message}`,
+                'error'
+            );
+        }
+    });
+}
+
 

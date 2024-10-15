@@ -184,6 +184,8 @@
         font-size: 16px;
         margin-bottom: 15px;
         color: #666;
+        word-wrap: break-word; /* Ensure text wraps correctly */
+        white-space: normal;
     }
 
     .product-price {
@@ -446,7 +448,7 @@
 
         <div class="col-12 col-lg-6 product-details-section">
             <div class="product-details">
-                <h2 id="product-name">@Model.Name</h2>
+                <h2 id="product-name">@(Model.Name.Trim())</h2>
 
                 <!-- Variation Name -->
                 <h4 id="variation-name"></h4>
@@ -462,7 +464,7 @@
                 <div class="cart-added-section">
                     <span class="cart-icon">🛒</span>
                     <span>3 gün ərzində</span>
-                    <span class="cart-count">2,946 nəfər əlavə etdi.</span>
+                    <span class="cart-count">@ViewBag.BaskCount nəfər əlavə etdi.</span>
                 </div>
                 <!-- Product Description -->
                 <p class="product-description">@Model.Description</p>

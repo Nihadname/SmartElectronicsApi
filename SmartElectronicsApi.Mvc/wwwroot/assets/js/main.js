@@ -392,7 +392,7 @@ function generateProductHTML(product) {
 
                 <!-- Product Image -->
                 <div class="product-image text-center mb-3">
-                <a href="${detailPageUrl}"> <img src="${productImageUrl}" class="card-img-top" alt="Product Image"></a>
+                <a href="${detailPageUrl}" target="_blank"> <img  src="${productImageUrl}" class="card-img-top" alt="Product Image"></a>
                     
                 </div>
 

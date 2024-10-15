@@ -398,5 +398,105 @@ namespace SmartElectronicsApi.Application.Implementations
             var MappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
 return MappedProducts;  
         }
+
+        public async Task<List<ProdutListItemDto>> GetProductsByCategoryIdAndBrandId(int? categoryId, int? BrandId, int excludeProductId) {
+            var products=await _unitOfWork.productRepository.GetAll(s=>s.CategoryId==categoryId&&s.BrandId==BrandId&&s.IsDeleted==false &&
+             s.Id != excludeProductId, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+              {
+            query => query.Include(p => p.Category)
+                          .Include(s => s.productImages)
+                          .Include(s => s.productColors).ThenInclude(s => s.Color)
+                          .Include(s => s.parametricGroups)
+              });
+            var MappedProducts=_mapper.Map<List<ProdutListItemDto>>(products);
+               return MappedProducts;
+           
+        }
+        public async Task<PaginatedResponse<ProdutListItemDto>> GetFilteredProducts(
+    int? categoryId,
+    int? subCategoryId,
+    int? brandId,
+    List<int> colorIds,
+    int pageNumber,
+    int pageSize,
+    string sortOrder = "asc") // Default to ascending
+        {
+            // Base query to fetch products
+            var query = await _unitOfWork.productRepository.GetQuery(s => s.IsDeleted == false);
+
+            // Apply Category Filter
+            if (categoryId.HasValue)
+            {
+                query = query.Where(s => s.CategoryId == categoryId.Value);
+            }
+
+            // Apply Subcategory Filter
+            if (subCategoryId.HasValue)
+            {
+                query = query.Where(s => s.SubCategoryId == subCategoryId.Value);
+            }
+
+            // Apply Brand Filter
+            if (brandId.HasValue)
+            {
+                query = query.Where(s => s.BrandId == brandId.Value);
+            }
+
+            // Apply Colors Filter
+            if (colorIds != null && colorIds.Any())
+            {
+                query = query.Where(s => s.productColors.Any(pc => colorIds.Contains(pc.ColorId)));
+            }
+
+            // Apply Sorting
+            switch (sortOrder.ToLower())
+            {
+                case "asc":
+                    query = query.OrderBy(s => s.DiscountedPrice.HasValue ? s.DiscountedPrice : s.Price);
+                    break;
+                case "desc":
+                    query = query.OrderByDescending(s => s.DiscountedPrice.HasValue ? s.DiscountedPrice : s.Price);
+                    break;
+                case "name_asc":
+                    query = query.OrderBy(s => s.Name);
+                    break;
+                case "name_desc":
+                    query = query.OrderByDescending(s => s.Name);
+                    break;
+                case "views":
+                    query = query.OrderByDescending(s => s.ViewCount); 
+                    break;
+                default:
+                    query = query.OrderBy(s => s.Name); 
+                    break;
+            }
+
+
+            // Get total count before applying pagination
+            var totalProducts = await query.CountAsync();
+
+            // Apply Pagination and fetch products
+            var products = await query
+                .Include(p => p.productColors).ThenInclude(pc => pc.Color)
+                .Include(p => p.productImages)
+                .Include(p => p.Category)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Use AutoMapper to map the products to ProductListItemDto
+            var mappedProducts = _mapper.Map<List<ProdutListItemDto>>(products);
+
+            // Return paginated response
+            return new PaginatedResponse<ProdutListItemDto>
+            {
+                Data = mappedProducts,
+                TotalRecords = totalProducts,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+
     }
 }

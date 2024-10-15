@@ -105,6 +105,7 @@ query => query
             {
                 existedBasket.BasketProducts.Add(new BasketProduct()
                 {
+                    CreatedTime = DateTime.Now,
                     Quantity = 1,
                     BasketId = existedBasket.Id,
                     ProductId = existedProduct.Id,
@@ -126,10 +127,11 @@ query => query
 
             BasketProduct newBasketProduct = new()
             {
+                CreatedTime = DateTime.Now,
                 Quantity = 1,
                 BasketId = newBasket.Id,
                 ProductId = existedProduct.Id,
-                ProductVariationId = existedVariation?.Id  // Set the variation only if it exists
+                ProductVariationId = existedVariation?.Id  
             };
             await _unitOfWork.BasketProductRepository.Create(newBasketProduct);
             _unitOfWork.Commit();
@@ -214,7 +216,7 @@ query => query
                 throw new CustomException(404, "Product not found in the basket");
 
             // Remove the product from the basket
-            _unitOfWork.BasketProductRepository.Delete(basketProduct);
+           await _unitOfWork.BasketProductRepository.Delete(basketProduct);
             _unitOfWork.Commit();
 
             // Return the updated basket count
@@ -223,6 +225,40 @@ query => query
 
             return basketCount;
         }
+        public  async   Task<int> DeleteAll()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new CustomException(400, "User ID cannot be null");
 
+            var user = await _userManager.FindByIdAsync(userId);
+            var basketProducts = await _unitOfWork.BasketProductRepository.GetAll(s => s.Basket.AppUserId == user.Id);
+            if(basketProducts is null|| basketProducts.Count() == 0)
+            {
+                throw new CustomException(400, "Basket either not found  or  empty ");
+            }
+            foreach( var basketProduct in basketProducts)
+            {
+                await _unitOfWork.BasketProductRepository.Delete(basketProduct);
+                _unitOfWork.Commit();
+            }
+            return 0;
+        }
+        public async Task<int> GetUsersWhoAddedProduct(int productId, DateTime startDate)
+        {
+            var basketProducts = await _unitOfWork.BasketProductRepository.GetAll(
+                bp => bp.ProductId == productId &&
+                      bp.CreatedTime >= startDate &&
+                      bp.CreatedTime <= DateTime.Now,
+                includes: new Func<IQueryable<BasketProduct>, IQueryable<BasketProduct>>[]
+                {
+            bp => bp.Include(b => b.Basket)
+                    .ThenInclude(b => b.AppUser) 
+                });
+
+            var users = basketProducts.Select(bp => bp.Basket.AppUser).Distinct().ToList();
+
+            return users.Count();
+        }
     }
 }
