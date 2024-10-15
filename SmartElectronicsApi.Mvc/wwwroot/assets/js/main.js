@@ -92,6 +92,30 @@ var swiperSa2 = new Swiper(".NewBrandProducts2", {
         }
     }
 });
+
+var swiperSa3 = new Swiper(".NewBrandProducts3", {
+    slidesPerView: 4, // Adjust the number of visible slides
+    spaceBetween: 30,
+    freeMode: true, // Enables free scrolling without snapping to slides
+   
+    breakpoints: {
+        // when window width is >= 0px (for mobile devices)
+        0: {
+            slidesPerView: 1, // Show 1 slide at a time on small screens
+            spaceBetween: 20,
+        },
+        // when window width is >= 768px (for tablets and larger devices)
+        768: {
+            slidesPerView: 2, // Show 2 slides at a time on medium screens
+            spaceBetween: 30,
+        },
+        // when window width is >= 1024px (for desktops)
+        1024: {
+            slidesPerView: 3, // Show 3 slides at a time on larger screens
+            spaceBetween: 30,
+        }
+    }
+});
 var SwiperDeal = new Swiper('.swiperDeal', {
     loop: true,
 

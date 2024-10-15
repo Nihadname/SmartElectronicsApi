@@ -564,7 +564,7 @@
     </div>
 </div>
 <!-- Reviews Section -->
-<div class="reviews-section">
+<div class="reviews-section mb-5">
     <h3 class="review-title">Customer Reviews</h3>
 
     <div class="swiper mySwiperReviews">
@@ -672,7 +672,64 @@
         <div class="swiper-button-prev"></div>
     </div>
 </div>
->  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+<div class="swiper NewBrandProducts3">
+    @if (ViewBag.Products == null || !((List<ProdutListItemVM>)ViewBag.Products).Any())
+    {
+        <span>No products available</span>
+    }
+    else
+    {
+        <h3>
+            Dəsti Tamamla
+
+        </h3>
+        <div class="swiper-wrapper">
+            @foreach (var item in (List<ProdutListItemVM>)ViewBag.Products)
+            {
+                <div class="swiper-slide">
+                    <div class="card product-card2 h-100 shadow-sm " style="width:100%; margin-bottom: 0;">
+                        <div class="position-relative overflow-hidden">
+                            <a asp-action="Detail" asp-controller="Product" asp-route-id="@item.Id">
+                                @if (item.ImageUrls is List<string> imageUrls && imageUrls.Any())
+                                {
+                                    <img style="height: 250px;
+    object-fit: contain;
+    transition: transform 0.3s ease;" src="@imageUrls.FirstOrDefault()" alt="Product Image" class="card-img-top">
+                                }
+                            </a>
+                            @if (item.isNew)
+                            {
+                                <div class="badge bg-success position-absolute top-0 start-0 m-2 p-2 rounded">New</div>
+                            }
+                            <div class="wishlist-icon position-absolute top-0 end-0 m-2 p-2">
+                                <i class="fa fa-heart fa-lg text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="card-body text-center">
+                            <h5 class="card-title">@item.Name</h5>
+                            <p class="card-text">
+                                @(item.Description.Length >= 40 ? item.Description.Substring(0, 40) + "..." : item.Description)
+                            </p>
+                            <div class="price-info mb-2">
+                                <span class="fw-bold text-primary fs-5">
+                                    @item.DiscountedPrice AZN
+                                    <del class="text-muted">@item.Price AZN</del>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0" style="    margin-bottom: 0;">
+                            <button class="btn btn-primary w-100">
+                                <i class="fa fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+ <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -690,6 +747,23 @@
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
         },
+        breakpoints: {
+            // when window width is >= 0px (for mobile devices)
+            0: {
+                slidesPerView: 1, // Show 1 slide at a time on small screens
+                spaceBetween: 20,
+            },
+            // when window width is >= 768px (for tablets and larger devices)
+            768: {
+                slidesPerView: 2, // Show 2 slides at a time on medium screens
+                spaceBetween: 30,
+            },
+            // when window width is >= 1024px (for desktops)
+            1024: {
+                slidesPerView: 3, // Show 3 slides at a time on larger screens
+                spaceBetween: 30,
+            }
+        }
     });
     document.addEventListener('DOMContentLoaded', function () {
         const thumbnailCards = document.querySelectorAll('.thumbnail-card');

@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SmartElectronicsApi.Mvc.ViewModels.pagination;
 using SmartElectronicsApi.Mvc.ViewModels.Product;
 using SmartElectronicsApi.Mvc.ViewModels.Slider;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SmartElectronicsApi.Mvc.Controllers
 {
@@ -83,8 +84,19 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 using HttpResponseMessage httpResponseMessage2 = await client.GetAsync($"http://localhost:5246/api/Basket/GetUsersWhoAddedProduct?productId={id}&startDate={startDate}");
                 if (httpResponseMessage2.IsSuccessStatusCode)
                 {
+                   
                     string ContentStream2 = await httpResponseMessage2.Content.ReadAsStringAsync();
                     ViewBag.BaskCount= ContentStream2;
+                    var categoryId = data.Category.Id;
+                    var BrandId = data.BrandId;
+                    using HttpResponseMessage httpResponseMessage3 = await client.GetAsync($"http://localhost:5246/api/Product/GetProductsByCategoryIdAndBrandId?categoryId={categoryId}&BrandId={BrandId}&excludeProductId={id}");
+                    if (httpResponseMessage3.IsSuccessStatusCode)
+                    {
+                        string ContentStream3 = await httpResponseMessage3.Content.ReadAsStringAsync();
+                        var data3 = JsonConvert.DeserializeObject<List<ProdutListItemVM>>(ContentStream3);
+                        ViewBag.Products=data3;
+                        Console.WriteLine(ViewBag.Products);
+                    }
                 }
 
                 return View(data);
@@ -119,6 +131,21 @@ namespace SmartElectronicsApi.Mvc.Controllers
 
             return BadRequest();
         }
-
+        public async Task<IActionResult> Test()
+        {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            var categoryId =10;
+            var BrandId = 3;
+            using HttpResponseMessage httpResponseMessage3 = await client.GetAsync($"http://localhost:5246/api/Product/GetProductsByCategoryIdAndBrandId?categoryId={categoryId}&BrandId={BrandId}&excludeProductId={21}");
+            if (httpResponseMessage3.IsSuccessStatusCode)
+            {
+                string ContentStream3 = await httpResponseMessage3.Content.ReadAsStringAsync();
+                var data3 = JsonConvert.DeserializeObject<List<ProdutListItemVM>>(ContentStream3);
+                ViewBag.Products = data3;
+           return View(data3);
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

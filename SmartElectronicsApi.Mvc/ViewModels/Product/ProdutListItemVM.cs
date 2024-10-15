@@ -9,6 +9,7 @@
         public decimal DiscountPercentage { get; set; }
         public decimal DiscountedPrice { get; set; }
         public int ViewCount { get; set; }
+
         public bool isNew { get; set; }
         public string ProductCode { get; set; }
         public bool IsDealOfTheWeek { get; set; }
