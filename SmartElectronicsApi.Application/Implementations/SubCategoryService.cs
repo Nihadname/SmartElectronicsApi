@@ -188,6 +188,11 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork.Commit();
             return subCategory.Id;
         }
-
+        public async Task<List<SubCategoryListItemDto>> GetAll()
+        {
+           var SubCategories =await _unitOfWork.subCategoryRepository.GetAll(s=>s.IsDeleted==false);
+            var MappedSubCategories = _mapper.Map<List<SubCategoryListItemDto>>(SubCategories);
+            return MappedSubCategories;
+        }
     }
 }

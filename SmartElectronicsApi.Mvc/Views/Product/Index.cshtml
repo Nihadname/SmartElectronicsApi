@@ -1,6 +1,22 @@
 ﻿@using SmartElectronicsApi.Mvc.ViewModels.Product
 @using SmartElectronicsApi.Mvc.ViewModels.pagination
 @model PaginatedResponseVM<ProdutListItemVM>
+<style>
+    #loader2 {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        display: none; /* Hidden by default */
+    }
+</style>
+<div id="loader2" class="loader" style="display: none;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
 <main class="container mt-4">
     <div class="row">
         <!-- Sidebar for Filters -->
@@ -8,151 +24,91 @@
             <div class="card mb-4 shadow-sm sticky-top filter-card">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Filters</h5>
-                    <button class="btn btn-sm btn-outline-light" id="clearFiltersBtn">Clear</button>
+                    <a href="@Url.Action("Index", "Product")" class="btn btn-sm btn-outline-light">Clear</a>
                 </div>
                 <div class="card-body">
-                    <!-- Category Filter -->
-                    <div class="mb-4">
-                        <h6 class="filter-heading" data-bs-toggle="collapse" href="#categoryFilter" role="button" aria-expanded="true" aria-controls="categoryFilter">
-                            <i class="fas fa-tags me-2"></i> Category <i class="fa fa-chevron-down float-end"></i>
-                        </h6>
-                        <div class="collapse show" id="categoryFilter">
-                            <ul class="list-unstyled ms-3">
-                                <li><input type="checkbox" id="category1"> <label for="category1">Smartphones</label></li>
-                                <li><input type="checkbox" id="category2"> <label for="category2">Tablets</label></li>
-                                <li><input type="checkbox" id="category3"> <label for="category3">Laptops</label></li>
-                                <li><input type="checkbox" id="category4"> <label for="category4">Accessories</label></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Brand Filter -->
-                    <div class="mb-4">
-                        <h6 class="filter-heading" data-bs-toggle="collapse" href="#brandFilter" role="button" aria-expanded="false" aria-controls="brandFilter">
-                            <i class="fas fa-industry me-2"></i> Brand <i class="fa fa-chevron-down float-end"></i>
-                        </h6>
-                        <div class="collapse" id="brandFilter">
-                            <ul class="list-unstyled ms-3">
-                                <li><input type="checkbox" id="brand1"> <label for="brand1">Apple</label></li>
-                                <li><input type="checkbox" id="brand2"> <label for="brand2">Samsung</label></li>
-                                <li><input type="checkbox" id="brand3"> <label for="brand3">Sony</label></li>
-                                <li><input type="checkbox" id="brand4"> <label for="brand4">Huawei</label></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- Price Range Filter -->
-                    <div class="mb-4">
-                        <h6 class="filter-heading" data-bs-toggle="collapse" href="#priceFilter" role="button" aria-expanded="false" aria-controls="priceFilter">
-                            <i class="fas fa-dollar-sign me-2"></i> Price Range <i class="fa fa-chevron-down float-end"></i>
-                        </h6>
-                        <div class="collapse" id="priceFilter">
-                            <div class="input-group mb-2">
-                                <input type="number" class="form-control" id="minPrice" placeholder="Min">
-                                <span class="input-group-text">-</span>
-                                <input type="number" class="form-control" id="maxPrice" placeholder="Max">
+                    <form id="filterForm" method="get" action="@Url.Action("Index", "Product")">
+                        <!-- Category Filter (Radio Buttons for single selection) -->
+                        <div class="mb-4">
+                            <h6 class="filter-heading" data-bs-toggle="collapse" href="#categoryFilter" role="button" aria-expanded="true" aria-controls="categoryFilter">
+                                <i class="fas fa-tags me-2"></i> Category <i class="fa fa-chevron-down float-end"></i>
+                            </h6>
+                            <div class="collapse show" id="categoryFilter">
+                                <ul class="list-unstyled ms-3">
+                                    @foreach (var category in ViewBag.Categories)
+                                    {
+                                        <li>
+                                            <input type="radio" name="categoryId" value="@category.Id" @(ViewBag.SelectedCategory == category.Id ? "checked" : "")>
+                                            <label>@category.Name</label>
+                                        </li>
+                                    }
+                                </ul>
                             </div>
-                            <p>Selected Range: <span id="priceValue">0 - 2000 AZN</span></p>
                         </div>
-                    </div>
-                    <!-- Rating Filter -->
-                    <div class="mb-4">
-                        <h6 class="filter-heading" data-bs-toggle="collapse" href="#ratingFilter" role="button" aria-expanded="false" aria-controls="ratingFilter">
-                            <i class="fas fa-star me-2"></i> Ratings <i class="fa fa-chevron-down float-end"></i>
-                        </h6>
-                        <div class="collapse" id="ratingFilter">
-                            <ul class="list-unstyled ms-3">
-                                <li><input type="radio" name="rating" id="rating5"> <label for="rating5">5 Stars & Up</label></li>
-                                <li><input type="radio" name="rating" id="rating4"> <label for="rating4">4 Stars & Up</label></li>
-                                <li><input type="radio" name="rating" id="rating3"> <label for="rating3">3 Stars & Up</label></li>
-                            </ul>
+
+                        <!-- Brand Filter (Radio Buttons for single selection) -->
+                        <div class="mb-4">
+                            <h6 class="filter-heading" data-bs-toggle="collapse" href="#brandFilter" role="button" aria-expanded="false" aria-controls="brandFilter">
+                                <i class="fas fa-industry me-2"></i> Brand <i class="fa fa-chevron-down float-end"></i>
+                            </h6>
+                            <div class="collapse" id="brandFilter">
+                                <ul class="list-unstyled ms-3">
+                                    @foreach (var brand in ViewBag.Brands)
+                                    {
+                                        <li>
+                                            <input type="radio" name="brandId" value="@brand.Id" @(ViewBag.SelectedBrand == brand.Id ? "checked" : "")>
+                                            <label>@brand.Name</label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Color Filter -->
-                    <div class="mb-4">
-                        <h6 class="filter-heading" data-bs-toggle="collapse" href="#colorFilter" role="button" aria-expanded="false" aria-controls="colorFilter">
-                            <i class="fas fa-palette me-2"></i> Color <i class="fa fa-chevron-down float-end"></i>
-                        </h6>
-                        <div class="collapse" id="colorFilter">
-                            <ul class="list-unstyled ms-3">
-                                <li><input type="checkbox" id="color1"> <label for="color1">Black</label></li>
-                                <li><input type="checkbox" id="color2"> <label for="color2">White</label></li>
-                                <li><input type="checkbox" id="color3"> <label for="color3">Blue</label></li>
-                                <li><input type="checkbox" id="color4"> <label for="color4">Red</label></li>
-                            </ul>
+
+                        <!-- Subcategory Filter (Radio Buttons for single selection) -->
+                        <div class="mb-4">
+                            <h6 class="filter-heading" data-bs-toggle="collapse" href="#subCategoryFilter" role="button" aria-expanded="false" aria-controls="subCategoryFilter">
+                                <i class="fas fa-check-circle me-2"></i> Subcategories <i class="fa fa-chevron-down float-end"></i>
+                            </h6>
+                            <div class="collapse" id="subCategoryFilter">
+                                <ul class="list-unstyled ms-3">
+                                    @foreach (var subCategory in ViewBag.SubCategories)
+                                    {
+                                        <li>
+                                            <input type="radio" name="subCategoryId" value="@subCategory.Id" @(ViewBag.SelectedSubCategory == subCategory.Id ? "checked" : "")>
+                                            <label>@subCategory.Name</label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Availability Filter -->
-                    <div class="mb-4">
-                        <h6 class="filter-heading" data-bs-toggle="collapse" href="#availabilityFilter" role="button" aria-expanded="false" aria-controls="availabilityFilter">
-                            <i class="fas fa-check-circle me-2"></i> Availability <i class="fa fa-chevron-down float-end"></i>
-                        </h6>
-                        <div class="collapse" id="availabilityFilter">
-                            <ul class="list-unstyled ms-3">
-                                <li><input type="checkbox" id="available1"> <label for="available1">In Stock</label></li>
-                                <li><input type="checkbox" id="available2"> <label for="available2">Out of Stock</label></li>
-                                <li><input type="checkbox" id="available3"> <label for="available3">Pre-order</label></li>
-                            </ul>
+
+                        <!-- Color Filter (Allow multiple selection with checkboxes) -->
+                        <div class="mb-4">
+                            <h6 class="filter-heading" data-bs-toggle="collapse" href="#colorFilter" role="button" aria-expanded="false" aria-controls="colorFilter">
+                                <i class="fas fa-palette me-2"></i> Color <i class="fa fa-chevron-down float-end"></i>
+                            </h6>
+                            <div class="collapse" id="colorFilter">
+                                <ul class="list-unstyled ms-3">
+                                    @foreach (var color in ViewBag.Colors)
+                                    {
+                                        <li>
+                                            <input type="checkbox" name="colorIds" value="@color.Id" @(ViewBag.SelectedColors?.Contains(color.Id) == true ? "checked" : "")>
+                                            <label>@color.Name</label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                    <!-- Sort Options -->
-                    <div class="mb-4">
-                        <h6 class="filter-heading" data-bs-toggle="collapse" href="#sortOptions" role="button" aria-expanded="false" aria-controls="sortOptions">
-                            <i class="fas fa-sort me-2"></i> Sort By <i class="fa fa-chevron-down float-end"></i>
-                        </h6>
-                        <div class="collapse" id="sortOptions">
-                            <select class="form-select mt-2">
-                                <option value="popularity">Popularity</option>
-                                <option value="priceLow">Price: Low to High</option>
-                                <option value="priceHigh">Price: High to Low</option>
-                                <option value="ratingHigh">Rating: High to Low</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary w-100">Apply Filters</button>
+
+                        <button class="btn btn-primary w-100" type="submit">Apply Filters</button>
+                    </form>
                 </div>
             </div>
         </aside>
 
-
         <!-- Product Grid -->
         <section class="col-lg-8 col-md-8">
-            <!-- Advanced Sorting Section -->
-            <div class="advanced-sorting mb-4">
-                <label for="primarySort">Sort by:</label>
-                <div class="sorting-select">
-                    <select id="primarySort" class="form-select">
-                        <option value="popularity" selected>
-                            <i class="fas fa-star"></i> Popularity
-                        </option>
-                        <option value="newest">
-                            <i class="fas fa-calendar-alt"></i> Newest Arrivals
-                        </option>
-                        <option value="discount">
-                            <i class="fas fa-percent"></i> Highest Discounts
-                        </option>
-                        <option value="priceLow">
-                            <i class="fas fa-sort-amount-down-alt"></i> Price: Low to High
-                        </option>
-                        <option value="priceHigh">
-                            <i class="fas fa-sort-amount-up"></i> Price: High to Low
-                        </option>
-                        <option value="ratingHigh">
-                            <i class="fas fa-sort-numeric-up"></i> Rating: High to Low
-                        </option>
-                        <option value="reviews">
-                            <i class="fas fa-comments"></i> Most Reviews
-                        </option>
-                        <option value="availability">
-                            <i class="fas fa-check"></i> Availability
-                        </option>
-                    </select>
-                </div>
-
-
-            </div>
-
-            <!-- Product Grid -->
             <div class="row g-4" id="productGrid20">
-                <!-- Product Card Example -->
                 @foreach (var item in Model.Data)
                 {
                     <div class="col-sm-6 col-md-4 col-lg-6">
@@ -163,12 +119,7 @@
                                     @if (item.isNew)
                                     {
                                         <span>New</span>
-                                    }else{
-                                        <span>NotNew</span>
-
                                     }
-
-                                   
                                 </div>
                                 <div class="wishlist-icon20 position-absolute top-0 end-0 m-2 p-2">
                                     <i class="fa fa-heart fa-lg text-danger"></i>
@@ -177,14 +128,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">@item.Name</h5>
                                 <p class="card-text">
-                                    @if (item.Description.Length >= 60)
-                                    {
-                                        @item.Description.Substring(0, 60)
-                                                    }
-                                    else
-                                    {
-                                        @item.Description  <!-- Display the full description if it’s shorter than 60 characters -->
-                                    }
+                                    @(item.Description.Length >= 60 ? item.Description.Substring(0, 60) : item.Description)
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="fw-bold text-primary">
@@ -206,27 +150,52 @@
                         </div>
                     </div>
                 }
-                <!-- Repeat for more product cards -->
             </div>
-
         </section>
     </div>
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })" tabindex="-1">Previous</a>
-            </li>
-
-            @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
-            {
-                <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
-                </li>
-            }
-
-            <li class="page-item @(Model.PageNumber == Math.Ceiling((double)Model.TotalRecords / Model.PageSize) ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
-            </li>
-        </ul>
-    </nav>
 </main>
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })" tabindex="-1">Previous</a>
+        </li>
+
+        @for (int i = 1; i <= Math.Ceiling((double)Model.TotalRecords / Model.PageSize); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+            </li>
+        }
+
+        <li class="page-item @(Model.PageNumber == Math.Ceiling((double)Model.TotalRecords / Model.PageSize) ? "disabled" : "")">
+            <a class="page-link" href="@Url.Action("Index", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+        </li>
+    </ul>
+</nav>
+<script>
+    // Function to show the loader
+    function showLoader() {
+        document.getElementById('loader2').style.display = 'block'; // Show the loader
+    }
+
+    // Function to hide the loader
+    function hideLoader() {
+        document.getElementById('loader2').style.display = 'none'; // Hide the loader
+    }
+
+    // Function to simulate a fake loading process
+    function simulateLoading() {
+        showLoader(); // Show loader
+
+        // Simulate a delay (e.g., 2 seconds)
+        setTimeout(function () {
+            hideLoader(); // Hide loader after delay
+        }, 2000); // Adjust the delay as needed
+    }
+
+    // Attach the loader to the form submission
+    document.getElementById('filterForm').addEventListener('submit', function () {
+        showLoader(); // Prevent the actual form submission to demonstrate the loader
+        simulateLoading();  // Simulate loading
+    });
+</script>

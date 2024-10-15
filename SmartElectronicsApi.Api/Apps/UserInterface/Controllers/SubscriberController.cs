@@ -21,5 +21,6 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _ISubscriberService.Create(subscriber));
         }
+
     }
 }
