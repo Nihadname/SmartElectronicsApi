@@ -417,9 +417,11 @@ return MappedProducts;
     int? subCategoryId,
     int? brandId,
     List<int> colorIds,
+    int? minPrice,  // Add minPrice parameter
+    int? maxPrice,  // A
     int pageNumber,
     int pageSize,
-    string sortOrder = "asc") // Default to ascending
+    string sortOrder = "name_asc") // Default to ascending
         {
             // Base query to fetch products
             var query = await _unitOfWork.productRepository.GetQuery(s => s.IsDeleted == false);
@@ -430,25 +432,29 @@ return MappedProducts;
                 query = query.Where(s => s.CategoryId == categoryId.Value);
             }
 
-            // Apply Subcategory Filter
             if (subCategoryId.HasValue)
             {
                 query = query.Where(s => s.SubCategoryId == subCategoryId.Value);
             }
 
-            // Apply Brand Filter
             if (brandId.HasValue)
             {
                 query = query.Where(s => s.BrandId == brandId.Value);
             }
 
-            // Apply Colors Filter
             if (colorIds != null && colorIds.Any())
             {
                 query = query.Where(s => s.productColors.Any(pc => colorIds.Contains(pc.ColorId)));
             }
+            if (minPrice.HasValue)
+            {
+                query = query.Where(s => (s.DiscountedPrice.HasValue ? s.DiscountedPrice.Value : s.Price) >= minPrice.Value);
+            }
 
-            // Apply Sorting
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(s => (s.DiscountedPrice.HasValue ? s.DiscountedPrice.Value : s.Price) <= maxPrice.Value);
+            }
             switch (sortOrder.ToLower())
             {
                 case "asc":
@@ -472,7 +478,6 @@ return MappedProducts;
             }
 
 
-            // Get total count before applying pagination
             var totalProducts = await query.CountAsync();
 
             // Apply Pagination and fetch products

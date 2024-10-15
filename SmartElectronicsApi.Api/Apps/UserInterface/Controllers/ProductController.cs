@@ -65,14 +65,17 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
     [FromQuery] int? categoryId = null,
     [FromQuery] int? subCategoryId = null,
     [FromQuery] int? brandId = null,
-    [FromQuery] List<int> colorIds = null,
+    [FromQuery] List<int>? colorIds = null,  
+    [FromQuery] int? minPrice = null, 
+    [FromQuery] int? maxPrice = null,  
     [FromQuery] int pageNumber = 1,
     [FromQuery] int pageSize = 10,
-   [FromQuery] string sortOrder = "asc")
+    [FromQuery] string sortOrder = "asc")
         {
-            var result = await _productService.GetFilteredProducts(categoryId, subCategoryId, brandId, colorIds, pageNumber, pageSize,sortOrder);
+            var result = await _productService.GetFilteredProducts(categoryId, subCategoryId, brandId, colorIds, minPrice, maxPrice, pageNumber, pageSize, sortOrder);
             return Ok(result);
         }
+
 
 
     }

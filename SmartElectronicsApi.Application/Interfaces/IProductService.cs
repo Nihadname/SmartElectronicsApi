@@ -36,6 +36,8 @@ namespace SmartElectronicsApi.Application.Interfaces
        int? subCategoryId,
        int? brandId,
        List<int> colorIds,
+       int? minPrice,  // Add minPrice parameter
+    int? maxPrice,
        int pageNumber,
        int pageSize,
        string sortOrder = "asc");
