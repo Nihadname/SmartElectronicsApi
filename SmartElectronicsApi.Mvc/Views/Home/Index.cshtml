@@ -221,125 +221,50 @@ media (max-width: 576px) {
     <div class="row">
         <div class="col-md-3 thisPart">
             <ul class="vertical-menu shadow">
-                @foreach(var item in Model.Categories)
+                @foreach (var item in Model.Categories)
                 {
                     <li>
                         <i class="@item.Icon"></i>
-                        <a href="#">@item.Name</a>
-                       
+                        <!-- Redirect to the Product Index page with the selected categoryId -->
+                        <a href="@Url.Action("Index", "Product", new { categoryId = item.Id })">@item.Name</a>
+
                         <div class="category-details">
-                            <!-- Add your category details here -->
                             <div class="all">
                                 <div class="row">
                                     @foreach (var cate in item.SubCategories)
                                     {
-                                        @if(cate is not null){
+                                        @if (cate != null)
+                                        {
                                             <div class="col-12 col-md-6 col-lg-4">
-                                                <h6>@cate.Name</h6>
+                                                <h6>
+                                                    <a style="font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;" href="@Url.Action("Index", "Product", new { categoryId = item.Id, subCategoryId = cate.Id })">
+                                                        @cate.Name
+                                                    </a>
+                                                </h6>
+
                                                 @foreach (var cate2 in cate.brandListItemDtos)
                                                 {
-                                                    <p>@cate2.Name</p>
-
+                                                    <p>
+                                                        <a href="@Url.Action("Index", "Product", new { categoryId = item.Id, subCategoryId = cate.Id, brandId = cate2.Id })">
+                                                            @cate2.Name
+                                                        </a>
+                                                    </p>
                                                 }
                                             </div>
                                         }
-
-                                }
-                                   
-                            
+                                    }
                                 </div>
                             </div>
-
                         </div>
                     </li>
                 }
-              @*   <li>
-                    <i class="fas fa-clock icon"></i>
-                    <a href="#">Saatlar</a>
-                    <div class="category-details">
-                        <!-- Add your category details here -->
-                        <div class="all">
-                            <div class="row">
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Man Clothes</h6>
-                                    <p>Shirt</p>
-                                    <p>T-Shirt</p>
-                                    <p>Pant</p>
-                                    <p>Underwear</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Accessories</h6>
-                                    <p>Belt</p>
-                                    <p>Hat</p>
-                                    <p>Watches</p>
-                                    <p>Sunglasses</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Shoes</h6>
-                                    <p>Sneakers</p>
-                                    <p>Sandals</p>
-                                    <p>Formal</p>
-                                    <p>Casual</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Bags</h6>
-                                    <p>Backpack</p>
-                                    <p>Crossbody Bags</p>
-                                    <p>Side Bags</p>
-                                    <p>Slides</p>
-                                </div>
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <h6>Woman Clothes</h6>
-                                    <p>Dress</p>
-                                    <p>Skirt</p>
-                                    <p>Top</p>
-                                    <p>Jacket</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </li>
-
-                <li>
-                    <i class="fas fa-tv icon"></i>
-                    <a href="#">TV, Audio, Video</a>
-                </li>
-                <li>
-                    <i class="fas fa-laptop icon"></i>
-                    <a href="#">Kompüter və ofis avadanlıqları</a>
-                </li>
-                <li>
-                    <i class="fa-solid fa-blender icon"></i>
-                    <a href="#">Böyük məişət texnikası</a>
-                </li>
-                <li>
-                    <i class="fas fa-blender icon"></i>
-                    <a href="#">Kiçik məişət texnikası</a>
-                </li>
-                <li>
-                    <i class="fa-solid fa-blender icon"></i>
-                    <a href="#">Şəxsi qulluq və gözəllik</a>
-                </li>
-                <li>
-                    <i class="fas fa-camera icon"></i>
-                    <a href="#">Foto və foto aksessuarları</a>
-                </li>
-                <li>
-                    <i class="fas fa-gamepad icon"></i>
-                    <a href="#">Əyləncə</a>
-                </li>
-                <li>
-                    <i class="fas fa-bicycle icon"></i>
-                    <a href="#">Nəqliyyat</a>
-                </li>
-                <li>
-                    <i class="fas fa-couch icon"></i>
-                    <a href="#">Mebel</a>
-                </li> *@
-                <!-- Add more items as needed -->
             </ul>
         </div>
+
+
         <div class="col-md-9 ForSlider col-sm-12">
             <div class="swiper swiperMain mb-3">
                 <!-- Additional required wrapper -->
@@ -372,7 +297,9 @@ media (max-width: 576px) {
                                         <div class="product-details2">
                                             <div class="discount-ribbon">-@item.DiscountPercentage%</div>
                                             <div class="product-image">
-                                                <img src="@item.ImageUrls.FirstOrDefault()" width="100" height="100" alt="Apple iPhone 15 Pro 128 GB Blue Titanium" class="img-fluid">
+                                                <a asp-action="Detail" asp-controller="Product" asp-route-id="@item.Id"> 
+                                                    <img src="@item.ImageUrls.FirstOrDefault()" width="100" height="100" alt="Apple iPhone 15 Pro 128 GB Blue Titanium" class="img-fluid">
+                                                </a>
                                             </div>
 
                                             <div class="product-info2">

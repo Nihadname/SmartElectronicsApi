@@ -15,10 +15,11 @@ namespace SmartElectronicsApi.Core.Entities
         public bool IsBlocked { get; set; }
         public DateTime? CreatedTime { get; set; }
         public DateTime? BlockedUntil { get; set; }
-        public ICollection<Address> addresses { get; set; }
+        public ICollection<Address>? addresses { get; set; }
         public Basket? basket { get; set; }
         public WishList? wishList { get; set; }
-        public ICollection<Comment> comments { get; set; }  
+        public ICollection<Comment>? comments { get; set; }  
+        public ICollection<Order>? orders { get; set; }
 
     }
 

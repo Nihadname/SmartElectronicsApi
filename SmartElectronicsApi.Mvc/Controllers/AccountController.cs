@@ -7,7 +7,10 @@ using Newtonsoft.Json.Linq;
 using SmartElectronicsApi.Mvc.Interfaces;
 using SmartElectronicsApi.Mvc.ViewModels;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
+using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Web;
 
@@ -84,7 +87,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVm loginVm, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginVm loginVm)
         {
             if (!ModelState.IsValid)
             {
@@ -97,12 +100,19 @@ namespace SmartElectronicsApi.Mvc.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var token = await response.Content.ReadAsStringAsync();
-                Response.Cookies.Append("JwtToken",token);
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadJwtToken(token);
+                var roles = jwtToken.Claims.Where(c => c.Type == "role").Select(c => c.Value).ToList();
+
                 TempData["LoginSuccess"] = true;
 
-                if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                // Check if the user is an admin
+              
+                Response.Cookies.Append("JwtToken",token);
+                TempData["LoginSuccess"] = true;
+                if (roles.Contains("Admin"))
                 {
-                    return Redirect(returnUrl);
+                    return RedirectToAction("Index", "Dashboard", new { area = "AdminArea" });
                 }
                 else
                 {
@@ -208,7 +218,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 smtpPort: 587,
                 enableSsl: true,
                 smtpUser: "nihadmi@code.edu.az\r\n",
-                smtpPass: "zrhu njzc qeqr koux\r\n"
+                smtpPass: "jytx krmh ngqj vdnc\r\n"
             );
 
                 TempData["EmailSendingSuccess"] = "An email with instructions has been sent to the provided address.";
@@ -330,7 +340,75 @@ namespace SmartElectronicsApi.Mvc.Controllers
             }
 
         }
-        public IActionResult AccessDenied()
+        public async Task<IActionResult> ChangePassword()
+        {
+            using var client = new HttpClient();
+            var apiUrl = "http://localhost:5246/api/Auth/CheckingAuth";
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            var response = await client.GetAsync(apiUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return View();
+            }
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            else if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction("AccessDenied", "Account", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Error404", "Home", new { area = "" });
+            }
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword( ChangePasswordVm changePasswordVm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(changePasswordVm);
+            }           
+
+            var stringData = JsonConvert.SerializeObject(changePasswordVm);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+
+            using var client = new HttpClient();
+            var apiUrl = "http://localhost:5246/api/Auth/ChangePassword";
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            // Make an API request to change the password
+            var response = await client.PostAsync(apiUrl, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["ChangePasswordSuccess"] = "Password changed successfully.";
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                // Handle error response from the API
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+
+                return View(changePasswordVm);
+            }
+        }
+
+            public IActionResult AccessDenied()
         {
             return View("AccessDenied"); 
         }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241015171031_OrderLogic2")]
+    partial class OrderLogic2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -721,9 +724,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductVariationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -738,8 +738,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductVariationId");
 
                     b.ToTable("OrderItems");
                 });
@@ -1462,15 +1460,9 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SmartElectronicsApi.Core.Entities.ProductVariation", "ProductVariation")
-                        .WithMany()
-                        .HasForeignKey("ProductVariationId");
-
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductVariation");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ParametrGroup", b =>

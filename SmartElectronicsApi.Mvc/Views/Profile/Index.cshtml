@@ -189,16 +189,17 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <h5 class="modal-title" id="editProfileModalLabel" style="    color: white;">Edit Profile</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>What would you like to edit?</p>
                 <div class="d-grid gap-2">
-               
-                        <a asp-action="UpdateImage" asp-controller="Profile" class="btn btn-primary btn-lg">Change Profile Image</a>
 
-                    <a asp-action="UpdateInformation" asp-controller="Profile" class="btn btn-secondary btn-lg" style="">Update Information</a>
+                    <a asp-action="UpdateImage" asp-controller="Profile" class="btn btn-primary btn-lg" style="background:linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">Change Profile Image</a>
+
+                    <a asp-action="UpdateInformation" asp-controller="Profile" class="btn btn-primary btn-lg" style="background:linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">Update Information</a>
+                    <a asp-action="ChangePassword" asp-controller="Account" class="btn btn-primary btn-lg" style="background:linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);">ChangePassword</a>
 
                 </div>
             </div>

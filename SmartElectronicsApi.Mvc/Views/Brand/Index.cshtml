@@ -40,7 +40,7 @@
             {
                 <div class="col">
                     <div class="card product-card">
-                        <img src="@item.Image" alt="@item.Name" class="card-img-top">
+                        <a href="@Url.Action("Index", "Product", new { subCategoryId = item.Id})"> <img src="@item.Image" alt="@item.Name" class="card-img-top"></a>
                         <p class="product-name">@item.Name</p>
                     </div>
                 </div>

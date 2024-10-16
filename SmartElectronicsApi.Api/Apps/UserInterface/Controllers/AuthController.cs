@@ -108,9 +108,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
             return Ok(await _authService.CheckExperySutiationOfToken(email, token));
         }
         [HttpPost("ChangePassword")]
-        public async Task<IActionResult> ChangePassword(string userName,ChangePasswordDto changePasswordDto)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ChangePassword( ChangePasswordDto changePasswordDto)
         {
-            return Ok(await _authService.ChangePassword(userName, changePasswordDto));
+            return Ok(await _authService.ChangePassword(changePasswordDto));
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
@@ -132,5 +133,11 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _authService.UpdateUserInformation(updateUserDto));
         }
+        [HttpGet("CheckingAuth")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Check()
+        {
+            return Ok();
+        }   
     }
 }

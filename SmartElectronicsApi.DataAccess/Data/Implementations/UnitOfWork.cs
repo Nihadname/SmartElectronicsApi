@@ -32,6 +32,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IContactRepository ContactRepository { get; private set; }
         public IBasketRepository BasketRepository { get; private set; }
         public IBasketProductRepository BasketProductRepository { get; private set; }
+        public IOrderRepository OrderRepository { get; private set; }
+        public IOrderItemRepository OrderItemRepository { get; private set; }
         public UnitOfWork(SmartElectronicsDbContext smartElectronicsDbContext)
         {
             categoryRepository= new CategoryRepository(smartElectronicsDbContext);
@@ -52,6 +54,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             ContactRepository= new ContactRepository(smartElectronicsDbContext);
             BasketRepository= new BasketRepository(smartElectronicsDbContext);
             BasketProductRepository= new BasketProductRepository(smartElectronicsDbContext);
+            OrderRepository= new OrderRepository(smartElectronicsDbContext);
+           OrderItemRepository= new OrderItemRepository(smartElectronicsDbContext);
         _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 

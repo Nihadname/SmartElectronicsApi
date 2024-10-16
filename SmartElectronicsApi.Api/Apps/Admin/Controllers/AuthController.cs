@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SmartElectronicsApi.Application.Dtos.Auth;
 using SmartElectronicsApi.Application.Interfaces;
 
 namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
@@ -39,5 +40,12 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _authService.ChangeStatus(id));
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("GetAdmin")]
+        public async Task<IActionResult> GetProfileAdmin()
+        {
+            return Ok(await _authService.Profile());
+        }
+       
     }
 }

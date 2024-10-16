@@ -3,7 +3,7 @@
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
     [Area("AdminArea")]
-    public class DasboardController : Controller
+    public class DashboardController : Controller
     {
         
         public IActionResult Index()

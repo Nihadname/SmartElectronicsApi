@@ -38,8 +38,14 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<WishListProduct> wishListProducts { get; set; }
         public DbSet<Comment> comments { get; set; }    
         public DbSet<Contact> contacts { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Order>()
+            .HasMany(o => o.Items)
+            .WithOne(oi => oi.Order)
+            .HasForeignKey(oi => oi.OrderId);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }

@@ -102,7 +102,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
             if (!result)
             {
-                throw new CustomException(400, "Password", "Password is wrong\"");
+                throw new CustomException(400, "Password", "Password or email is wrong\"");
             }
             if (!User.EmailConfirmed)
             {
@@ -178,7 +178,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 smtpPort: 587,
                 enableSsl: true,
                 smtpUser: "nihadmi@code.edu.az\r\n",
-                smtpPass: "zrhu njzc qeqr koux\r\n"
+                smtpPass: "jytx krmh ngqj vdnc\r\n"
             );
             var MappedUser = _mapper.Map<UserGetDto>(appUser);
             return MappedUser;
@@ -287,11 +287,14 @@ namespace SmartElectronicsApi.Application.Implementations
 
 
         }
-        public async Task<string> ChangePassword(string UserName, ChangePasswordDto changePasswordDto)
+        public async Task<string> ChangePassword(ChangePasswordDto changePasswordDto)
         {
-            if (string.IsNullOrEmpty(UserName)) throw new CustomException(400, "userName cant be empty");
-            var user = await _userManager.FindByNameAsync(UserName);
-            if (user is null) throw new CustomException(404, "this user doesnt exist");
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                throw new CustomException(400, "Id", "User ID cannot be null");
+            }
+            var user = await _userManager.FindByIdAsync(userId);
             var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
             if (!result.Succeeded) {
                 var errorMessages = result.Errors.ToDictionary(e => e.Code, e => e.Description);
@@ -313,7 +316,7 @@ namespace SmartElectronicsApi.Application.Implementations
             return UserMapped;
 
         }
-
+     
         public async Task<string> UpdateImage(UserUpdateImageDto userUpdateImageDto)
         {
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -372,7 +375,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     smtpPort: 587,
                     enableSsl: true,
                     smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "zrhu njzc qeqr koux\r\n"
+                    smtpPass: "jytx krmh ngqj vdnc\r\n"
                 );
             }
             await _userManager.UpdateAsync(user);

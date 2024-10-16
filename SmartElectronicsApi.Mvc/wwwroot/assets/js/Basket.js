@@ -63,11 +63,7 @@ function changeQuantity(productId, variationId, quantityChange) {
         data: JSON.stringify(data),
         success: function (response) {
             if (response.success) {
-                Swal.fire(
-                    'Success!',
-                    response.message,
-                    'success'
-                );
+             
 
                 // Update the specific basket item quantity dynamically
                 let basketItem = $(`#basket-item-${productId}-${variationId}`);
@@ -123,11 +119,7 @@ function deleteFromBasket(productId, variationId) {
         contentType: 'application/json; charset=utf-8',
         success: function (response) {
             if (response.success) {
-                Swal.fire(
-                    'Deleted!',
-                    'The product has been removed from the basket.',
-                    'success'
-                );
+               
 
                 // Use '0' for variationId if it's null or undefined, to match the HTML ID
                 let variationIdText = variationId !== null && variationId !== undefined && variationId !== "null" ? variationId : "0";
@@ -223,12 +215,7 @@ function DeleteAll() {
         },
         contentType: 'application/json; charset=utf-8',
         success: function (response) {
-            Swal.fire(
-                'Deleted!',
-                'All products have been removed from the basket.',
-                'success'
-            );
-
+           
             // Remove all basket items from the DOM
             $('.basket-item').each(function () {
                 $(this).remove();

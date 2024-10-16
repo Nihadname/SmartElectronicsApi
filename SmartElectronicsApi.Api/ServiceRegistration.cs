@@ -72,6 +72,8 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+        services.AddScoped<IOrderRepository,OrderRepository>();
         services.AddScoped<IBasketRepository, BasketRepository>();
         services.AddScoped<IBasketService, BasketService>();
         services.AddScoped<IContactRepository, ContactRepository>();
