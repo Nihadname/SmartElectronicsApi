@@ -82,7 +82,6 @@ function changeQuantity(productId, variationId, quantityChange) {
 
                     // Update the subtotal for this item
                     let newSubtotal = discountedPrice > 0 ? discountedPrice * newQuantity : price * newQuantity;
-                    basketItem.find('.price').text(`${newSubtotal.toFixed(2)} AZN`);
                 }
 
                 // Recalculate and update total price, discount, and final sale price dynamically

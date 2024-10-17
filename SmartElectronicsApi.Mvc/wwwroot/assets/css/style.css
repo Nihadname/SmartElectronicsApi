@@ -342,7 +342,7 @@ p {
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: #3498db;
+    background-color: #2a304c;
     color: white;
     font-size: 12px;
     font-weight: bold;
@@ -965,12 +965,18 @@ media (max-width: 576px) {
     }
 
 /* Badge for New Products */
+
+
 .badge {
     font-size: 0.75rem; /* Slightly smaller font for badges */
     padding: 0.4rem 0.8rem; /* More padding for better visibility */
     border-radius: 10px; /* Rounded corners */
 }
-
+.badge1 {
+    font-size: 0.75rem; /* Slightly smaller font for badges */
+    padding: 0.4rem 0.8rem; /* More padding for better visibility */
+    border-radius: 10px;
+}
 /* Responsive Design */
 @@media (max-width: 768px) {
     .product-card2 .card-title {

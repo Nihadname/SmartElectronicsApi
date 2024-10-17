@@ -1,0 +1,41 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.WishList
+@model UserWishListItemVM
+
+<div class="container py-5">
+    <h2 class="wishlist-title">My Wishlist</h2>
+    <div class="row wishlist-container">
+        <input hidden value="@Model.UserId" />
+        <!-- Wishlist Product Card -->
+        @foreach (var item in Model.wishListProducts)
+        {
+                    
+
+            <div class="col-md-4" id="wishlist-item-@item.ProductId">
+                <div class="card wish">
+                    <div class="wishlist-heart" data-id="@item.ProductId">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <img src="@item.Image" class="card-img-top" alt="Product Image">
+                    <div class="card-body wishBody">
+                        <h5 class="Wish-title">@if (item.Name.Length > 50)
+                            {
+                                @item.Name.Substring(0, 40)
+                            }
+                            else
+                            {
+                                @item.Name
+                            }</h5>
+                        <p class="Wish-text">@item.Description</p>
+                        <a href="#" class="btn btn-primary Wish-b">View Product</a>
+                    </div>
+                    <div class="card-footer text-muted">
+                        @{
+                            var daysAgo = (DateTime.Now - item.CreatedDate)?.Days;
+                        }
+                        Added @daysAgo days ago
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

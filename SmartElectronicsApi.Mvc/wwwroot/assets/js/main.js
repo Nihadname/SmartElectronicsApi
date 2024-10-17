@@ -406,12 +406,12 @@ function generateProductHTML(product) {
             <div class="product-card p-3 shadow-sm">
                 <!-- Discount Badge -->
                 <div class="discount-badge-circle">
-                    Na?d al??larda<br>Endirim<br><strong>${(product.price - product.discountedPrice).toFixed()} AZN</strong>
+                    Nagd alislarda<br>Endirim<br><strong>${(product.price - product.discountedPrice).toFixed()} AZN</strong>
                 </div>
 
                 <!-- Wishlist Icon -->
-                <div class="wishlist-icon">
-                    <i class="fa-regular fa-heart wishlist"></i>
+                 <div class="wishlist-heart" data-id="${product.id}">
+                    <i class="fas fa-heart"></i>
                 </div>
 
                 <!-- Product Image -->

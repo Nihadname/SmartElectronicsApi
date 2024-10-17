@@ -9,10 +9,12 @@ namespace SmartElectronicsApi.Core.Entities
 {
     public class WishListProduct:BaseEntity
     {
-        public int Quantity { get; set; }
+
         public int WishListId { get; set; }
         public WishList  WishList { get; set; }
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public int? ProductId { get; set; }
+        public Product? Product { get; set; }
+        public int? ProductVariationId { get; set; }
+        public ProductVariation? ProductVariation { get; set; }
     }
 }

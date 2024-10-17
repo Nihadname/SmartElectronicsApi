@@ -162,9 +162,13 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return RedirectToAction("Login");
             }
         }
-        public IActionResult LogOut()
+        public IActionResult LogOut(bool tokenExpired = false)
         {
             Response.Cookies.Delete("JwtToken");
+            if (tokenExpired)
+            {
+                TempData["TokenExpiredMessage"] = "Your session has expired. Please log in again.";
+            }
 
             return RedirectToAction("Index", "Home");
         }

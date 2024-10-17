@@ -29,6 +29,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IBasketProductRepository BasketProductRepository { get; }
         public IOrderRepository OrderRepository { get; }
         public IOrderItemRepository OrderItemRepository { get; }
+        public IWishListRepository WishListRepository { get; }
+        public IWishListProductRepository WishListProductRepository { get; }
         public void Commit();
 
     }

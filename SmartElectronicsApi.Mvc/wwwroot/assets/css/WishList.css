@@ -1,0 +1,159 @@
+﻿
+/* Enhanced Styling for Wishlist Page */
+.wishlist-container {
+    display: flex;
+    align-items:center;
+    flex-wrap: wrap;
+    padding: 3rem 0;
+}
+
+.wishlist-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 2rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    position: relative;
+}
+
+    /* Adding a decorative line */
+    .wishlist-title::after {
+        content: '';
+        width: 120px;
+        height: 4px;
+        background-color: #6366f1;
+        display: block;
+        margin: 1rem auto 0;
+        box-shadow: 0 5px 10px rgba(99, 102, 241, 0.5);
+    }
+
+.wish {
+    position: relative;
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s ease-in-out;
+    margin-bottom:30px;
+}
+
+    .wish:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .wish img {
+        width: 100%;
+        height: 250px;
+        object-fit: contain;
+        transition: transform 0.4s ease;
+    }
+
+    /* Image zoom effect */
+    .wish:hover img {
+    }
+
+.wishBody {
+    padding: 1.75rem;
+    text-align: center;
+}
+
+.Wish-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    color: #374151;
+    margin-bottom: 0.75rem;
+    text-transform: capitalize;
+    position: relative;
+}
+
+    .Wish-title::after {
+        content: '';
+        width: 40px;
+        height: 2px;
+        background-color: #4f46e5;
+        display: block;
+        margin: 0.5rem auto;
+    }
+
+.Wish-text {
+    font-size: 1rem;
+    color: #6b7280;
+    margin-bottom: 1.75rem;
+    line-height: 1.7;
+    font-style: italic;
+}
+
+/* Button Styling */
+.Wish-b {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border: none;
+    color: white;
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .Wish-b:hover {
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 6px 15px rgba(99, 102, 241, 0.3);
+    }
+
+/* Heart Icon Styling */
+.wishlist-heart {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    color: #ef4444;
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+    .wishlist-heart i {
+        font-size: 1.5rem;
+        color: #6c757d; /* Default color */
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+        .wishlist-heart i.added {
+            color: #ef4444; /* Red when added */
+        }
+
+        .wishlist-heart i:hover {
+            transform: scale(1.2);
+        }
+    .wishlist-heart:hover {
+        color: #f87171;
+        transform: scale(1.2);
+    }
+
+.Wish-footer {
+    background-color: #f3f4f6;
+    padding: 1.25rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #9ca3af;
+    border-top: 1px solid #e5e7eb;
+    font-style: italic;
+}
+
+/* Hover effect on card titles */
+.Wish-title:hover {
+    color: #4f46e5;
+    transition: color 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wishlist-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+

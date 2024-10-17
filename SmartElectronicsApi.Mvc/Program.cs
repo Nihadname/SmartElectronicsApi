@@ -1,4 +1,5 @@
 using SmartElectronicsApi.Mvc.Interfaces;
+using SmartElectronicsApi.Mvc.Middlewares;
 using SmartElectronicsApi.Mvc.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseMiddleware<TokenExpirationMiddleware>();
 app.UseRouting();
 
 app.UseAuthorization();

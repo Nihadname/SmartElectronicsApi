@@ -1149,3 +1149,14 @@ media (max-width: 576px) {
         });
     </script>
 }
+@if (TempData["TokenExpiredMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Token Expired',
+            text: ' @TempData["TokenExpiredMessage"]',
+            showConfirmButton: true,
+        });
+    </script>
+}

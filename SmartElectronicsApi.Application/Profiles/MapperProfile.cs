@@ -18,6 +18,7 @@ using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Dtos.SubsCategory;
 using SmartElectronicsApi.Application.Dtos.Subscriber;
+using SmartElectronicsApi.Application.Dtos.WishList;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Core.Entities;
 using System;
@@ -186,7 +187,25 @@ namespace SmartElectronicsApi.Application.Profiles
         ? src.ProductVariation.DiscountedPrice ?? src.ProductVariation.Price // Use variation discounted price if exists
         : src.Product.DiscountedPrice ?? src.Product.Price)) // Fall back to product discounted price
     .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity));// Map quantity
-    // Leave null if no variation
+                                                                               // Leave null if no variation
+                CreateMap<WishList, UserWishListDto>()
+                               .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.AppUserId))
+                                .ForMember(dest => dest.Count, opt => opt.MapFrom(src => src.wishListProducts.Count()));
+                CreateMap<WishListProduct, WishListProductListItemDto>()
+     .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductId))
+     .ForMember(dest => dest.Image, opt => opt.MapFrom(src => url + "img/" + src.Product.productImages.FirstOrDefault().Name))
+     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Product.Name))
+     .ForMember(dest => dest.Description, opt => opt.MapFrom(src =>
+         src.Product.Description.Length > 60
+         ? src.Product.Description.Substring(0, 50) + "..."
+         : src.Product.Description
+     ))
+          .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.Product.CreatedTime));
+
+
+
+
+
 
                 //.ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Product.Price * src.Quantity))
 

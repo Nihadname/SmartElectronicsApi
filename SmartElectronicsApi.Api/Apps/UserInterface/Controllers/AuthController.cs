@@ -134,7 +134,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
             return Ok(await _authService.UpdateUserInformation(updateUserDto));
         }
         [HttpGet("CheckingAuth")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> Check()
         {
             return Ok();
