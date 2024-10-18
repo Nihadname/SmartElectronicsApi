@@ -64,11 +64,13 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     var responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
-
+                    var respond = JsonConvert.DeserializeObject<int[]>(responseBody);    
+                  
                     // If you expect a specific number from the API (e.g., basket count), you can parse it
-                    int basketCount = int.Parse(responseBody);
+                    int basketCount = respond[0];
+                    int addedCount= respond[1];
 
-                    return Json(new { success = true, message = "Product added to the basket.",basketCount });
+                    return Json(new { success = true, message = "Product added to the basket.",basketCount, addedCount });
                 }
                 else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
                 {

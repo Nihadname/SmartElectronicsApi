@@ -53,7 +53,7 @@ query => query
             var userBasketDto = _mapper.Map<UserBasketDto>(Basket);
             return userBasketDto;
         }
-        public async Task<int> Add(int? productId, int? variationId = null)
+        public async Task<int[]> Add(int? productId, int? variationId = null)
         {
             
             if (productId == null)
@@ -98,7 +98,10 @@ query => query
                 var updatedBasket = await GetUserBasket();
                 var basketCount = updatedBasket.BasketProducts.Sum(item => item.Quantity);
 
-                return basketCount;
+                DateTime startDate1 = DateTime.Now.AddDays(-3);
+                var addedCount = await GetUsersWhoAddedProduct((int)basketProduct.ProductId, startDate1);
+
+                return new[] { basketCount, addedCount };
             }
 
             if (existedBasket is not null)
@@ -115,7 +118,9 @@ query => query
                 var updatedBasket1 = await GetUserBasket();
                 var basketCount1 = updatedBasket1.BasketProducts.Sum(item => item.Quantity);
 
-                return basketCount1;
+                DateTime startDate2 = DateTime.Now.AddDays(-3);
+                var addedCount = await GetUsersWhoAddedProduct((int)existedProduct.Id, startDate2);
+                return new[] { basketCount1, addedCount };
             }
 
             Basket newBasket = new()
@@ -138,8 +143,10 @@ query => query
 
             var updatedBasket2 = await GetUserBasket();
             var basketCount2 = updatedBasket2.BasketProducts.Sum(item => item.Quantity);
+            DateTime startDateForNewProduct = DateTime.Now.AddDays(-3);
+            var addedCountForNewProduct = await GetUsersWhoAddedProduct((int)newBasketProduct.ProductId, startDateForNewProduct);
 
-            return basketCount2;
+            return new[] { basketCount2, addedCountForNewProduct };
         }
         public async Task<int> ChangeQuantity(int productId, int quantityChange, int? variationId = null)
         {

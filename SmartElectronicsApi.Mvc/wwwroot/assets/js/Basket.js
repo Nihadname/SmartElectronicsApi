@@ -26,6 +26,8 @@
                 console.log(badge);
                 console.log(response)
                 badge.innerText = response.basketCount;
+                let cartcount = document.querySelector('.cart-count');
+                cartcount.innerText = response.addedCount;
             } else {
                 Swal.fire(
                     'Error!',
