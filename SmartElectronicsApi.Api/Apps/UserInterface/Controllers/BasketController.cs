@@ -32,9 +32,9 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPut]
-        public async Task<IActionResult> ChangeQuantity(int? productId, int? variationId = null, int quantityChange = 1)
+        public async Task<IActionResult> ChangeQuantity(int productId, int quantityChange, int? variationId = null)
         {
-            return Ok(await _basketService.ChangeQuantity(productId, variationId, quantityChange));
+            return Ok(await _basketService.ChangeQuantity(productId,quantityChange,variationId));
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpDelete]

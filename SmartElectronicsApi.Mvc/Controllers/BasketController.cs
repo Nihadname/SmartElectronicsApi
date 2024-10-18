@@ -89,7 +89,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> ChangeQuantity(int? productId, int? variationId = null, int quantityChange=1)
+        public async Task<IActionResult> ChangeQuantity(int productId, int quantityChange, int? variationId = null)
         {
             try
             {
@@ -104,10 +104,10 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
                 var url = variationId.HasValue
-                    ? $"http://localhost:5246/api/Basket/?productId={productId}&variationId={variationId}&quantityChange={quantityChange}"
+                    ? $"http://localhost:5246/api/Basket/?productId={productId}&quantityChange={quantityChange}&variationId={variationId}"
                     : $"http://localhost:5246/api/Basket/?productId={productId}&quantityChange={quantityChange}";
 
-                using HttpResponseMessage httpResponseMessage = await client.PostAsync(url, null);
+                using HttpResponseMessage httpResponseMessage = await client.PutAsync(url, null);
 
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {

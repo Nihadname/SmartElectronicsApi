@@ -44,14 +44,14 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork.Commit();
             return subscriber.Id;
         }
-        public async Task<PaginatedResponse<SubscriberDto>> GetAllForAdminUi(int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginatedResponse<SubscriberListItemDto>> GetAllForAdminUi(int pageNumber = 1, int pageSize = 10)
         {
             var totalCount = (await _unitOfWork.subscriberRepository.GetAll()).Count();
             var subscribers = await _unitOfWork.subscriberRepository.GetAll(s => s.IsDeleted == false,
                                                                   (pageNumber - 1) * pageSize,
                                                                   pageSize);
-         var   subscribersMapping=_mapper.Map<List<SubscriberDto>>(subscribers);
-            return new PaginatedResponse<SubscriberDto>
+         var   subscribersMapping=_mapper.Map<List<SubscriberListItemDto>>(subscribers);
+            return new PaginatedResponse<SubscriberListItemDto>
             {
                 Data = subscribersMapping,
                 TotalRecords = totalCount,
@@ -76,6 +76,12 @@ namespace SmartElectronicsApi.Application.Implementations
             await _unitOfWork.subscriberRepository.Update(subscriber);
             _unitOfWork.Commit();
             return subscriber;
+        }
+        public async Task<List<SubscriberListItemDto>> GetAll()
+        {
+            var subscribers=await _unitOfWork.subscriberRepository.GetAll(s=>s.IsDeleted==false);
+            var MappedSubscribers=_mapper.Map<List<SubscriberListItemDto>>(subscribers);
+            return MappedSubscribers;
         }
     }
 }

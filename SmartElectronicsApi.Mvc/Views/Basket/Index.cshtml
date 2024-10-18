@@ -324,9 +324,9 @@
                             </div>
                         </div>
                         <div class="product-quantity">
-                            <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), -1)">-</button>
+                            <button onclick="changeQuantity(@item.ProductId,-1,@(item.VariationId != null ? item.VariationId : "null"))">-</button>
                             <input type="number" value="@item.Quantity" readonly>
-                            <button onclick="changeQuantity(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"), 1)">+</button>
+                            <button onclick="changeQuantity(@item.ProductId, 1, @(item.VariationId != null ? item.VariationId : "null"),)">+</button>
                         </div>
                         <!-- Delete Button -->
                         <div class="product-remove" onclick="deleteFromBasket(@item.ProductId, @(item.VariationId != null ? item.VariationId : "null"))">

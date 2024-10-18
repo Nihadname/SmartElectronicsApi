@@ -202,7 +202,7 @@ namespace SmartElectronicsApi.Application.Profiles
      ))
           .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src => src.Product.CreatedTime));
 
-
+                CreateMap<Subscriber, SubscriberListItemDto>();
 
 
 

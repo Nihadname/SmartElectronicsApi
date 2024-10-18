@@ -141,7 +141,7 @@ query => query
 
             return basketCount2;
         }
-        public async Task<int> ChangeQuantity(int? productId, int? variationId = null, int quantityChange = 1)
+        public async Task<int> ChangeQuantity(int productId, int quantityChange, int? variationId = null)
         {
             if (productId == null)
                 throw new CustomException(400, "ProductId cannot be null");
@@ -173,19 +173,20 @@ query => query
 
             if (basketProduct == null)
                 throw new CustomException(404, "Product not found in the basket");
+            Console.WriteLine($"Current quantity: {basketProduct.Quantity}, Quantity change: {quantityChange}");
 
-            // Modify the quantity based on the provided change value
             basketProduct.Quantity += quantityChange;
+            Console.WriteLine($"Current quantity: {basketProduct.Quantity}");
 
             // Ensure the quantity doesn't go below 1
             if (basketProduct.Quantity <= 0)
             {
                 // Remove the item from the basket if the quantity drops to 0 or below
-                _unitOfWork.BasketProductRepository.Delete(basketProduct);
+            await    _unitOfWork.BasketProductRepository.Delete(basketProduct);
             }
             else
             {
-                _unitOfWork.BasketProductRepository.Update(basketProduct);
+                await _unitOfWork.BasketProductRepository.Update(basketProduct);
             }
 
             _unitOfWork.Commit();

@@ -30,5 +30,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _ISubscriberService.Update(id, subscriberDto));
         }
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            return Ok(await _ISubscriberService.GetAll());  
+        } 
     }
 }

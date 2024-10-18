@@ -43,7 +43,7 @@
         }
     });
 }
-function changeQuantity(productId, variationId, quantityChange) {
+function changeQuantity(productId, quantityChange, variationId ) {
     var data = {
         productId: productId,
         quantityChange: quantityChange
@@ -63,7 +63,7 @@ function changeQuantity(productId, variationId, quantityChange) {
         data: JSON.stringify(data),
         success: function (response) {
             if (response.success) {
-             
+                console.log(response);
 
                 // Update the specific basket item quantity dynamically
                 let basketItem = $(`#basket-item-${productId}-${variationId}`);
@@ -82,6 +82,11 @@ function changeQuantity(productId, variationId, quantityChange) {
 
                     // Update the subtotal for this item
                     let newSubtotal = discountedPrice > 0 ? discountedPrice * newQuantity : price * newQuantity;
+                    let badge = document.querySelector('.basket-badge');
+                    if (badge) {
+                        badge.innerText = response.basketCount; 
+                    }
+
                 }
 
                 // Recalculate and update total price, discount, and final sale price dynamically
@@ -120,7 +125,6 @@ function deleteFromBasket(productId, variationId) {
             if (response.success) {
                
 
-                // Use '0' for variationId if it's null or undefined, to match the HTML ID
                 let variationIdText = variationId !== null && variationId !== undefined && variationId !== "null" ? variationId : "0";
 
                 // Dynamically construct the selector based on productId and variationId

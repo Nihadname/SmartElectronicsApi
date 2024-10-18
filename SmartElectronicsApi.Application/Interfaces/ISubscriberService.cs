@@ -13,7 +13,8 @@ namespace SmartElectronicsApi.Application.Interfaces
     {
         Task<SubscriberDto> Create(SubscriberDto subscriberDto);
         Task<int> Delete(int? id);
-        Task<PaginatedResponse<SubscriberDto>> GetAllForAdminUi(int pageNumber = 1, int pageSize = 10);
+        Task<PaginatedResponse<SubscriberListItemDto>> GetAllForAdminUi(int pageNumber = 1, int pageSize = 10);
         Task<Subscriber> Update(int? id, SubscriberDto subscriberDto);
+        Task<List<SubscriberListItemDto>> GetAll();
     }
 }

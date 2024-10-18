@@ -26,7 +26,7 @@
                                 @item.Name
                             }</h5>
                         <p class="Wish-text">@item.Description</p>
-                        <a href="#" class="btn btn-primary Wish-b">View Product</a>
+                        <a asp-action="Detail" asp-controller="Product" asp-route-id="@item.ProductId" class="btn btn-primary Wish-b">View Product</a>
                     </div>
                     <div class="card-footer text-muted">
                         @{
