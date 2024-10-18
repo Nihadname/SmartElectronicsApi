@@ -65,7 +65,11 @@ $(document).ready(function () {
                         let badge = document.querySelector('.WishList-badge');
                         badge.innerText = response.wishProductCount;
                     } else {
-                        alert(response.message);
+                        Swal.fire(
+                            'Error!',
+                            'Error: ' + "User has not authozrized yet",
+                            'error'
+                        );
                     }
                 }
             });
@@ -80,9 +84,12 @@ $(document).ready(function () {
                 success: function (response) {
                     if (response.success) {
                         heartIcon.removeClass('added').css('color', '#6c757d');
+                        let badge = document.querySelector('.WishList-badge');
+                        badge.innerText = response.wishProductCount;
                         $('#wishlist-item-' + productId).fadeOut(300, function () {
                             $(this).remove();
                         });
+
                     } else {
                         alert(response.message);
                     }

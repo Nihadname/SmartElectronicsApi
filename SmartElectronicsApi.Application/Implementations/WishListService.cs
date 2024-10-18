@@ -144,7 +144,11 @@ query => query
 
             await _unitOfWork.WishListProductRepository.Delete(WishListProduct);
             _unitOfWork.Commit();
-            return WishListProduct.Id;
+            var existedWishList = await _unitOfWork.WishListRepository.GetEntity(s => s.AppUserId == user.Id, includes: new Func<IQueryable<WishList>, IQueryable<WishList>>[]
+           {
+        query => query.Include(c => c.wishListProducts)
+           });
+            return existedWishList.wishListProducts.Count();
 
         }
         public async Task<List<int?>> GetUserWishListProducts()

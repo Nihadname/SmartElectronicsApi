@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
@@ -70,7 +71,15 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<PaginatedResponse<ParametrGroupListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10)
         {
             var totalCount = (await _unitOfWork.parametricGroupRepository.GetAll()).Count();
-            var ParametrGroup = await _unitOfWork.parametricGroupRepository.GetAll(s=>s.IsDeleted == false);
+            var ParametrGroup = await _unitOfWork.parametricGroupRepository.GetAll(s=>s.IsDeleted == false, (pageNumber - 1) * pageSize,
+                                                                  pageSize, includes: new Func<IQueryable<ParametrGroup>, IQueryable<ParametrGroup>>[]
+                {
+        query => query.Include(c => c.parametrValues)
+                      
+                      //.ThenInclude(sc => sc.brandSubCategories) // Include BrandSubCategories
+                      //.ThenInclude(bsc => bsc.Brand)
+                      //.ThenInclude(s=>s.Products)
+                });
             var MappedValue = _mapper.Map<List<ParametrGroupListItemDto>>(ParametrGroup);
             return new PaginatedResponse<ParametrGroupListItemDto>
             {

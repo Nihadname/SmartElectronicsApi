@@ -1,0 +1,64 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.ParametrGroup
+@model ParametrGroupCreateVM
+
+@{
+    ViewData["Title"] = "Create Parametr";
+}
+
+<h2>Create Parametr</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-sm-9">
+            <select asp-for="ProductId" class="form-control">
+                <option value="">Select ProductId</option>
+                @foreach (var category in ViewBag.products)
+                {
+                    <option value="@category.Value">@category.Text</option>
+                }
+            </select>
+            <span class="text-danger" asp-validation-for="ProductId"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Parametr Values</label>
+        <div id="parametrValuesContainer">
+            <!-- Parametr Value Item -->
+            <div class="parametrValueItem">
+                <label>Type:</label>
+                <input name="parametrValues[0].Type" class="form-control" />
+                <label>Value:</label>
+                <input name="parametrValues[0].Value" class="form-control" />
+            </div>
+        </div>
+        <button type="button" onclick="addParametrValue()">Add Another Value</button>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+    <script>
+        let index = 1;
+        function addParametrValue() {
+            const container = document.getElementById("parametrValuesContainer");
+            const newItem = document.createElement("div");
+            newItem.classList.add("parametrValueItem");
+            newItem.innerHTML = `
+                        <label>Type:</label>
+                                <input name="parametrValues[${index}].Type" class="form-control" />
+                        <label>Value:</label>
+                                <input name="parametrValues[${index}].Value" class="form-control" />
+                    `;
+            container.appendChild(newItem);
+            index++;
+        }
+    </script>
+

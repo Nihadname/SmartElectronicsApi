@@ -103,13 +103,16 @@ namespace SmartElectronicsApi.Mvc.Controllers
             using HttpResponseMessage httpResponseMessage = await client.DeleteAsync(url);
             if (httpResponseMessage.IsSuccessStatusCode)
             {
-               
+                var responseBody = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                return Json(new { success = true, message = "wisglist product Deleted successfully." });
+                // If you expect a specific number from the API (e.g., basket count), you can parse it
+                int WishProductCount = int.Parse(responseBody);
+
+                return Json(new { success = true, message = "wisglist product Deleted successfully.",WishProductCount });
             }
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
             {
-                return RedirectToAction("Login", "Account");
+                return Json(new { success = false, message = "User has not authozrized yet" });
             }
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
             {

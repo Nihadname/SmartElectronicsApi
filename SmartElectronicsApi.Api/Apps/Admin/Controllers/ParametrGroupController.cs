@@ -19,14 +19,11 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ParametrGroupCreateDto parametrGroupCreateDto)
         {
-            try
-            {
+           
                 return Ok( await _parametrGroupService.Create(parametrGroupCreateDto));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.InnerException.Message, ex);
-            }
+            
+            
+            
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int? id)

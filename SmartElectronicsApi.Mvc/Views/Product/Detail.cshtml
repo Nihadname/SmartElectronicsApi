@@ -675,7 +675,13 @@
 <div class="swiper NewBrandProducts3">
     @if (ViewBag.Products == null || !((List<ProdutListItemVM>)ViewBag.Products).Any())
     {
-        <span>No products available</span>
+
+        <div class="no-products">
+            <div class="text-center p-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <p class="fs-4 text-muted">There are no products available at the moment. Please check back later.</p>
+            </div>
+        </div>
     }
     else
     {

@@ -73,7 +73,12 @@ function changeQuantity(productId, quantityChange, variationId ) {
                 let newQuantity = parseInt(quantityInput.val()) + quantityChange;
 
                 if (newQuantity <= 0) {
-                    basketItem.remove();  // Remove the basket item from the DOM
+
+                    basketItem.remove();
+                    if (response.basketCount == 0) {
+                        showEmptyBasketUI();
+                    }
+                    // Remove the basket item from the DOM
                 } else {
                     // Update the quantity input and subtotal for the item
                     quantityInput.val(newQuantity);
@@ -87,6 +92,9 @@ function changeQuantity(productId, quantityChange, variationId ) {
                     let badge = document.querySelector('.basket-badge');
                     if (badge) {
                         badge.innerText = response.basketCount; 
+                    }
+                    if (response.basketCount == 0) {
+                        showEmptyBasketUI();
                     }
 
                 }
@@ -146,7 +154,10 @@ function deleteFromBasket(productId, variationId) {
                 if (badge) {
                     badge.innerText = response.basketCount;
                 }
-
+                
+                if (response.basketCount == 0) {
+                    showEmptyBasketUI(); 
+                }
                 // Recalculate and update total price, discount, and final sale price dynamically
                 updateTotals();
 
@@ -231,7 +242,9 @@ function DeleteAll() {
             if (badge) {
                 badge.innerText = 0;
             }
-
+           
+                showEmptyBasketUI();
+        
             // Recalculate and update total price, discount, and final sale price dynamically
             updateTotals();
 
@@ -248,3 +261,18 @@ function DeleteAll() {
 }
 
 
+function showEmptyBasketUI() {
+    // Remove all remaining basket items if any are left
+    $('.basket-item').remove();
+
+    // Append the empty basket UI
+    const emptyBasketHtml = `
+        <div class="empty-basket" id="empty-basket">
+            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+            <h2>Səbətiniz boşdur</h2>
+            <p>Məhsulları səbətə əlavə edin və alış-verişə başlayın!</p>
+            <a href="/" class="btn btn-primary">Alış-verişə davam edin</a>
+        </div>`;
+
+    $('.basket-header').after(emptyBasketHtml); // Add it after the header
+}
