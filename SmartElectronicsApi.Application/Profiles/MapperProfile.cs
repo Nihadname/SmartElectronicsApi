@@ -8,6 +8,7 @@ using SmartElectronicsApi.Application.Dtos.Basket;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Color;
+using SmartElectronicsApi.Application.Dtos.Comment;
 using SmartElectronicsApi.Application.Dtos.Contact;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using SmartElectronicsApi.Application.Dtos.ParametrValue;
@@ -205,7 +206,7 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<Subscriber, SubscriberListItemDto>();
 
 
-
+                CreateMap<CommentCreateDto, Comment>();
 
                 //.ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Product.Price * src.Quantity))
 

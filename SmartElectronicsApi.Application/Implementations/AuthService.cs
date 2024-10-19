@@ -295,6 +295,11 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(400, "Id", "User ID cannot be null");
             }
             var user = await _userManager.FindByIdAsync(userId);
+            if(user is null)
+            {
+                throw new CustomException(400, "Id", "User  cannot be null");
+
+            }
             var result = await _userManager.ChangePasswordAsync(user, changePasswordDto.CurrentPassword, changePasswordDto.NewPassword);
             if (!result.Succeeded) {
                 var errorMessages = result.Errors.ToDictionary(e => e.Code, e => e.Description);
