@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241019005139_CommentLogicImage")]
+    partial class CommentLogicImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -571,17 +574,13 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Message")
                         .IsRequired()
@@ -594,9 +593,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -619,32 +616,26 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DeletedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CommentId");
 
-                    b.ToTable("commentImages");
+                    b.ToTable("CommentImage");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Contact", b =>

@@ -16,5 +16,6 @@ namespace SmartElectronicsApi.Core.Entities
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
         public int Rating { get; set; }
+        public List<CommentImage>? commentImages { get; set; }
     }
 }

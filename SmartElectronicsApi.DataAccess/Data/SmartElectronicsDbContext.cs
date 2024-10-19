@@ -40,6 +40,7 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<Contact> contacts { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<CommentImage> commentImages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Order>()

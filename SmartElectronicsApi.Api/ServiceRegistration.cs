@@ -72,6 +72,8 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IWishListService, WishListService>();
         services.AddScoped<IWishListProductRepository, WishListProductRepository>();
         services.AddScoped<IWishListRepository, WishListRepository>();
