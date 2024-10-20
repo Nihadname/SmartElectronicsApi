@@ -1,0 +1,462 @@
+﻿.header-unique {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e2e8f0;
+    margin-bottom: 30px;
+    animation: slideInTop 0.8s ease-in-out;
+}
+
+.header-title-unique {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.header-button-unique {
+    background-color: #2563eb;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 25px;
+    font-size: 1rem;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+    transition: all 0.3s ease;
+}
+
+    .header-button-unique:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-5px);
+    }
+
+/* Review Statistics */
+.review-stats-unique {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    color: #4a5568;
+}
+
+.average-rating-unique {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #f59e0b;
+}
+
+/* Filter Section */
+.filter-section-unique {
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 20px;
+    margin-top: 2rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.filter-btn-unique {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    padding: 10px 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    color: #4a5568;
+    cursor: pointer;
+}
+
+    .filter-btn-unique:hover {
+        background-color: #2563eb;
+        color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+/* Image Slider Section */
+.swiper-container-unique {
+    width: 100%;
+    padding-top: 30px;
+    margin-bottom: 40px;
+    overflow: hidden;
+}
+
+.swiper-slide-unique img {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+    .swiper-slide-unique img:hover {
+        transform: scale(1.05);
+    }
+
+.swiper-pagination-unique {
+    margin-top: 15px;
+}
+
+/* Comment Cards */
+.comment-card-unique {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 25px;
+    background-color: white;
+    margin-bottom: 30px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .comment-card-unique:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+
+.user-info-unique img {
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.comment-body-unique {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.comment-body-title-unique {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #1a202c;
+}
+
+.comment-body-text-unique {
+    color: #4a5568;
+}
+
+.star-rating-unique {
+    color: #f59e0b;
+    font-size: 1.5rem;
+}
+
+.image-grid-unique {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+
+    .image-grid-unique img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        border-radius: 8px;
+        transition: transform 0.3s ease;
+    }
+
+        .image-grid-unique img:hover {
+            transform: scale(1.05);
+        }
+
+/* Modal Styling */
+.modal-content-unique {
+    padding: 20px;
+}
+
+.modal-header-unique {
+    background-color: #2563eb;
+    color: white;
+    border-bottom: none;
+}
+
+.modal-footer-btn-unique {
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.modal-footer-btn-primary-unique {
+    background-color: #2563eb;
+    color: white;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
+}
+
+    .modal-footer-btn-primary-unique:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-3px);
+    }
+
+.modal-footer-btn-secondary-unique {
+    background-color: #e2e8f0;
+    color: #1a202c;
+}
+
+/* Animations */
+@keyframes slideInTop {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .header-unique {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .filter-section-unique {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .swiper-slide-unique img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .image-grid-unique {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+.image-card2 {
+    width: 100%; /* Full width of the slide */
+    max-width: 200px; /* Set a max width for the card */
+    border-radius: 15px; /* Rounded corners */
+    overflow: hidden; /* Ensure the image doesn't overflow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: transform 0.3s ease; /* Animation on hover */
+    display: flex;
+    justify-content: center;
+}
+
+    .image-card2:hover {
+        transform: scale(1.05); /* Scale effect on hover */
+    }
+
+.image-card-img2 {
+    width: 100%; /* Make image take full width */
+    height: auto; /* Maintain aspect ratio */
+    display: block; /* Remove bottom space under images */
+}
+ .image-modal {
+        display: none; 
+        position: fixed; 
+        z-index: 9999; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        background-color: rgba(0, 0, 0, 0.8); 
+        overflow: hidden;
+        transition: opacity 0.5s ease;
+    }
+
+    .modal-image-slide {
+        display: block;
+        margin: auto;
+        max-width: 90%;
+        max-height: 90%;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 35px;
+        color: #fff;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 10000;
+    }
+
+    .close-modal:hover,
+    .close-modal:focus {
+        color: #bbb;
+        text-decoration: none;
+    }
+
+    /* Swiper Styles */
+   
+    
+
+    .swiper-button-next,
+    .swiper-button-prev {
+        color: #ffffff;
+    }
+
+    .swiper-pagination-bullet {
+        background-color: #ffffff;
+    }
+.btn-danger-custom {
+    background-color: #e74c3c; /* Custom red color */
+    border-color: #c0392b;
+    color: white;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+    .btn-danger-custom:hover {
+        background-color: #c0392b; /* Darker red on hover */
+        border-color: #e74c3c;
+    }
+
+    .btn-danger-custom i {
+        margin-right: 5px; /* Space between icon and text */
+    }
+
+/* Comment Card Styling */
+.comment-card-unique {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+    border-radius: 20px; /* More rounded corners */
+    padding: 30px; /* More padding for a spacious feel */
+    background-color: #ffffff; /* Clean white background */
+    margin-bottom: 40px; /* Larger margin between cards */
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    transition: transform 0.4s ease, box-shadow 0.4s ease; /* Smooth animation */
+    border: 1px solid #e2e8f0; /* Subtle border */
+}
+
+    .comment-card-unique:hover {
+        transform: translateY(-10px); /* Hover lift effect */
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15); /* Larger shadow on hover */
+    }
+
+/* User Information Styling */
+.user-info-unique img {
+    border-radius: 50%; /* Circle profile image */
+    width: 70px; /* Larger image size */
+    height: 70px;
+    object-fit: cover;
+    transition: transform 0.3s ease; /* Animation on hover */
+}
+
+    .user-info-unique img:hover {
+        transform: scale(1.1); /* Scale effect on hover */
+    }
+
+/* Comment Body Styling */
+.comment-body-unique {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%; /* Ensure body takes full width */
+}
+
+/* Title Styling */
+.comment-body-title-unique {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2d3748; /* Darker shade for the title */
+    margin-bottom: 10px;
+}
+
+/* Comment Text Styling */
+.comment-body-text-unique {
+    color: #4a5568;
+    font-size: 1.1rem;
+    line-height: 1.6; /* Better readability */
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+/* Star Rating Styling */
+.star-rating-unique {
+    color: #f59e0b;
+    font-size: 1.8rem; /* Larger star size */
+    margin-bottom: 10px;
+}
+
+/* Image Grid Styling */
+.image-grid-unique {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+    .image-grid-unique img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        border-radius: 12px;
+        transition: transform 0.3s ease; /* Animation on hover */
+    }
+
+        .image-grid-unique img:hover {
+            transform: scale(1.05); /* Hover effect for images */
+        }
+
+/* Delete Button Styling */
+.btn-danger-custom {
+    background-color: #e74c3c; /* Custom red color */
+    border-color: #c0392b;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px; /* More rounded corners */
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 5px 10px rgba(231, 76, 60, 0.3); /* Shadow for depth */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+    .btn-danger-custom:hover {
+        background-color: #c0392b; /* Darker red on hover */
+        border-color: #e74c3c;
+        transform: translateY(-2px); /* Lift effect on hover */
+    }
+
+    .btn-danger-custom i {
+        margin-right: 8px; /* Space between icon and text */
+    }
+
+/* Comment Date Styling */
+.text-muted {
+    font-size: 0.9rem;
+    color: #a0aec0; /* Light grey color */
+    margin-bottom: 10px;
+}
+
+/* Responsive Styling */
+@media screen and (max-width: 768px) {
+    .comment-card-unique {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .image-grid-unique {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns for mobile */
+    }
+
+    .btn-danger-custom {
+        width: 100%; /* Full width on mobile */
+    }
+}

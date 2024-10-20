@@ -1,13 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SmartElectronicsApi.Application.Dtos.Comment
+﻿namespace SmartElectronicsApi.Mvc.ViewModels.Comment
 {
-    public class CommentCreateDto
+    public class CommentCreateVM
     {
         public string Message { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

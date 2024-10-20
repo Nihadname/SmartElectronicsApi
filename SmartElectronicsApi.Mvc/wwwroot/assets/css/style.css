@@ -1460,3 +1460,31 @@ media (max-width: 576px) {
     .card-body input[type="radio"]:checked {
         zoom: 1.2;
     }
+.see-all-comments {
+    text-align: center; /* Center align the button */
+    margin-top: 20px; /* Space above the button */
+}
+
+.btn-see-all {
+    padding: 10px 30px; /* Padding for the button */
+    font-size: 16px; /* Font size */
+    background-color: #f8f9fa; /* Light gray background */
+    color: #212529; /* Dark text color */
+    border: none; /* No border */
+    border-radius: 25px; /* Rounded edges */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition for background color */
+    display: inline-flex; /* Align text and icon */
+    align-items: center; /* Center vertically */
+}
+
+    .btn-see-all:hover {
+        background-color: #e2e6ea; /* Darker shade on hover */
+    }
+
+    /* Optional: Icon styling if you want to add an icon */
+    .btn-see-all::after {
+        content: '>'; /* Arrow icon */
+        margin-left: 10px; /* Space between text and icon */
+        font-weight: bold; /* Make icon bold */
+    }

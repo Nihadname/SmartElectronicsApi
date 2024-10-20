@@ -164,6 +164,9 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<ParametrValueListItemDto, ParametrValue>();
                 CreateMap<ParametrValue, ParametrValueListItemDto>();
                 CreateMap<ParametrGroup,ParametrGroupListItemDto>();
+                CreateMap<Comment, CommentListItemDto>()
+        .ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.commentImages.Select(pi => url + "img/" + pi.Name)))
+        .ForMember(dest => dest.AppUser, opt => opt.MapFrom(src => src.AppUser));
                 CreateMap<ContactCreateDto, Contact>();
                 CreateMap<Contact,ContactDto>();
                 CreateMap<Basket, UserBasketDto>()
@@ -207,7 +210,7 @@ namespace SmartElectronicsApi.Application.Profiles
 
 
                 CreateMap<CommentCreateDto, Comment>();
-
+                CreateMap<CommentImageDto, CommentImage>();
                 //.ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Product.Price * src.Quantity))
 
                 //.ForMember(dest => dest.TotalSalePrice, opt => opt.MapFrom(src => (src.Product.DiscountedPrice ?? src.Product.Price) * src.Quantity))

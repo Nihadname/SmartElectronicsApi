@@ -29,5 +29,16 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _commentService.Delete(id));    
         }
+        [HttpGet]
+        public async Task<IActionResult> Get(int productId, int pageNumber = 1,
+           int pageSize = 10)
+        {
+            return Ok(await _commentService.Get(productId,pageNumber,pageSize));
+        }
+        [HttpGet("getAllImages")]
+        public async Task<IActionResult> GetAllImages(int?  productId)
+        {
+            return Ok(await _commentService.GetAllIMages(productId));
+        }
     }
 }

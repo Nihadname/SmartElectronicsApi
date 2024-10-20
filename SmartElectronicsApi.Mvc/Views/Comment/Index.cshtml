@@ -1,0 +1,219 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Comment
+@model CommentDetailVM
+
+<div class="container py-5">
+
+    <!-- Product Review Header -->
+    <div class="header-unique">
+        <h4 class="header-title-unique">@Model.ProductName</h4>
+        <a class="btn btn-primary header-button-unique" asp-action="Create" asp-controller="Comment" asp-route-productId="@Model.ProductId">Add Comment</a>
+    </div>
+
+    <!-- Review Statistics -->
+    <div class="review-stats-unique">
+        <div class="average-rating-unique">@Model.AverageRating ★</div>
+        <span> @Model.commentsCount Reviews</span>
+    </div>
+
+    <!-- Filters -->
+  
+
+    <!-- Image Slider -->
+    <div class="swiper-container swiper-container-unique">
+        <div class="swiper-wrapper">
+            @for (var i = 0; i < ViewBag.Images.Count; i++)
+            {
+                var item = ViewBag.Images[i];
+                <div class="swiper-slide swiper-slide-unique">
+                    <div class="image-card2">
+                        <img src="@item" alt="Product Image" class="image-card-img2" onclick="openImageModal(@i)" style="cursor: pointer;">
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Modal for Image Popup with Swiper Slider -->
+    <div id="imageModal" class="image-modal">
+        <span class="close-modal" onclick="closeImageModal()">&times;</span>
+
+        <!-- Swiper Container for Modal -->
+        <div class="swiper-container modal-swiper-container">
+            <div class="swiper-wrapper">
+                @foreach (var item in ViewBag.Images)
+                {
+                    <div class="swiper-slide">
+                        <img src="@item" alt="Product Image" class="modal-image-slide">
+                    </div>
+                }
+            </div>
+
+            <!-- Swiper Pagination and Navigation -->
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+    <!-- Comment Cards -->
+    @foreach (var card in Model.paginatedResponse.Data)
+    {
+        <div class="comment-card-unique" data-id="@card.Id">
+            <div class="user-info-unique">
+                <img src="@card.AppUser.Image" alt="User Image">
+            </div>
+            <div class="comment-body-unique">
+                <h5 class="comment-body-title-unique">@card.AppUser.FullName</h5>
+                <small class="text-muted">@card.CreatedAt.ToString("dd MMMM yyyy")</small>
+                <div class="star-rating-unique">
+                    @for (var i = 1; i <= 5; i++)
+                    {
+                        if (i <= card.Rating)
+                        {
+                            <span style="color: #fbbf24;">★</span> <!-- Filled star -->
+                        }
+                        else
+                        {
+                            <span style="color: #e2e8f0;">★</span> <!-- Empty star -->
+                        }
+                    }
+                </div>
+                <p class="comment-body-text-unique">@card.Message</p>
+                <div class="image-grid-unique">
+                    @foreach (var images in card.Images)
+                    {
+                        <div class="image-card2">
+                            <img src="@images" alt="Product Image" class="image-card-img2">
+                        </div>
+                    }
+                </div>
+                <!-- Add a delete button for each comment -->
+                <button class="btn btn-danger btn-sm rounded-pill px-4 py-2" onclick="DeleteComment(@card.Id)" style="width: 135px;">
+                    <i class="fas fa-trash-alt"></i> Delete
+                </button>
+
+            </div>
+        </div>
+    }
+    <!-- End of foreach loop for comments -->
+
+</div> <!-- Closing container -->
+<!-- Modal for adding comment -->
+
+
+@if (Model.paginatedResponse != null && Model.paginatedResponse.TotalRecords > 0)
+{
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.paginatedResponse.PageNumber == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { productId = Model.ProductId, pageNumber = Model.paginatedResponse.PageNumber - 1, pageSize = Model.paginatedResponse.PageSize })" tabindex="-1">Previous</a>
+            </li>
+
+            @for (int i = 1; i <= Math.Ceiling((double)Model.paginatedResponse.TotalRecords / Model.paginatedResponse.PageSize); i++)
+            {
+                <li class="page-item @(i == Model.paginatedResponse.PageNumber ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { productId = Model.ProductId, pageNumber = i, pageSize = Model.paginatedResponse.PageSize })">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.paginatedResponse.PageNumber == Math.Ceiling((double)Model.paginatedResponse.TotalRecords / Model.paginatedResponse.PageSize) ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { productId = Model.ProductId, pageNumber = Model.paginatedResponse.PageNumber + 1, pageSize = Model.paginatedResponse.PageSize })">Next</a>
+            </li>
+        </ul>
+    </nav>
+}
+else
+{
+    <p>No comments available to display.</p>
+}
+
+
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+<script>
+    const swiper = new Swiper('.swiper-container-unique', {
+        loop: true,
+        pagination: {
+            el: '.swiper-pagination-unique',
+            clickable: true,
+        },
+        slidesPerView: 5,
+        spaceBetween: 15,
+        centeredSlides: false,
+        breakpoints: {
+            640: {
+                slidesPerView: 2,
+                spaceBetween: 10,
+            },
+            768: {
+                slidesPerView: 3,
+                spaceBetween: 15,
+            },
+            1024: {
+                slidesPerView: 5,
+                spaceBetween: 20,
+            },
+        }
+    });
+
+    document.querySelectorAll('.star').forEach((star) => {
+        star.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+            resetStars();
+            highlightStars(value);
+        });
+    });
+
+    function resetStars() {
+        document.querySelectorAll('.star').forEach((star) => {
+            star.style.color = '#e2e8f0';
+        });
+    }
+
+    function highlightStars(rating) {
+        for (let i = 0; i < rating; i++) {
+            document.querySelectorAll('.star')[i].style.color = '#f59e0b';
+        }
+    }
+    let modalSwiper;
+
+    // Open the modal and initialize Swiper for image slides
+    function openImageModal(startIndex) {
+        var modal = document.getElementById("imageModal");
+        modal.style.display = "block";
+
+        // Initialize Swiper only if not already initialized, or update if already initialized
+        if (!modalSwiper) {
+            modalSwiper = new Swiper('.modal-swiper-container', {
+                loop: true,
+                fadeEffect: { crossFade: true },
+                effect: 'fade',
+                initialSlide: startIndex,  // Set the clicked image as the initial slide
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+            });
+        } else {
+            modalSwiper.slideToLoop(startIndex, 0);  // Update to show the clicked image if Swiper is already initialized
+        }
+    }
+
+    // Close the modal
+    function closeImageModal() {
+        var modal = document.getElementById("imageModal");
+        modal.style.display = "none";
+    }
+
+    // Close modal when clicking outside the image
+    window.onclick = function (event) {
+        var modal = document.getElementById("imageModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+</script>

@@ -468,7 +468,6 @@
                 </div>
                 <!-- Product Description -->
                 <p class="product-description">@Model.Description</p>
-
                 <!-- Product Code -->
                 <p class="product-code">Product Code: @Model.ProductCode</p>
 
@@ -670,6 +669,9 @@
         <div class="swiper-pagination"></div>
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
+    </div>
+    <div class="see-all-comments">
+        <a asp-action="Index" asp-controller="Comment" asp-route-productId="@Model.Id" class="btn-see-all">Show All Comments</a>
     </div>
 </div>
 <div class="swiper NewBrandProducts3">

@@ -1,0 +1,60 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Comment
+@model CommentCreateVM
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Comment Form -->
+            <div class="card" style="border-radius: 30px; box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3); overflow: hidden;">
+                <!-- Form Header -->
+                <div class="card-header text-center" style="background: linear-gradient(145deg, #4F46E5, #2563EB); padding: 30px;">
+                    <h3 style="color: #ffffff; font-weight: 800; font-size: 2.2rem; text-shadow: 0px 5px 12px rgba(0, 0, 0, 0.3); letter-spacing: 1.5px;">Share Your Review</h3>
+                </div>
+
+                <!-- Form Body -->
+                <div class="card-body" style="padding: 45px; background-color: #f3f4f6;">
+                    <form method="post" asp-action="Create" enctype="multipart/form-data">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+                        <!-- Comment Text -->
+                        <div class="mb-4">
+                            <label asp-for="Message" class="form-label">Your Feedback</label>
+
+                            <textarea class="form-control" asp-for="Message" rows="4" placeholder="Write your thoughts here..." ></textarea>
+                            <span class="text-danger " asp-validation-for="Message"></span>
+                        </div>
+
+                        <!-- Rating Section -->
+                        <div class="mb-4">
+                            <label asp-for="Rating" class="form-label">Rate the Product</label>
+                            <select class="form-select" asp-for="Rating" >
+                                <option value="">Select a rating</option>
+                                <option value="1">1 Star</option>
+                                <option value="2">2 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="5">5 Stars</option>
+                            </select>
+                        </div>
+                        <span class="text-danger " asp-validation-for="Rating"></span>
+
+                        <!-- Image Upload Section -->
+                        <div class="mb-4">
+                            <label asp-for="Images" class="form-label">Upload Your Photos</label>
+                            <input class="form-control" asp-for="Images" multiple accept="image/*">
+                            <small class="text-muted">You can upload up to 5 images</small>
+                            <span class="text-danger " asp-validation-for="Images"></span>
+                        </div>
+
+                        <!-- Form Footer -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary px-4 py-2">Submit</button>
+                            <a href="/Product/Details/@Model.ProductId" class="btn btn-secondary px-4 py-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
