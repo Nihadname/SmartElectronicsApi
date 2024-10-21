@@ -72,6 +72,7 @@ public static class ServiceRegistration
         );
 
         // Scoped Services
+        services.AddScoped<IOrderService,OrderService>();
         services.AddScoped<ICommentImageRepository, CommentImageRepository>();
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<ICommentRepository, CommentRepository>();

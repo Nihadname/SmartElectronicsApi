@@ -10,6 +10,7 @@ using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.Comment;
 using SmartElectronicsApi.Application.Dtos.Contact;
+using SmartElectronicsApi.Application.Dtos.Order;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using SmartElectronicsApi.Application.Dtos.ParametrValue;
 using SmartElectronicsApi.Application.Dtos.Product;
@@ -208,6 +209,19 @@ namespace SmartElectronicsApi.Application.Profiles
 
                 CreateMap<Subscriber, SubscriberListItemDto>();
 
+                CreateMap<Order, OrderListItemDto>()
+     .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+     .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items.Select(i => new OrderItemSummaryDto
+     {
+         ProductId = i.ProductId,
+         ProductName = i.Product.Name,
+         Quantity = i.Quantity,
+         UnitPrice = (decimal)((i.ProductVariation != null && i.ProductVariation.DiscountedPrice > 0)
+             ? i.ProductVariation.DiscountedPrice // Use variation's discounted price if available
+             : (i.Product.DiscountedPrice > 0 ? i.Product.DiscountedPrice : i.UnitPrice)), // Fallback to product's discounted price or normal price
+         ProductVariationId = i.ProductVariationId,
+         VariationName = (i.ProductVariation != null) ? i.ProductVariation.VariationName : null // Check for null without using `?.`
+     }).ToList()));
 
                 CreateMap<CommentCreateDto, Comment>();
                 CreateMap<CommentImageDto, CommentImage>();
