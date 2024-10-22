@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartElectronicsApi.Application.Dtos.Order;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,9 @@ namespace SmartElectronicsApi.Application.Dtos.Auth
         public string Image {  get; set; }
         public bool IsBlocked { get; set; }
         public DateTime? CreatedTime { get; set; }
+        public int loyalPoints { get; set; }
+        public int loyaltyTier { get; set; }
+        public ICollection<OrderListItemDto>? orders { get; set; }
 
     }
 }

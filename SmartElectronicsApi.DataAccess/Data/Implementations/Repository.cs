@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using SmartElectronicsApi.Core.Entities.Common;
 using SmartElectronicsApi.Core.Repositories;
 using System;
@@ -21,7 +22,11 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             _table = context.Set<T>();
         }
 
-    
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
+        }
+
 
         public async Task Commit()
         {

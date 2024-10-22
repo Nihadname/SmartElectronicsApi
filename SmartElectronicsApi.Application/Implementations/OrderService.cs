@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using SmartElectronicsApi.Application.Dtos.Order;
@@ -9,9 +10,8 @@ using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
 using Stripe;
-using Stripe.Issuing;
+using Stripe.Checkout;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
-    public class OrderService:IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -28,155 +28,235 @@ namespace SmartElectronicsApi.Application.Implementations
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
 
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager, IConfiguration configuration, IEmailService emailService)
+        public OrderService(
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor,
+            UserManager<AppUser> userManager,
+            IConfiguration configuration,
+            IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
             _configuration = configuration;
-
-            StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"]; 
+            StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
             _emailService = emailService;
         }
 
-        public async Task<OrderListItemDto> CreateOrderAsync(int addressId,string token)
+        public async Task<string> CreateStripeCheckoutSessionAsync(int addressId)
         {
-              var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userId))
-                    throw new CustomException(400, "User ID cannot be null");
-
-                var user = await _userManager.FindByIdAsync(userId);
-                // Get the user's basket products
-                var basketProducts = await _unitOfWork.BasketProductRepository
-                    .GetAll(bp => bp.Basket.AppUserId == userId, includes: new Func<IQueryable<BasketProduct>, IQueryable<BasketProduct>>[]
+            using (var transaction = await _unitOfWork.OrderRepository.BeginTransactionAsync())
             {
-        query => query.Include(c => c.Product).ThenInclude(s=>s.Variations)
-                      
-            });
-
-                if (!basketProducts.Any())
+                try
                 {
-                    throw new Exception("No products in the basket to create an order.");
-                }
-                var address = await _unitOfWork.addressRepository
-           .GetEntity(s => s.Id == addressId);
+                    var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (string.IsNullOrEmpty(userId))
+                        throw new CustomException(400, "User ID cannot be null");
 
-                if (address == null || address.AppUserId != userId)
-                {
-                    throw new Exception("Invalid address selected for shipping.");
-                }
+                    var user = await _userManager.FindByIdAsync(userId);
 
-                // Map basket products to order items
-                var orderItems = basketProducts.Select(bp => new OrderItem
-                {
-                    ProductId = (int)bp.ProductId,
-                    Product = bp.Product,
-                    ProductVariationId = bp.ProductVariationId,
-                    ProductVariation = bp.ProductVariation,
-                    Quantity = bp.Quantity,
-                    UnitPrice = (decimal)((bp.ProductVariation != null && bp.ProductVariation.DiscountedPrice.HasValue && bp.ProductVariation.DiscountedPrice.Value > 0)
-                ? bp.ProductVariation.DiscountedPrice // Use ProductVariation's discounted price
-                : (bp.Product.DiscountedPrice > 0 ? bp.Product.DiscountedPrice : bp.Product.Price)) // Fallback to Product's discounted price or price
-                }).ToList();
+                    var basketProducts = await _unitOfWork.BasketProductRepository
+                        .GetAll(bp => bp.Basket.AppUserId == userId, includes: new Func<IQueryable<BasketProduct>, IQueryable<BasketProduct>>[]
+                        {
+                            query => query.Include(c => c.Product).ThenInclude(s => s.Variations)
+                        });
 
-                var totalAmount = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
-                var tax = totalAmount * 0.1m;
-                var shippingCost = 15.00m;
+                    if (!basketProducts.Any())
+                    {
+                        throw new Exception("No products in the basket to create an order.");
+                    }
 
-                var order = new Order
-                {
-                    OrderDate = DateTime.Now,
-                    TotalAmount = totalAmount + tax + shippingCost,
-                    Tax = tax,
-                    ShippingCost = shippingCost,
-                    ShippingAddress = $"{address.Street}, {address.City}, {address.State}, {address.ZipCode}, {address.Country}",
-                    Status = OrderStatus.Pending,
-                    AppUserId = userId,
-                    Items = orderItems
-                };
+                    var address = await _unitOfWork.addressRepository.GetEntity(s => s.Id == addressId);
+                    if (address == null || address.AppUserId != userId)
+                    {
+                        throw new Exception("Invalid address selected for shipping.");
+                    }
 
-                await _unitOfWork.OrderRepository.Create(order);
-                _unitOfWork.Commit();
+                    var orderItems = basketProducts.Select(bp => new OrderItem
+                    {
+                        ProductId = (int)bp.ProductId,
+                        Product = bp.Product,
+                        ProductVariationId = bp.ProductVariationId,
+                        ProductVariation = bp.ProductVariation,
+                        Quantity = bp.Quantity,
+                        UnitPrice = (decimal)((bp.ProductVariation != null && bp.ProductVariation.DiscountedPrice.HasValue && bp.ProductVariation.DiscountedPrice.Value > 0)
+                            ? bp.ProductVariation.DiscountedPrice
+                            : (bp.Product.DiscountedPrice > 0 ? bp.Product.DiscountedPrice : bp.Product.Price))
+                    }).ToList();
 
-                foreach (var basketProduct in basketProducts)
-                {
-                    await _unitOfWork.BasketProductRepository.Delete(basketProduct);
-                }
-                _unitOfWork.Commit();
-            var paymentService = new ChargeService();
-            var chargeOptions = new ChargeCreateOptions
-            {
-                Amount = (long)(order.TotalAmount * 100), // Amount in cents
-                Currency = "azn", // Currency
-                Source = token,// Pass the actual payment source
-                Description = $"Order #{order.Id} payment",
-            };
+                    var totalAmount = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
+                    var tax = totalAmount * 0.1m;
+                    var shippingCost = 15.00m;
 
-            try
-            {
-                Charge charge = await paymentService.CreateAsync(chargeOptions);
+                    // Apply loyalty points discount
+                    if (user.loyalPoints >= 100 && user.loyalPoints <= 500)
+                    {
+                        totalAmount -= (totalAmount * 5) / 100;
+                    }
+                    else if (user.loyalPoints > 500 && user.loyalPoints < 800)
+                    {
+                        totalAmount -= (totalAmount * 8) / 100;
+                    }
+                    else if (user.loyalPoints > 800 && user.loyalPoints < 1000)
+                    {
+                        totalAmount -= (totalAmount * 12) / 100;
+                    }
 
-                // Check if the charge was successful
-                if (charge.Status != "succeeded")
-                {
-                    throw new Exception("Payment processing failed.");
-                }
-                order.Status = OrderStatus.Completed;
-                _unitOfWork.Commit();
-                // Send confirmation email using your EmailService
-                string templatePath = "wwwroot/Template/Invoice.html";
-                string body;
-                using (StreamReader reader = new StreamReader(templatePath))
-                {
-                    body = await reader.ReadToEndAsync();
-                }
-                body = body.Replace("{{CustomerName}}", user.UserName)
-                         .Replace("{{InvoiceDate}}", order.OrderDate.ToString("dd MMM yyyy"))
-                         .Replace("{{SubTotal}}", totalAmount.ToString("C"))
-                         .Replace("{{Tax}}", tax.ToString("C"))
-                         .Replace("{{Total}}", order.TotalAmount.ToString("C"));
+                    var order = new Order
+                    {
+                        OrderDate = DateTime.Now,
+                        TotalAmount = totalAmount + tax + shippingCost,
+                        Tax = tax,
+                        ShippingCost = shippingCost,
+                        ShippingAddress = $"{address.Street}, {address.City}, {address.State}, {address.ZipCode}, {address.Country}",
+                        Status = OrderStatus.Pending,
+                        AppUserId = userId,
+                        Items = orderItems
+                    };
 
-                // Dynamically generate the order items
-                StringBuilder orderItemsBuilder = new StringBuilder();
-                foreach (var item in orderItems)
-                {
-                    orderItemsBuilder.Append($@"
+                    await _unitOfWork.OrderRepository.Create(order);
+                    _unitOfWork.Commit();
+                    foreach(var item in orderItems)
+                    {
+                        await _unitOfWork.OrderItemRepository.Create(item);
+                        _unitOfWork.Commit();
+                    }
+                   
+                    // Delete basket products
+                    foreach (var basketProduct in basketProducts)
+                    {
+                        await _unitOfWork.BasketProductRepository.Delete(basketProduct);
+                    }
+                    _unitOfWork.Commit();
+
+                    // Create Stripe checkout session
+                    var lineItems = orderItems.Select(item => new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(item.UnitPrice * 100),
+                            Currency = "azn",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.Product.Name,
+                            },
+                        },
+                        Quantity = item.Quantity,
+                    }).ToList();
+
+                    var options = new SessionCreateOptions
+                    {
+                        PaymentMethodTypes = new List<string> { "card" },
+                        LineItems = lineItems,
+                        Mode = "payment",
+                        SuccessUrl = $"http://localhost:5246/api/Order/verify-payment?sessionId={{CHECKOUT_SESSION_ID}}",
+                        CancelUrl = $"http://localhost:5246/api/Order/verify-payment?sessionId={{CHECKOUT_SESSION_ID}}",
+                        Metadata = new Dictionary<string, string>
+    {
+        { "orderId", order.Id.ToString() }
+    }
+                    };
+
+                    var service = new SessionService();
+                    Session session = await service.CreateAsync(options);
+                
+                    // Loyalty points logic
+                    if (user.loyalPoints < 1000)
+                    {
+                        if (totalAmount >= 10000)
+                        {
+                            user.loyalPoints += (int)totalAmount / 1500;
+                        }
+                        else if (totalAmount < 10000 && totalAmount >= 1000)
+                        {
+                            user.loyalPoints += (int)totalAmount / 3500;
+                        }
+
+                        // Upgrade loyalty tier when points reach 1000
+                        if (user.loyalPoints >= 1000)
+                        {
+                            user.loyalPoints = 100;
+                            user.loyaltyTier += 1;
+                        }
+                    }
+
+                    await _userManager.UpdateAsync(user);
+
+                    await transaction.CommitAsync();
+
+                    // Send confirmation email
+                    string templatePath = "wwwroot/Template/Invoice.html";
+                    string body;
+                    using (StreamReader reader = new StreamReader(templatePath))
+                    {
+                        body = await reader.ReadToEndAsync();
+                    }
+                    body = body.Replace("{{CustomerName}}", user.UserName)
+                             .Replace("{{InvoiceDate}}", order.OrderDate.ToString("dd MMM yyyy"))
+                             .Replace("{{SubTotal}}", totalAmount.ToString("C"))
+                             .Replace("{{Tax}}", tax.ToString("C"))
+                             .Replace("{{Total}}", order.TotalAmount.ToString("C"));
+
+                    // Generate order items for email
+                    StringBuilder orderItemsBuilder = new StringBuilder();
+                    foreach (var item in orderItems)
+                    {
+                        orderItemsBuilder.Append($@"
                         <tr>
                             <td>{item.Product.Name}</td>
                             <td>{item.Quantity}</td>
                             <td>{item.UnitPrice:C}</td>
                             <td>{(item.Quantity * item.UnitPrice):C}</td>
                         </tr>");
+                    }
+                    body = body.Replace("{{OrderItems}}", orderItemsBuilder.ToString());
+
+                    _emailService.SendEmail(
+                        from: "nihadmi@code.edu.az",
+                        to: user.Email,
+                        subject: $"Invoice for Order #{order.Id}",
+                        body: body,
+                    smtpHost: "smtp.gmail.com",
+                    smtpPort: 587,
+                    enableSsl: true,
+                    smtpUser: "nihadmi@code.edu.az\r\n",
+                    smtpPass: "jytx krmh ngqj vdnc\r\n"
+                    );
+
+                    return session.Id;
                 }
-                body = body.Replace("{{OrderItems}}", orderItemsBuilder.ToString());
-
-                _emailService.SendEmail(
-                    from: "nihadmi@code.edu.az",
-                    to: user.Email,
-                    subject: $"Invoice for Order #{order.Id}",
-                    body: body,
-                smtpHost: "smtp.gmail.com",
-                smtpPort: 587,
-                enableSsl: true,
-                smtpUser: "nihadmi@code.edu.az\r\n",
-                smtpPass: "jytx krmh ngqj vdnc\r\n"
-                );
-
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    throw new Exception($"Order creation failed: {ex.Message}");
+                }
             }
-            catch (StripeException ex)
-            {
-                order.Status = OrderStatus.Failed;
-                _unitOfWork.Commit();
-                // Handle Stripe-specific exceptions
-                throw new Exception($"Payment processing failed: {ex.Message}");
-            }
-            var MappedOrder =_mapper.Map<OrderListItemDto>(order);
-                return MappedOrder;
-      
-            
         }
+        public async Task<string> VerifyPayment(string sessionId)
+        {
+            var service = new SessionService();
+            var session = await service.GetAsync(sessionId);
 
+            if (session.PaymentStatus == "paid")
+            {
+                var orderId = session.Metadata["orderId"];
+                var order = await _unitOfWork.OrderRepository.GetEntity(o => o.Id == int.Parse(orderId));
+
+                if (order != null)
+                {
+                    order.Status = OrderStatus.Completed;
+                  await  _unitOfWork.OrderRepository.Update(order);
+                     _unitOfWork.Commit();  
+                }
+                return "Payment successful"; 
+            }
+            else
+            {
+                return "Payment failed or incomplete";
+            }
+        }
 
     }
 }

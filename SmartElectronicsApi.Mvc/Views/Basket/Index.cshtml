@@ -359,9 +359,60 @@
                     <span>Yekun məbləğ</span>
                     <span id="total-sale-price">@Model.TotalSalePrice AZN</span>
                 </div>
-                <button>Sifarişi rəsmiləşdir</button>
+                <button id="checkout-button">Sifarişi rəsmiləşdir</button>
 
             </div>
         </div>
     </div>
 </div>
+<script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+        var addressId=38;
+    function getJwtTokenFromCookie3() {
+        const name = "JwtToken=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const cookies = decodedCookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i];
+            while (cookie.charAt(0) === ' ') {
+                cookie = cookie.substring(1);
+            }
+            if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+            }
+        }
+        return "";
+    }
+    // Initialize Stripe with your public key
+    const stripe = Stripe('pk_test_51PekZOJzq6GPnvu3Z6EYwGUL0zicrGbCglndDk8AmjuR4P3KthnnziCGhk3dpuiLQrXZ0qWOPyIo6tgkNMlRPWtH00kdrtwcE5');
+
+    // Handle the checkout button click
+    document.getElementById('checkout-button').addEventListener('click', function () {
+        const token = getJwtTokenFromCookie3(); // Get the JWT token for authorization
+
+        // Send a request to create the Stripe Checkout session
+        fetch(`http://localhost:5246/api/Order/checkout-session?addressId=38`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => response.json())
+            .then(session => {
+                // Redirect to Stripe Checkout page
+                return stripe.redirectToCheckout({ sessionId: session.id });
+            })
+            .then(function (result) {
+                if (result.error) {
+                    // Show an error to your customer if the payment fails
+                    alert(result.error.message);
+                }
+            })
+            .catch(function (error) {
+                console.error('Error creating Stripe session:', error);
+            });
+    });
+
+    </script>

@@ -1,0 +1,152 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Cancelled</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8d7da;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .cancel-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0px 15px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            animation: slideDown 1s ease-out;
+        }
+
+        .cancel-container h1 {
+            font-size: 36px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 0;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .cancel-container p {
+            font-size: 18px;
+            color: #555;
+            margin-top: 15px;
+        }
+
+        .cancel-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #e74c3c;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .cancel-icon svg {
+            fill: white;
+            width: 50px;
+            height: 50px;
+        }
+
+        .cancel-summary {
+            margin-top: 30px;
+            font-size: 18px;
+        }
+
+        .cancel-summary div {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .cancel-summary div span {
+            color: #333;
+        }
+
+        .btn-container {
+            margin-top: 40px;
+        }
+
+        .btn-container a {
+            background-color: #e74c3c;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-container a:hover {
+            background-color: #c0392b;
+        }
+
+        @@keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @@keyframes slideDown {
+            0% { transform: translateY(-100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        @@keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @@media (max-width: 576px) {
+            .cancel-container {
+                padding: 20px;
+            }
+
+            .cancel-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .cancel-icon svg {
+                width: 40px;
+                height: 40px;
+            }
+
+            .cancel-summary div {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cancel-container">
+        <div class="cancel-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1C5.926 1 1 5.926 1 12s4.926 11 11 11 11-4.926 11-11S18.074 1 12 1zm6.364 14.778L14.778 12l3.586-3.586-1.414-1.414L12 10.586 8.414 7 7 8.414 10.586 12 7 15.586l1.414 1.414L12 13.414l3.586 3.586 1.414-1.414z"/></svg>
+        </div>
+        <h1>Payment Cancelled</h1>
+        <p>Your payment has been cancelled. You can retry the payment or contact us if you need assistance.</p>
+
+        <div class="btn-container">
+            <a href="/">Return to Home</a>
+        </div>
+    </div>
+
+</body>
+</html>

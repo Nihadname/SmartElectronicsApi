@@ -73,6 +73,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 user.EmailConfirmed = true;
                 user.CreatedTime= DateTime.UtcNow;
                 user.loyalPoints = 0;
+                user.loyaltyTier = 1;
                 var result = await _userManager.CreateAsync(user, "User_@" + Guid.NewGuid().ToString().Substring(0, 14));
 
                 if (!result.Succeeded)
@@ -148,6 +149,7 @@ namespace SmartElectronicsApi.Application.Implementations
             appUser.Image = null;
             appUser.loyalPoints = 0;
             appUser.CreatedTime = DateTime.UtcNow;
+            appUser.loyaltyTier = 1;
             var result = await _userManager.CreateAsync(appUser, registerDto.Password);
             if (!result.Succeeded)
             {

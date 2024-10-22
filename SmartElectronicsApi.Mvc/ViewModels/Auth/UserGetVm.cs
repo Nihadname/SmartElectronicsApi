@@ -11,5 +11,7 @@
         public bool IsBlocked { get; set; }
 
         public DateTime? CreatedTime { get; set; }
+        public int loyalPoints { get; set; }
+        public int loyaltyTier { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -17,6 +19,8 @@ namespace SmartElectronicsApi.Core.Repositories
         Task<bool> isExists(Expression<Func<T, bool>> predicate = null);
         Task Commit();
         Task<IQueryable<T>> GetQuery(Expression<Func<T, bool>> predicate = null);
-  
+        Task<IDbContextTransaction> BeginTransactionAsync();
+        
+
     }
 }
