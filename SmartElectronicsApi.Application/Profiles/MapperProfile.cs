@@ -220,7 +220,6 @@ namespace SmartElectronicsApi.Application.Profiles
              ? i.ProductVariation.DiscountedPrice // Use variation's discounted price if available
              : (i.Product.DiscountedPrice > 0 ? i.Product.DiscountedPrice : i.UnitPrice)), // Fallback to product's discounted price or normal price
          ProductVariationId = i.ProductVariationId,
-         VariationName = (i.ProductVariation != null) ? i.ProductVariation.VariationName : null // Check for null without using `?.`
      }).ToList()));
 
                 CreateMap<CommentCreateDto, Comment>();

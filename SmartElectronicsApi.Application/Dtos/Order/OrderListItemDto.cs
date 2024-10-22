@@ -25,6 +25,6 @@ namespace SmartElectronicsApi.Application.Dtos.Order
         public int Quantity { get; set; }              // Quantity ordered
         public decimal UnitPrice { get; set; }         // Price per unit, considering variation
         public int? ProductVariationId { get; set; }   // Optional Product Variation ID
-        public string? VariationName { get; set; }
+       
     }
 }

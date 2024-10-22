@@ -18,10 +18,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
-        public async Task<IActionResult> Create(int addressId)
+        public async Task<IActionResult> Create(int addressId, string token)
         {
 
-            return Ok(await orderService.CreateOrderAsync(addressId));
+            return Ok(await orderService.CreateOrderAsync(addressId,token));
         }
     }
 }

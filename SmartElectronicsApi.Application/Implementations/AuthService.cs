@@ -27,6 +27,7 @@ using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace SmartElectronicsApi.Application.Implementations
 {
     public class AuthService : IAuthService
@@ -70,7 +71,8 @@ namespace SmartElectronicsApi.Application.Implementations
                 user.fullName = GivenName;
                 user.Image = null;
                 user.EmailConfirmed = true;
-                user.CreatedTime= DateTime.UtcNow;  
+                user.CreatedTime= DateTime.UtcNow;
+                user.loyalPoints = 0;
                 var result = await _userManager.CreateAsync(user, "User_@" + Guid.NewGuid().ToString().Substring(0, 14));
 
                 if (!result.Succeeded)
@@ -144,6 +146,7 @@ namespace SmartElectronicsApi.Application.Implementations
             appUser.PhoneNumber = registerDto.PhoneNumber;
             appUser.GoogleId = null;
             appUser.Image = null;
+            appUser.loyalPoints = 0;
             appUser.CreatedTime = DateTime.UtcNow;
             var result = await _userManager.CreateAsync(appUser, registerDto.Password);
             if (!result.Succeeded)

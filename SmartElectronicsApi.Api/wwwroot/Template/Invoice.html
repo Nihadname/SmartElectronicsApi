@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <title>Invoice</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+            background-color: #f3f6fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .invoice-container {
+            max-width: 850px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            border-top: 10px solid #007bff;
+        }
+
+        /* Header */
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+            .invoice-header h1 {
+                font-size: 42px;
+                font-weight: 700;
+                color: #007bff;
+                margin: 0;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+            }
+
+            .invoice-header .logo {
+                width: 150px;
+                object-fit: contain;
+            }
+
+        /* Customer Information */
+        .customer-info {
+            margin-top: 30px;
+        }
+
+            .customer-info p {
+                font-size: 18px;
+                margin: 5px 0;
+                color: #555;
+            }
+
+            .customer-info span {
+                font-weight: bold;
+                color: #333;
+            }
+
+        /* Invoice Details */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            font-size: 16px;
+        }
+
+            table th, table td {
+                padding: 15px;
+                border-bottom: 1px solid #ddd;
+                text-align: left;
+            }
+
+            table th {
+                background-color: #007bff;
+                color: white;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 14px;
+                border-radius: 5px 5px 0 0;
+            }
+
+            table td {
+                background-color: #f8f9fa;
+                padding: 20px;
+            }
+
+        /* Totals Section */
+        .totals {
+            margin-top: 40px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            text-align: right;
+        }
+
+            .totals div {
+                margin-right: 40px;
+            }
+
+                .totals div p {
+                    margin: 0;
+                    font-size: 18px;
+                    color: #555;
+                }
+
+                    .totals div p span {
+                        font-weight: bold;
+                        color: #333;
+                    }
+
+        /* Total price section styling */
+        .total-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer/Contact Info */
+        .invoice-footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 30px 0;
+            background-color: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+            .invoice-footer p {
+                margin: 5px 0;
+                font-size: 14px;
+                color: #999;
+            }
+
+        /* Button styling for download/payment action */
+        .action-btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+            .action-btn:hover {
+                background-color: #0056b3;
+            }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .invoice-container {
+                padding: 20px;
+            }
+
+            .invoice-header h1 {
+                font-size: 32px;
+            }
+
+            .totals div {
+                margin-right: 20px;
+            }
+
+            .total-price {
+                font-size: 22px;
+            }
+
+            .action-btn {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <!-- Invoice Header -->
+        <div class="invoice-header">
+            <h1>INVOICE</h1>
+            <img src="https://smartelectronics.az/assets/images/logo.svg" alt="Company Logo" class="logo">
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+            <p>Dear <span>{{CustomerName}}</span>,</p>
+            <p>Thank you for your purchase. Your invoice for <span>{{InvoiceDate}}</span> is ready.</p>
+        </div>
+
+        <!-- Table of Order Items -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{OrderItems}} <!-- Placeholder for dynamically generated rows -->
+            </tbody>
+        </table>
+
+        <!-- Totals Section -->
+        <div class="totals">
+            <div>
+                <p>Subtotal: <span>{{SubTotal}}</span></p>
+                <p>Tax: <span>{{Tax}}</span></p>
+            </div>
+            <div class="total-price">
+                <p>Total: <span>{{Total}}</span></p>
+            </div>
+        </div>
+
+        <!-- Footer/Call to Action -->
+        <div class="invoice-footer">
+            <p>If you have any questions about this invoice, please contact us at <a href="mailto:support@example.com">support@example.com</a>.</p>
+            <p>We appreciate your business and hope to serve you again!</p>
+            <p><a href="#" class="action-btn" onclick="downloadInvoice()">Download as PDF</a></p>
+        </div>
+    </div>
+    <script>
+        function downloadInvoice() {
+            const { jsPDF } = window.jspdf;
+
+            // Create a new jsPDF instance
+            const doc = new jsPDF();
+
+            // Get the HTML content of the invoice
+            const invoiceElement = document.getElementById('invoice');
+
+            // Add the HTML content to the PDF
+            doc.html(invoiceElement, {
+                callback: function (doc) {
+                    doc.save('invoice.pdf'); // Save the PDF
+                },
+                x: 10,
+                y: 10,
+                width: 180, // Maximum width for the content to fit
+            });
+        }
+    </script>
+</body>
+</html>

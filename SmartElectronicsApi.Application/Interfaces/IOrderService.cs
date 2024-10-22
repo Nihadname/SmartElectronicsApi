@@ -10,6 +10,6 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<OrderListItemDto> CreateOrderAsync(int addressId);
+        Task<OrderListItemDto> CreateOrderAsync(int addressId, string token);
     }
 }
