@@ -26,6 +26,7 @@ using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos;
 using Microsoft.EntityFrameworkCore;
+using SmartElectronicsApi.DataAccess.Data;
 
 
 namespace SmartElectronicsApi.Application.Implementations
@@ -43,8 +44,8 @@ namespace SmartElectronicsApi.Application.Implementations
         private readonly IEmailService _emailService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly LinkGenerator _linkGenerator;
-
-        public AuthService(IOptions<JwtSettings> jwtSettings, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService, IEmailService emailService, SignInManager<AppUser> signInManager, LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor)
+        private readonly SmartElectronicsDbContext _smartElectronicsDbContext;
+        public AuthService(IOptions<JwtSettings> jwtSettings, IUnitOfWork unitOfWork, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IHttpContextAccessor contextAccessor, ITokenService tokenService, IEmailService emailService, SignInManager<AppUser> signInManager, LinkGenerator linkGenerator, IHttpContextAccessor httpContextAccessor, SmartElectronicsDbContext smartElectronicsDbContext)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -57,6 +58,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _signInManager = signInManager;
             _linkGenerator = linkGenerator;
             _httpContextAccessor = httpContextAccessor;
+            _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 
         public async Task<AppUser> FindOrCreateUserAsync(string email, string googleId, string GivenName)
@@ -314,19 +316,31 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<UserGetDto> Profile()
         {
-
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (string.IsNullOrEmpty(userId))
             {
-                throw new CustomException(400, "Id", "User ID cannot be null");
+                throw new CustomException(400, "UserId", "User ID cannot be null or empty");
             }
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user is null) throw new CustomException(403, "this user doesnt exist");
-            var UserMapped = _mapper.Map<UserGetDto>(user);
-            return UserMapped;
 
+            var user = await _smartElectronicsDbContext.Users
+                            .Include(s => s.orders)
+                            .ThenInclude(s=>s.Items)
+                            .ThenInclude(s=>s.Product).ThenInclude(s=>s.Category)
+                            .Include(s=>s.wishList)
+                            .ThenInclude(s=>s.wishListProducts)// Ensure Orders is correctly named and virtual in your entity
+                            .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                throw new CustomException(403, "UserNotFound", "This user does not exist");
+            }
+
+            var userMapped = _mapper.Map<UserGetDto>(user);
+            return userMapped;
         }
-     
+
+
         public async Task<string> UpdateImage(UserUpdateImageDto userUpdateImageDto)
         {
             var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);

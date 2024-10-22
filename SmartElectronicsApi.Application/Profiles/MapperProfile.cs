@@ -45,11 +45,20 @@ namespace SmartElectronicsApi.Application.Profiles
             var configuration = new MapperConfiguration(cfg =>
             {
 
-          
-            // User mappings
-            CreateMap<AppUser, UserGetDto>()
-                 .ForMember(s => s.PhoneNumber, map => map.MapFrom(d => d.PhoneNumber))
-                  .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image));
+
+                // User mappings
+                CreateMap<AppUser, UserGetDto>()
+                     .ForMember(s => s.PhoneNumber, map => map.MapFrom(d => d.PhoneNumber))
+                      .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image))
+                           .ForMember(s => s.orders, map => map.MapFrom(d => d.orders.Take(5).ToList()))
+                            .ForMember(s => s.WishListedItemsCount, map => map.MapFrom(d => d.wishList.wishListProducts.Count()))
+                 .ForMember(s => s.TotalAmountSum, map => map.MapFrom(d => d.orders.Sum(s=>s.TotalAmount)))
+                .ForMember(s => s.FavoriteCategories, map => map.MapFrom(d =>
+        d.orders.SelectMany(o => o.Items)
+                .GroupBy(i => i.Product.Category.Name) // Group by category name
+                .OrderByDescending(g => g.Count())    // Order by most bought
+                .Take(3)                              // Take top 5 categories
+                .Select(g => g.Key).ToList()));
                 CreateMap<UpdateUserDto, AppUser>()
                  .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
 
@@ -210,7 +219,8 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<Subscriber, SubscriberListItemDto>();
 
                 CreateMap<Order, OrderListItemDto>()
-     .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+        .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.GetName(typeof(OrderStatus), src.Status)))
+
      .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items.Select(i => new OrderItemSummaryDto
      {
          ProductId = i.ProductId,

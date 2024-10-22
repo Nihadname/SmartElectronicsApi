@@ -20,6 +20,9 @@ namespace SmartElectronicsApi.Application.Dtos.Auth
         public int loyalPoints { get; set; }
         public int loyaltyTier { get; set; }
         public ICollection<OrderListItemDto>? orders { get; set; }
-
+        public int OrdersCount { get; set; }
+        public int WishListedItemsCount { get; set; }
+        public int TotalAmountSum { get; set; }
+        public List<string> FavoriteCategories { get; set; }
     }
 }

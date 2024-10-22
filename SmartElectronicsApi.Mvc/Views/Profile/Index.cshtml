@@ -24,9 +24,12 @@
                         </div>
                         <h5>Favorite Categories</h5>
                         <ul class="list-inline mb-0">
-                            <li class="list-inline-item badge bg-secondary">Electronics</li>
-                            <li class="list-inline-item badge bg-secondary">Fashion</li>
-                            <li class="list-inline-item badge bg-secondary">Home & Garden</li>
+                        @foreach(var itemCate in Model.UserGetVm.FavoriteCategories)
+                        {
+                            <li class="list-inline-item badge bg-secondary">@itemCate</li>
+                
+                        }
+                        
                         </ul>
                     </div>
                 </div>
@@ -78,21 +81,21 @@
                                 <div class="stat-card bg-light p-4 rounded">
                                     <i class="fa fa-dollar-sign fa-2x mb-3 text-success"></i>
                                     <h5>Total Spent</h5>
-                                    <h4>$2,560</h4>
+                                    <h4>$@Model.UserGetVm.TotalAmountSum</h4>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-4">
                                 <div class="stat-card bg-light p-4 rounded">
                                     <i class="fa fa-box-open fa-2x mb-3 text-info"></i>
                                     <h5>Total Orders</h5>
-                                    <h4>42 Orders</h4>
+                                    <h4>@Model.UserGetVm.OrdersCount Orders</h4>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-4">
                                 <div class="stat-card bg-light p-4 rounded">
                                     <i class="fa fa-heart fa-2x mb-3 text-danger"></i>
                                     <h5>Wishlisted Items</h5>
-                                    <h4>18 Items</h4>
+                                    <h4>@Model.UserGetVm.WishListedItemsCount Items</h4>
                                 </div>
                             </div>
                         </div>
@@ -130,41 +133,37 @@
                                 <thead>
                                     <tr>
                                         <th>Order ID</th>
-                                        <th>Product</th>
+                                        <th>Address</th>
                                         <th>Date</th>
                                         <th>Status</th>
                                         <th>Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>#12345</td>
-                                        <td>Smartphone</td>
-                                        <td>Sep 20, 2024</td>
-                                        <td><span class="badge bg-success">Delivered</span></td>
-                                        <td>$699</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#12344</td>
-                                        <td>Wireless Headphones</td>
-                                        <td>Sep 15, 2024</td>
-                                        <td><span class="badge bg-warning">Pending</span></td>
-                                        <td>$199</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#12343</td>
-                                        <td>Gaming Laptop</td>
-                                        <td>Sep 10, 2024</td>
-                                        <td><span class="badge bg-success">Delivered</span></td>
-                                        <td>$1,299</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#12342</td>
-                                        <td>Smartwatch</td>
-                                        <td>Sep 5, 2024</td>
-                                        <td><span class="badge bg-danger">Canceled</span></td>
-                                        <td>$299</td>
-                                    </tr>
+                                @if (Model.UserGetVm.orders != null)
+                                {
+                                    @foreach (var item in Model.UserGetVm.orders.Take(5))
+                                    {
+                                        <tr>
+                                            <td>#@item.Id</td>
+                                            <td>@(item.ShippingAddress.Length > 15 ? item.ShippingAddress.Substring(0, 15) + "..." : item.ShippingAddress)</td>
+                                            <td>@item.OrderDate.ToString("f")</td>
+                                            <td>
+                                                <span class="badge @(item.Status == "Pending" ? "bg-warning" :
+                                   item.Status == "Completed" ? "bg-success" :
+                                   item.Status == "Shipped" ? "bg-info" :
+                                   item.Status == "Cancelled" ? "bg-danger" :
+                                   item.Status == "Failed" ? "bg-dark" : "bg-secondary")">
+                                                    @item.Status
+                                                </span>
+                                            </td>
+                                            <td>$@item.TotalAmount</td>
+                                        </tr>
+                                    }
+                                }
+
+
+                                 
                                 </tbody>
                             </table>
                         </div>
