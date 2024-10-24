@@ -1,4 +1,5 @@
 ﻿using SmartElectronicsApi.Mvc.ViewModels.Color;
+using SmartElectronicsApi.Mvc.ViewModels.Comment;
 using SmartElectronicsApi.Mvc.ViewModels.ParametrGroup;
 using SmartElectronicsApi.Mvc.ViewModels.ProductVariation;
 
@@ -24,6 +25,8 @@ namespace SmartElectronicsApi.Mvc.ViewModels.Product
         public List<ColorListItemVM> colorListItemDtos { get; set; }
         public List<ParametrGroupListItemVM> parametrGroupListItemDtos { get; set; }
         public List<ProductVariationListItemVM> productVariationListItemDtos { get; set; }
+        public List<CommentListItemVM>? commentListItemDtos { get; set; }
+        public int AvarageRating { get; set; }
 
     }
 }

@@ -456,9 +456,21 @@
                 <!-- Product Rating and Cart Section -->
                 <div class="product-rating-cart">
                     <div class="rating-section">
-                        <span class="product-rating">4.4</span>
-                        <span class="stars">★★★★☆</span>
-                        <span class="review-count">8763 Değerlendirme</span>
+                        <span class="product-rating">@Model.AvarageRating</span>
+                        <span class="stars">
+                            @for (var i = 1; i <= 5; i++)
+                            {
+                                if (i <= Model.AvarageRating)
+                                {
+                                    <span style="color: #fbbf24;">★</span> <!-- Filled star -->
+                                }
+                                else
+                                {
+                                    <span style="color: #e2e8f0;">★</span> <!-- Empty star -->
+                                }
+                            }
+                        </span>
+                        <span class="review-count">@Model.commentListItemDtos.Count() Değerlendirme</span>
                     </div>
                 </div>
                 <div class="cart-added-section">
@@ -568,101 +580,41 @@
 
     <div class="swiper mySwiperReviews">
         <div class="swiper-wrapper">
+            @if (Model.commentListItemDtos != null)
+            {
+                @foreach(var item in Model.commentListItemDtos.Take(5))
+                {
+                    <div class="swiper-slide">
+                        <div class="review">
+                            <div class="review-header">
+                                <p class="reviewer-name">@item.AppUser.FullName</p>
+                                <div class="review-rating">
+                                    <!-- Rating Stars (static) -->
+                                    <span class="stars">
+                                        @for (var i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= item.Rating)
+                                            {
+                                                <span style="color: #fbbf24;">★</span> <!-- Filled star -->
+                                            }
+                                            else
+                                            {
+                                                <span style="color: #e2e8f0;">★</span> <!-- Empty star -->
+                                            }
+                                        }
+                                    </span>
+                                    <span class="review-rating-number">@item.Rating/5</span>
+                                </div>
+                            </div>
+                            <p class="review-comment">@item.Message</p>
+                        </div>
+                    </div>
+                }
+            }
             <!-- Review 1 -->
-            <div class="swiper-slide">
-                <div class="review">
-                    <div class="review-header">
-                        <p class="reviewer-name">John Doe</p>
-                        <div class="review-rating">
-                            <!-- Rating Stars (static) -->
-                            <span class="stars">
-                                ★★★★☆
-                            </span>
-                            <span class="review-rating-number">4/5</span>
-                        </div>
-                    </div>
-                    <p class="review-comment">Amazing product! Quality exceeded my expectations. I highly recommend it!</p>
-                </div>
-            </div>
+           
 
-            <!-- Review 2 -->
-            <div class="swiper-slide">
-                <div class="review">
-                    <div class="review-header">
-                        <p class="reviewer-name">Jane Smith</p>
-                        <div class="review-rating">
-                            <span class="stars">
-                                ★★★★★
-                            </span>
-                            <span class="review-rating-number">5/5</span>
-                        </div>
-                    </div>
-                    <p class="review-comment">Fantastic quality and fast shipping. Will definitely buy again.</p>
-                </div>
-            </div>
-
-            <!-- Review 3 -->
-            <div class="swiper-slide">
-                <div class="review">
-                    <div class="review-header">
-                        <p class="reviewer-name">Mark Wilson</p>
-                        <div class="review-rating">
-                            <span class="stars">
-                                ★★★☆☆
-                            </span>
-                            <span class="review-rating-number">3/5</span>
-                        </div>
-                    </div>
-                    <p class="review-comment">Good product, but shipping took a bit longer than expected.</p>
-                </div>
-            </div>
-            <div class="swiper-slide">
-                <div class="review">
-                    <div class="review-header">
-                        <p class="reviewer-name">John Doe</p>
-                        <div class="review-rating">
-                            <!-- Rating Stars (static) -->
-                            <span class="stars">
-                                ★★★★☆
-                            </span>
-                            <span class="review-rating-number">4/5</span>
-                        </div>
-                    </div>
-                    <p class="review-comment">Amazing product! Quality exceeded my expectations. I highly recommend it!</p>
-                </div>
-            </div>
-
-            <!-- Review 2 -->
-            <div class="swiper-slide">
-                <div class="review">
-                    <div class="review-header">
-                        <p class="reviewer-name">Jane Smith</p>
-                        <div class="review-rating">
-                            <span class="stars">
-                                ★★★★★
-                            </span>
-                            <span class="review-rating-number">5/5</span>
-                        </div>
-                    </div>
-                    <p class="review-comment">Fantastic quality and fast shipping. Will definitely buy again.</p>
-                </div>
-            </div>
-
-            <!-- Review 3 -->
-            <div class="swiper-slide">
-                <div class="review">
-                    <div class="review-header">
-                        <p class="reviewer-name">Mark Wilson</p>
-                        <div class="review-rating">
-                            <span class="stars">
-                                ★★★☆☆
-                            </span>
-                            <span class="review-rating-number">3/5</span>
-                        </div>
-                    </div>
-                    <p class="review-comment">Good product, but shipping took a bit longer than expected.</p>
-                </div>
-            </div>
+          
         </div>
 
         <!-- Swiper navigation -->

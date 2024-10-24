@@ -194,6 +194,8 @@ namespace SmartElectronicsApi.Application.Implementations
             .Include(p => p.Variations)
                 .ThenInclude(v => v.productVariationColors)
                     .ThenInclude(pvc => pvc.Color)
+                    .Include(s=>s.comments)
+                    .ThenInclude(s=>s.AppUser)
     });
 
             if (product is null) throw new CustomException(404, "Not found");

@@ -168,7 +168,9 @@ namespace SmartElectronicsApi.Application.Profiles
     .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.productImages.Select(pi => url + "img/" + pi.Name)))
                     .ForMember(dest => dest.colorListItemDtos, opt => opt.MapFrom(src => src.productColors.Select(s => s.Color)))
                      .ForMember(s => s.parametrGroupListItemDtos, map => map.MapFrom(d => d.parametricGroups))
-                  .ForMember(s => s.productVariationListItemDtos, map => map.MapFrom(d => d.Variations));
+                  .ForMember(s => s.productVariationListItemDtos, map => map.MapFrom(d => d.Variations))
+                    .ForMember(s => s.commentListItemDtos, map => map.MapFrom(d => d.comments))
+.ForMember(s => s.AvarageRating, map => map.MapFrom(d => d.comments.Any() ? d.comments.Average(s => s.Rating) : 0));
                 CreateMap<ParametrGroupCreateDto, ParametrGroup>()
      .ForMember(s => s.parametrValues, map => map.MapFrom(d => d.parametrValues));
 
