@@ -551,6 +551,15 @@ return MappedProducts;
             {
                 existingProduct.DiscountedPrice = productUpdateDto.Price - (productUpdateDto.Price * productUpdateDto.DiscountPercentage) / 100;
             }
+            if (productUpdateDto.DiscountPercentage.HasValue && productUpdateDto.DiscountPercentage != 0)
+            {
+                productUpdateDto.DiscountedPrice = productUpdateDto.Price - (productUpdateDto.Price * productUpdateDto.DiscountPercentage.Value) / 100;
+            }
+            if (productUpdateDto.DiscountedPrice == null)
+            {
+                productUpdateDto.DiscountedPrice = 0;
+            }
+
             productUpdateDto.ProductCode = productUpdateDto.Name.Length >= 5
                    ? productUpdateDto.Name.Substring(0, 5) + Guid.NewGuid().ToString().Substring(0, 15)
                    : productUpdateDto.Name + Guid.NewGuid().ToString().Substring(0, 15);
