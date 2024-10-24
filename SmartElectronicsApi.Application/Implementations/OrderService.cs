@@ -47,7 +47,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _emailService = emailService;
         }
 
-        public async Task<string> CreateStripeCheckoutSessionAsync(int addressId)
+        public async Task<string> CreateStripeCheckoutSessionAsync()
         {
             using (var transaction = await _unitOfWork.OrderRepository.BeginTransactionAsync())
             {
@@ -67,13 +67,13 @@ namespace SmartElectronicsApi.Application.Implementations
 
                     if (!basketProducts.Any())
                     {
-                        throw new Exception("No products in the basket to create an order.");
+                        throw new CustomException(400,"No products in the basket to create an order.");
                     }
 
-                    var address = await _unitOfWork.addressRepository.GetEntity(s => s.Id == addressId);
+                    var address = await _unitOfWork.addressRepository.GetEntity(s=>s.AppUserId==userId);
                     if (address == null || address.AppUserId != userId)
                     {
-                        throw new Exception("Invalid address selected for shipping.");
+                        throw new CustomException(400,"Invalid address selected for shipping., pls go to profile page to create address");
                     }
 
                     var orderItems = basketProducts.Select(bp => new OrderItem

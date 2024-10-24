@@ -19,10 +19,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("checkout-session")]
-        public async Task<IActionResult> Create(int addressId)
+        public async Task<IActionResult> Create()
         {
 
-            var sessionId = await orderService.CreateStripeCheckoutSessionAsync(addressId);
+            var sessionId = await orderService.CreateStripeCheckoutSessionAsync();
             return Ok(new { id = sessionId });
         }
         [HttpGet("verify-payment")]

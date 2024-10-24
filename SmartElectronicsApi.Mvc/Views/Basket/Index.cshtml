@@ -388,31 +388,48 @@
     const stripe = Stripe('pk_test_51PekZOJzq6GPnvu3Z6EYwGUL0zicrGbCglndDk8AmjuR4P3KthnnziCGhk3dpuiLQrXZ0qWOPyIo6tgkNMlRPWtH00kdrtwcE5');
 
     // Handle the checkout button click
+    // Handle the checkout button click
     document.getElementById('checkout-button').addEventListener('click', function () {
         const token = getJwtTokenFromCookie3(); // Get the JWT token for authorization
 
         // Send a request to create the Stripe Checkout session
-        fetch(`http://localhost:5246/api/Order/checkout-session?addressId=38`, {
+        fetch(`http://localhost:5246/api/Order/checkout-session`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                // Check if the response is OK (status 200-299)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status:  either you have not added products to basket,  or have no address added to yout account`);
+                }
+                return response.json();
+            })
             .then(session => {
                 // Redirect to Stripe Checkout page
                 return stripe.redirectToCheckout({ sessionId: session.id });
             })
             .then(function (result) {
                 if (result.error) {
-                    // Show an error to your customer if the payment fails
-                    alert(result.error.message);
+                    // Handle Stripe redirection error
+                    Swal.fire(
+                        'Error',
+                        result.error.message,
+                        'error'
+                    );
                 }
             })
             .catch(function (error) {
-                console.error('Error creating Stripe session:', error);
+                // Catch and handle any errors from the fetch or Stripe redirection
+                Swal.fire(
+                    'Error',
+                    `There was an issue processing your payment: ${error.message}`,
+                    'error'
+                );
             });
     });
+
 
     </script>

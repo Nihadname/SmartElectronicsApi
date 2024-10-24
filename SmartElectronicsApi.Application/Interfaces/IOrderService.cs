@@ -11,7 +11,7 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IOrderService
     {
-        Task<string> CreateStripeCheckoutSessionAsync(int addressId);
+        Task<string> CreateStripeCheckoutSessionAsync();
         Task<string> VerifyPayment(string sessionId);
        Task<PaginatedResponse<OrderAdminListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10);
         Task<PaginatedResponse<OrderListItemDto>> GetAllForUser(int pageNumber = 1, int pageSize = 10);
