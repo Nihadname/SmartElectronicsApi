@@ -7,8 +7,10 @@ using System.Net;
 
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
+    [Area("AdminArea")]
     public class OrderController : Controller
     {
+
         public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 2)
         {
             using var client = new HttpClient();
@@ -19,7 +21,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 string ContentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-                var data = JsonConvert.DeserializeObject<PaginatedResponseVM<OrderListItemVm>>(ContentStream);
+                var data = JsonConvert.DeserializeObject<PaginatedResponseVM<OrderAdminListItemVM>>(ContentStream);
                 return View(data);
             }
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)

@@ -47,6 +47,7 @@ namespace SmartElectronicsApi.Application.Profiles
 
 
                 // User mappings
+                CreateMap<AppUser, UserInOrderDto>();
                 CreateMap<AppUser, UserGetDto>()
                      .ForMember(s => s.PhoneNumber, map => map.MapFrom(d => d.PhoneNumber))
                       .ForMember(s => s.Image, map => map.MapFrom(d => url + "img/" + d.Image))
@@ -231,6 +232,9 @@ namespace SmartElectronicsApi.Application.Profiles
              : (i.Product.DiscountedPrice > 0 ? i.Product.DiscountedPrice : i.UnitPrice)), // Fallback to product's discounted price or normal price
          ProductVariationId = i.ProductVariationId,
      }).ToList()));
+                CreateMap<Order, OrderAdminListItemDto>()
+                        .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.GetName(typeof(OrderStatus), src.Status)))
+                                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.AppUser));
 
                 CreateMap<CommentCreateDto, Comment>();
                 CreateMap<CommentImageDto, CommentImage>();

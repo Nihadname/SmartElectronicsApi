@@ -260,18 +260,18 @@ namespace SmartElectronicsApi.Application.Implementations
                 return "Payment failed or incomplete";
             }
         }
-        public async Task<PaginatedResponse<OrderListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginatedResponse<OrderAdminListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10)
         {
             var totalCount = (await _unitOfWork.OrderRepository.GetAll()).Count();
             var orders = await _unitOfWork.OrderRepository.GetAll(s => s.IsDeleted == false,
                                                                   (pageNumber - 1) * pageSize,
                                                                   pageSize, includes: new Func<IQueryable<Order>, IQueryable<Order>>[]
                 {
-        query => query.Include(c => c.Items).ThenInclude(s=>s.Product)
+        query => query.Include(c => c.AppUser).ThenInclude(s=>s.orders).ThenInclude(s=>s.Items)
                 });
 
-            var MappedOrders=_mapper.Map<List<OrderListItemDto>>(orders);
-            return new PaginatedResponse<OrderListItemDto>
+            var MappedOrders=_mapper.Map<List<OrderAdminListItemDto>>(orders);
+            return new PaginatedResponse<OrderAdminListItemDto>
             {
                 Data = MappedOrders,
                 TotalRecords = totalCount,
