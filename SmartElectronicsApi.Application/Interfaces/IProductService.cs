@@ -41,5 +41,6 @@ namespace SmartElectronicsApi.Application.Interfaces
        int pageNumber,
        int pageSize,
        string sortOrder = "asc");
+        Task<ProductUpdateDto> Update(int productId, ProductUpdateDto productUpdateDto);
     }
 }

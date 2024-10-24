@@ -5,6 +5,9 @@ using SmartElectronicsApi.Mvc.ViewModels;
 using SmartElectronicsApi.Mvc.ViewModels.Address;
 using SmartElectronicsApi.Mvc.ViewModels.Auth;
 using SmartElectronicsApi.Mvc.ViewModels.Category;
+using SmartElectronicsApi.Mvc.ViewModels.Color;
+using SmartElectronicsApi.Mvc.ViewModels.Order;
+using SmartElectronicsApi.Mvc.ViewModels.pagination;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -292,9 +295,32 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return Json(new { success = false, message = errorResponse ?? "Failed to update address." });
             }
         }
-        public IActionResult Orders()
+        public async Task<IActionResult> Orders(int pageNumber = 1, int pageSize = 2)
         {
-            return View();
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            client.DefaultRequestHeaders.Authorization =
+          new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Order/GetAllForUser?pageNumber={pageNumber}&pageSize=4");
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                string ContentStream = await httpResponseMessage.Content.ReadAsStringAsync();
+                var data = JsonConvert.DeserializeObject<PaginatedResponseVM<OrderListItemVm>>(ContentStream);
+                return View(data);
+            }
+            else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction("AccessDenied", "Account", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Error404", "Home", new { area = "" });
+            }
+       
         }
     }
 }

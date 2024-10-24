@@ -235,7 +235,8 @@ namespace SmartElectronicsApi.Application.Profiles
                 CreateMap<CommentCreateDto, Comment>();
                 CreateMap<CommentImageDto, CommentImage>();
                 //.ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Product.Price * src.Quantity))
-
+                CreateMap<ProductUpdateDto, Product>()
+          .ForAllMembers(options => options.Condition((src, dest, srcMember) => srcMember != null));
                 //.ForMember(dest => dest.TotalSalePrice, opt => opt.MapFrom(src => (src.Product.DiscountedPrice ?? src.Product.Price) * src.Quantity))
 
                 //.ForMember(dest => dest.Discount, opt => opt.MapFrom(src => src.Product.Price - (src.Product.DiscountedPrice ?? src.Product.Price)));

@@ -32,14 +32,24 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 
             if (result == "Payment successful")
             {
-                // Redirect the user to a success page
                 return Redirect("https://localhost:7170/Success/PaymentSuccess");
             }
             else
             {
-                // If the payment failed, redirect to a failure page or show an error message
                 return RedirectToAction("https://localhost:7170/Cancel");
             }
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles ="Admin")]
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
+        {
+            return Ok(await  orderService.GetAll(pageNumber, pageSize));
+        }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("GetAllForUser")]
+        public async Task<IActionResult> GetAllForUser(int pageNumber = 1, int pageSize = 10)
+        {
+            return Ok(await orderService.GetAllForUser(pageNumber, pageSize));
         }
     }
 }

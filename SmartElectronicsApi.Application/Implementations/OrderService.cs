@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SmartElectronicsApi.Application.Dtos;
+using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.Order;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
@@ -60,7 +62,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     var basketProducts = await _unitOfWork.BasketProductRepository
                         .GetAll(bp => bp.Basket.AppUserId == userId, includes: new Func<IQueryable<BasketProduct>, IQueryable<BasketProduct>>[]
                         {
-                            query => query.Include(c => c.Product).ThenInclude(s => s.Variations)
+                            query => query.Include(c => c.Product).ThenInclude(s => s.Variations).Include(s=>s.Product).ThenInclude(s=>s.productImages)
                         });
 
                     if (!basketProducts.Any())
@@ -141,6 +143,7 @@ namespace SmartElectronicsApi.Application.Implementations
                             ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
                                 Name = item.Product.Name,
+                                Images = new List<string> { item.Product.productImages.FirstOrDefault(s=>s.IsMain==true).Name }
                             },
                         },
                         Quantity = item.Quantity,
@@ -257,6 +260,48 @@ namespace SmartElectronicsApi.Application.Implementations
                 return "Payment failed or incomplete";
             }
         }
+        public async Task<PaginatedResponse<OrderListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10)
+        {
+            var totalCount = (await _unitOfWork.OrderRepository.GetAll()).Count();
+            var orders = await _unitOfWork.OrderRepository.GetAll(s => s.IsDeleted == false,
+                                                                  (pageNumber - 1) * pageSize,
+                                                                  pageSize, includes: new Func<IQueryable<Order>, IQueryable<Order>>[]
+                {
+        query => query.Include(c => c.Items).ThenInclude(s=>s.Product)
+                });
 
+            var MappedOrders=_mapper.Map<List<OrderListItemDto>>(orders);
+            return new PaginatedResponse<OrderListItemDto>
+            {
+                Data = MappedOrders,
+                TotalRecords = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+        public async Task<PaginatedResponse<OrderListItemDto>> GetAllForUser(int pageNumber = 1, int pageSize = 10)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new CustomException(400, "User ID cannot be null");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            var totalCount = (await _unitOfWork.OrderRepository.GetAll()).Count();
+            var orders = await _unitOfWork.OrderRepository.GetAll(s => s.IsDeleted == false&&s.AppUserId==user.Id,
+                                                                  (pageNumber - 1) * pageSize,
+                                                                  pageSize, includes: new Func<IQueryable<Order>, IQueryable<Order>>[]
+                {
+        query => query.Include(c => c.Items).ThenInclude(s=>s.Product)
+                });
+
+            var MappedOrders = _mapper.Map<List<OrderListItemDto>>(orders);
+            return new PaginatedResponse<OrderListItemDto>
+            {
+                Data = MappedOrders,
+                TotalRecords = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
     }
 }

@@ -52,5 +52,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _productService.Get());
         }
+        [HttpPut("{productId}")]
+        public async Task<IActionResult> Update(int productId, ProductUpdateDto productUpdateDto)
+        {
+            return Ok(await _productService.Update(productId, productUpdateDto));
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using SmartElectronicsApi.Application.Dtos.Order;
+﻿using SmartElectronicsApi.Application.Dtos;
+using SmartElectronicsApi.Application.Dtos.Order;
 using SmartElectronicsApi.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace SmartElectronicsApi.Application.Interfaces
     {
         Task<string> CreateStripeCheckoutSessionAsync(int addressId);
         Task<string> VerifyPayment(string sessionId);
+       Task<PaginatedResponse<OrderListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10);
+        Task<PaginatedResponse<OrderListItemDto>> GetAllForUser(int pageNumber = 1, int pageSize = 10);
     }
 }

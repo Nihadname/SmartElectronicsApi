@@ -503,5 +503,100 @@ return MappedProducts;
         }
 
 
+        public async Task<ProductUpdateDto> Update(int productId, ProductUpdateDto productUpdateDto)
+        {
+           
+            var existingProduct = await _unitOfWork.productRepository.GetEntity(
+                p => p.Id == productId,
+                includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+                {
+            query => query.Include(p => p.productImages)
+                          .Include(p => p.productColors)
+                });
+
+            if (existingProduct == null)
+            {
+                throw new CustomException(404, "Product", "Product not found.");
+            }
+
+            // Validate category
+            var category = await _unitOfWork.categoryRepository.GetEntity(s => s.Id == productUpdateDto.CategoryId, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
+            {
+        query => query.Include(p => p.SubCategories)
+            });
+            if (category == null)
+            {
+                throw new CustomException(400, "Category", "Invalid category selected.");
+            }
+
+            // Validate subcategory
+            var subcategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == productUpdateDto.SubcategoryId, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
+            {
+        query => query.Include(sc => sc.brandSubCategories).ThenInclude(s => s.Brand)
+            });
+            if (subcategory == null || !category.SubCategories.Any(sc => sc.Id == productUpdateDto.SubcategoryId))
+            {
+                throw new CustomException(400, "SubCategory", "The selected subcategory does not belong to the chosen category.");
+            }
+
+            // Validate brand
+            if (!subcategory.brandSubCategories.Select(s => s.Brand).Any(s => s.Id == productUpdateDto.BrandId))
+            {
+                var availableBrands = subcategory.brandSubCategories.Select(b => b.Id).ToList();
+                throw new CustomException(400, "Brand", $"The selected brand ID {productUpdateDto.BrandId} is not associated with the chosen subcategory. Available brands: {string.Join(", ", availableBrands)}");
+            }
+
+            // Handle discount and discounted price
+            if (productUpdateDto.DiscountPercentage != 0)
+            {
+                existingProduct.DiscountedPrice = productUpdateDto.Price - (productUpdateDto.Price * productUpdateDto.DiscountPercentage) / 100;
+            }
+            productUpdateDto.ProductCode = productUpdateDto.Name.Length >= 5
+                   ? productUpdateDto.Name.Substring(0, 5) + Guid.NewGuid().ToString().Substring(0, 15)
+                   : productUpdateDto.Name + Guid.NewGuid().ToString().Substring(0, 15);
+            // Handle colors
+            existingProduct.productColors.Clear(); // Clear existing product colors
+            foreach (var colorId in productUpdateDto.ColorIds)
+            {
+                if (!await _unitOfWork.colorRepository.isExists(s => s.Id == colorId))
+                {
+                    throw new CustomException(400, "Color", "Invalid color selected.");
+                }
+
+                var productColor = new ProductColor
+                {
+                    ProductId = existingProduct.Id,
+                    ColorId = colorId
+                };
+                existingProduct.productColors.Add(productColor);
+            }
+
+            // Handle image updates
+            existingProduct.productImages.Clear();
+            bool isFirstImage = true;
+            foreach (var image in productUpdateDto.Images)
+            {
+                var imagePath = image.Save(Directory.GetCurrentDirectory(), "img");
+                var productImage = new ProductImage
+                {
+                    Name = Path.GetFileName(imagePath),
+                    IsMain = isFirstImage,
+                    ProductId = existingProduct.Id,
+                };
+                existingProduct.productImages.Add(productImage);
+                isFirstImage = false;
+            }
+
+          
+            _mapper.Map(productUpdateDto, existingProduct);
+
+           
+            await _unitOfWork.productRepository.Update(existingProduct);
+            _unitOfWork.Commit();
+
+            return productUpdateDto;
+        }
+
+
     }
 }
