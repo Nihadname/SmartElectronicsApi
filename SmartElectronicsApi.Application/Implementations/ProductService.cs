@@ -607,7 +607,69 @@ return MappedProducts;
 
             return productUpdateDto;
         }
+        public async Task MakeMain(int productId, int imageId)
+        {
+            // Fetch the product with its images
+            var product = await _unitOfWork.productRepository.GetEntity(
+                p => p.Id == productId && p.IsDeleted == false,
+                includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+                {
+            query => query.Include(p => p.productImages)
+                });
 
+          
+            if (product == null)
+            {
+                throw new CustomException(404, "Product", "Product not found.");
+            }
 
+            var image = product.productImages.FirstOrDefault(i => i.Id == imageId);
+            if (image == null)
+            {
+                throw new CustomException(404, "Image", "Image not found.");
+            }
+
+       
+            foreach (var productImage in product.productImages)
+            {
+                productImage.IsMain = false;
+            }
+
+       
+            image.IsMain = true;
+
+          
+            await _unitOfWork.productRepository.Update(product);
+            _unitOfWork.Commit();
+        }
+        public async Task DeleteColorOfProduct(int productId, int colorId)
+        {
+         
+            var product = await _unitOfWork.productRepository.GetEntity(
+                p => p.Id == productId && p.IsDeleted == false,
+                includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
+                {
+            query => query.Include(p => p.productColors)
+                });
+
+          
+            if (product == null)
+            {
+                throw new CustomException(404, "Product", "Product not found.");
+            }
+
+           
+            var productColor = product.productColors.FirstOrDefault(pc => pc.ColorId == colorId);
+            if (productColor == null)
+            {
+                throw new CustomException(404, "Color", "This product does not have the specified color.");
+            }
+
+      
+            product.productColors.Remove(productColor);
+
+            await _unitOfWork.productRepository.Update(product);
+            _unitOfWork.Commit();
+        }
     }
 }

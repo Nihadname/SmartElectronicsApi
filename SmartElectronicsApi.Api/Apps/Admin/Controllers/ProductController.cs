@@ -57,5 +57,16 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _productService.Update(productId, productUpdateDto));
         }
+        [HttpPatch]
+        public async Task<IActionResult> MakeMain(int productId, int imageId)
+        {
+            var method =  _productService.MakeMain(productId, imageId);
+            return Ok(method);
+        }
+        [HttpDelete("Color/{colorId}")]
+        public async Task<IActionResult> DeleteColorOfProduct(int productId, int colorId)
+        {
+            return Ok( _productService.DeleteColorOfProduct(productId, colorId));
+        }
     }
 }

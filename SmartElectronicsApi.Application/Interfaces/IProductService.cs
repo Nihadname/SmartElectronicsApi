@@ -42,5 +42,7 @@ namespace SmartElectronicsApi.Application.Interfaces
        int pageSize,
        string sortOrder = "asc");
         Task<ProductUpdateDto> Update(int productId, ProductUpdateDto productUpdateDto);
+        Task MakeMain(int productId, int imageId);
+         Task DeleteColorOfProduct(int productId, int colorId);
     }
 }
