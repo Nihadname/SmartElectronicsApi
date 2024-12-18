@@ -11,7 +11,7 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IProductService
     {
-         Task<ProductCreateDto> Create(ProductCreateDto productCreateDto);
+         Task<ProductReturnDto> Create(ProductCreateDto productCreateDto);
         Task<PaginatedResponse<ProdutListItemDto>> GetAll(int pageNumber = 1, int pageSize = 10, string searchQuery = null,
            int? categoryId = null);
         Task<ProductReturnDto> GetById(int? id);

@@ -23,6 +23,7 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public string ProductCode { get; set; }
         public bool IsDealOfTheWeek { get; set; }
         public int BrandId { get; set; }
+        public int SubcategoryId { get; set; }
         public bool IsFeatured { get; set; }
         public int StockQuantity { get; set; }
         public CategoryInProductListItemDto Category { get; set; }

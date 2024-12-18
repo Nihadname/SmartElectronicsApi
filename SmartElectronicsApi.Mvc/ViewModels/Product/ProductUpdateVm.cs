@@ -13,11 +13,8 @@
         public bool IsFeatured { get; set; }
         public int StockQuantity { get; set; }
         public int ViewCount { get; set; }
-        public DateTime? CreatedTime { get; set; }
-        public int CategoryId { get; set; }
-        public int BrandId { get; set; }
-        public int SubcategoryId { get; set; }
+     
         public List<int> ColorIds { get; set; }
-        public List<IFormFile> Images { get; set; }
+        public List<IFormFile>? Images { get; set; }
     }
 }

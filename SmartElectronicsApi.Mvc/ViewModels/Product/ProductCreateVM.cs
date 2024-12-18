@@ -16,7 +16,6 @@ namespace SmartElectronicsApi.Mvc.ViewModels.Product
         public int ViewCount { get; set; }
         public decimal? DiscountedPrice { get; set; }
 
-        public DateTime? CreatedTime { get; set; }
         public int CategoryId { get; set; }
         public int BrandId { get; set; }
         public int SubcategoryId { get; set; }

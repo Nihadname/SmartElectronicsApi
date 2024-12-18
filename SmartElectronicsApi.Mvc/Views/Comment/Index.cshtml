@@ -1,6 +1,51 @@
 ﻿@using SmartElectronicsApi.Mvc.ViewModels.Comment
 @model CommentDetailVM
+<style>
+    /* Modal styling */
+    .image-modal {
+        display: none;
+        position: fixed;
+        z-index: 1050;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.85);
+        align-items: center;
+        justify-content: center;
+    }
 
+    .modal-image-slide {
+        width: 100%;
+        height: 100%;
+        max-width: 75vw; /* Limit width to 90% of viewport width */
+        max-height: 75vh; /* Limit height to 90% of viewport height */
+        object-fit: contain; /* Preserve aspect ratio and fit within bounds */
+        border-radius: 8px;
+        box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
+        transition: transform 0.3s ease-in-out;
+        margin: auto;
+    }
+    /* Close button styling */
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 28px;
+        color: #ffffff;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+        .close-modal:hover {
+            color: #f1f1f1;
+        }
+
+    /* 3D shadow effect only for images inside modal */
+    .modal-image-slide:hover {
+        transform: scale(1.05) perspective(100px) rotateY(0.5deg) rotateX(0.5deg);
+    }
+</style>
 <div class="container py-5">
 
     <!-- Product Review Header -->

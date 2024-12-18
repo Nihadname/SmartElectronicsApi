@@ -1,4 +1,6 @@
-﻿namespace SmartElectronicsApi.Mvc.ViewModels.Product
+﻿using SmartElectronicsApi.Mvc.ViewModels.Comment;
+
+namespace SmartElectronicsApi.Mvc.ViewModels.Product
 {
     public class ProdutListItemVM
     {
@@ -17,6 +19,7 @@
         public int StockQuantity { get; set; }
         public CategoryInProductListItemVm Category { get; set; }
         public List<string> ImageUrls { get; set; }
+        public List<CommentListItemVM>? commentListItemDtos { get; set; }
 
     }
     public class CategoryInProductListItemVm {

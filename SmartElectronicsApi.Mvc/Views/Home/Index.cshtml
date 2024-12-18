@@ -932,11 +932,11 @@ media (max-width: 576px) {
           
             
             <div class="col-12 text-center mt-4">
-                <div class="loader2"></div>
-                <button id="seeMoreButton" class="btn btn-secondary btn-sm">
+                <a asp-action="Index" asp-controller="Product" id="seeMoreButton" class="btn btn-secondary btn-sm">
                     See More
-                </button>
+                </a>
             </div>
+
 
         </div>
     </section>
@@ -1032,19 +1032,20 @@ media (max-width: 576px) {
             <div class="row">
                 <!-- First Video Image -->
                 <div class="col-12 col-md-6 mb-4">
-                    <div class="card shadow-sm">
-                        <img src="./assets/img/hqdefault.jpg" class="card-img" style="height:400px" alt="Apple Product Review" data-bs-toggle="modal" data-bs-target="#videoModal1">
+                    <div class="card shadow-sm video-thumbnail">
+                        <img src="./assets/img/maxresdefault (1).jpg" class="card-img" style="height:400px" alt="Apple Product Review" data-bs-toggle="modal" data-bs-target="#videoModal1">
+                        <div class="video-indicator"><i class="fa fa-play-circle"></i></div>
                         <div class="card-body">
                             <h5 class="card-title">QİYMƏTLƏRİ və ŞƏRTLƏRİ yenilədi...</h5>
                             <p class="card-text">Smart Electronics alış-veriş təcrübənizə yeni nəfəs gətirməyə hazırdır</p>
                         </div>
                     </div>
                 </div>
-
                 <!-- Second Video Image -->
                 <div class="col-12 col-md-6 mb-4">
-                    <div class="card shadow-sm">
+                    <div class="card shadow-sm video-thumbnail">
                         <img src="./assets/img/maxresdefault.jpg" class="card-img" style="height:400px" alt="Smart Electronics 8 Years" data-bs-toggle="modal" data-bs-target="#videoModal2">
+                        <div class="video-indicator"><i class="fa fa-play-circle"></i></div>
                         <div class="card-body">
                             <h5 class="card-title">Smart Electronics 8 yaşını qeyd e...</h5>
                             <p class="card-text">Smart Electronics - Arzularınız üçün olsun 💙</p>
@@ -1052,6 +1053,7 @@ media (max-width: 576px) {
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- First Video Modal -->

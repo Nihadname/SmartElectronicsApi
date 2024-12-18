@@ -1,4 +1,5 @@
 ﻿using SmartElectronicsApi.Application.Dtos.Color;
+using SmartElectronicsApi.Application.Dtos.Comment;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace SmartElectronicsApi.Application.Dtos.Product
         public List<string> ImageUrls { get; set; }
         public List<ColorListItemDto> colorListItemDtos { get; set; }
         public List<ParametrGroupListItemDto> parametrGroupListItemDtos { get; set; }
+        public List<CommentListItemDto>? commentListItemDtos { get; set; }
+
     }
     public class CategoryInProductListItemDto  
     {

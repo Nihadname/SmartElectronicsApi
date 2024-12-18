@@ -222,45 +222,20 @@
         <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalLabel">Welcome Back!</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
+                    
                     <div class="modal-body">
-                        <form id="loginForm" asp-controller="Account" asp-action="Login" method="post">
-                            <!-- Email input with icon -->
-                            <div class="input-group mb-3">
-                                <i class="fa fa-envelope"></i>
-                                <input type="email" class="form-control" id="Input_Email" name="Email" required placeholder="Email Address">
-                            </div>
-                            <!-- Password input with icon -->
-                            <div class="input-group mb-3">
-                                <i class="fa fa-lock"></i>
-                                <input type="password" class="form-control" id="Input_Password" name="Password" required placeholder="Password">
-                            </div>
-                            <!-- Remember me checkbox -->
-                            <div class="mb-3 form-check">
-                                <input type="checkbox" class="form-check-input" id="Input_RememberMe" name="RememberMe">
-                                <label class="form-check-label" for="Input_RememberMe">Remember Me</label>
-                            </div>
-                            <!-- Animated submit button -->
-                            <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
-
-                            <!-- Google Sign-In and Register buttons -->
-                            <div class="buttons-container">
-                                <!-- Google Sign-In Button -->
-                                <button type="button" class="google-btn">
-                                    <i class="fab fa-google"></i> Sign in with Google
-                                </button>
-
-                                <!-- Register Button -->
-                                <a href="/Account/Register" class="register-btn text-center">Register Here</a>
+                        <form id="loginForm" asp-controller="Account" asp-action="LoginWithGoogle"  method="post">
+                            <div class="col-12 d-flex justify-content-center mt-4">
+                                <form asp-controller="Account" asp-action="LoginWithGoogle" method="post">
+                                    <button type="submit" class="btn btn-google d-flex align-items-center">
+                                        <img src="https://smartelectronics.az/assets/images/google.svg" class="google-icon" alt="Google Logo">
+                                        <span class="ms-2">Login with Google</span>
+                                    </button>
+                                </form>
                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer">
-                        <small class="text-muted">Forgot your password? <a href="#">Reset here</a></small>
-                    </div>
+                   
                 </div>
             </div>
         </div>

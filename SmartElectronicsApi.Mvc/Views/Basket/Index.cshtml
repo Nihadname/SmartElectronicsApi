@@ -318,9 +318,17 @@
                                 <small>@item.CategoryName</small>
                                 <h5>@item.Name.Trim()</h5>
                                 <div class="price-wrapper">
-                                    <span class="old-price">@item.Price AZN</span>
-                                    <span class="price">@item.DiscountedPrice AZN</span>
+                                    @if (item.DiscountedPrice != null && item.DiscountedPrice != 0)
+                                    {
+                                        <span class="old-price">@item.Price AZN</span>
+                                        <span class="price">@item.DiscountedPrice AZN</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="price">@item.Price AZN</span>
+                                    }
                                 </div>
+
                             </div>
                         </div>
                         <div class="product-quantity">

@@ -631,17 +631,49 @@ p {
     
 /* Pulse Animation */
 #seeMoreButton {
-    background-color: #3498db;
+    background-color: #3498db; /* Primary color */
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
+    border-radius: 25px; /* Rounded corners for a modern look */
+    padding: 12px 25px; /* Increased padding for a more prominent feel */
+    font-size: 16px; /* Slightly larger font */
+    font-weight: 600; /* Bold text for emphasis */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    cursor: pointer;
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
+    outline: none; /* Remove default outline */
 }
 
     #seeMoreButton:hover {
-        background-color: #2980b9;
+        background-color: #2980b9; /* Darker shade for hover effect */
+        transform: translateY(-3px); /* Slight lift on hover */
+        box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow for hover */
     }
+
+    #seeMoreButton:active {
+        transform: translateY(2px); /* Button press effect */
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Reduced shadow on click */
+    }
+
+/* Optional animation for the button */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 rgba(52, 152, 219, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 15px rgba(52, 152, 219, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 0 rgba(52, 152, 219, 0);
+    }
+}
+
+#seeMoreButton:focus {
+    animation: pulse 1.5s infinite;
+}
+
 
 /* Loader Styles */
 .loader2 {
@@ -1487,4 +1519,31 @@ media (max-width: 576px) {
         content: '>'; /* Arrow icon */
         margin-left: 10px; /* Space between text and icon */
         font-weight: bold; /* Make icon bold */
+    }
+.video-thumbnail {
+    position: relative;
+    overflow: hidden;
+}
+
+.video-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    color: #007bff; /* Blue color for the play icon */
+    background-color: #ffffff; /* White background for the circle */
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow for a polished look */
+    opacity: 1;
+}
+
+    /* Optional: Smaller icon within the circle */
+    .video-indicator i {
+        font-size: 36px;
     }

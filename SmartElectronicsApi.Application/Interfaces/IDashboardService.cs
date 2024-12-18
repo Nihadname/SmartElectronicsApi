@@ -12,5 +12,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<SalesDataDto> GetWeeklySalesAsync();
         Task<SalesDataDto> GetMonthlySalesAsync();
         Task<SalesDataDto> GetYearlySalesAsync();
+        Task<UserStatisticsDto> GetUserStatisticsAsync();
     }
 }

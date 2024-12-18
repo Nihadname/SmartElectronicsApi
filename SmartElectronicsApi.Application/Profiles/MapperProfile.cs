@@ -133,8 +133,8 @@ namespace SmartElectronicsApi.Application.Profiles
                 .ForMember(s => s.Category, map => map.MapFrom(d => d.Category))
     .ForMember(dest => dest.ImageUrls, opt => opt.MapFrom(src => src.productImages.Select(pi => url + "img/" + pi.Name))) 
                     .ForMember(dest => dest.colorListItemDtos, opt => opt.MapFrom(src => src.productColors.Select(s=>s.Color)))
-                     .ForMember(s => s.parametrGroupListItemDtos, map => map.MapFrom(d => d.parametricGroups));
-
+                     .ForMember(s => s.parametrGroupListItemDtos, map => map.MapFrom(d => d.parametricGroups))
+                 .ForMember(s => s.commentListItemDtos, map => map.MapFrom(d => d.comments));
                 // Setting mappings
                 CreateMap<Setting, SettingDto>().ReverseMap();
             CreateMap<SettingUpdateDto, Setting>()

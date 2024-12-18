@@ -46,6 +46,11 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await _authService.Profile());
         }
-       
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        [HttpGet("CheckAdmin")]
+        public async Task<IActionResult> CheckAdmin()
+        {
+            return Ok();
+        }
     }
 }

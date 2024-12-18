@@ -225,7 +225,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     smtpPort: 587,
                     enableSsl: true,
                     smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "jytx krmh ngqj vdnc\r\n"
+                    smtpPass: "wmgd lwju ehhs aoaq\r\n"
                     );
 
                     return session.Id;

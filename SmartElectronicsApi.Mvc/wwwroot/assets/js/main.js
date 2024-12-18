@@ -400,7 +400,28 @@ $("#SubForm").on("submit", function (e) {
 function generateProductHTML(product) {
     // Use the first image from imageUrls array, or a default image if not available
     var productImageUrl = product.imageUrls.length > 0 ? product.imageUrls[0] : 'https://via.placeholder.com/320';
-    var detailPageUrl = `/Product/Detail/${product.id}`; 
+    var detailPageUrl = `/Product/Detail/${product.id}`;
+
+    var reviewCount = product.commentListItemDtos ? product.commentListItemDtos.length : 0;
+    var averageRating = reviewCount > 0
+        ? (product.commentListItemDtos.reduce((sum, comment) => sum + comment.rating, 0) / reviewCount).toFixed(1)
+        : 0;
+
+    // Generate star rating based on the average rating
+    function generateStars(rating) {
+        let starsHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= Math.floor(rating)) {
+                starsHTML += `<i class="fa fa-star text-warning"></i>`; // Full star
+            } else if (i - rating < 1) {
+                starsHTML += `<i class="fa fa-star-half-alt text-warning"></i>`; // Half star
+            } else {
+                starsHTML += `<i class="fa fa-star text-muted"></i>`; // Empty star
+            }
+        }
+        return starsHTML;
+    }
+
     return `
         <div class="col-12 col-md-6 col-lg-4 mb-3">
             <div class="product-card p-3 shadow-sm">
@@ -410,14 +431,15 @@ function generateProductHTML(product) {
                 </div>
 
                 <!-- Wishlist Icon -->
-                 <div class="wishlist-heart" data-id="${product.id}">
+                <div class="wishlist-heart" data-id="${product.id}">
                     <i class="fas fa-heart"></i>
                 </div>
 
                 <!-- Product Image -->
                 <div class="product-image text-center mb-3">
-                <a href="${detailPageUrl}" target="_blank"> <img  src="${productImageUrl}" class="card-img-top" alt="Product Image"></a>
-                    
+                    <a href="${detailPageUrl}" target="_blank">
+                        <img src="${productImageUrl}" class="card-img-top" alt="Product Image">
+                    </a>
                 </div>
 
                 <!-- Product Name -->
@@ -428,13 +450,9 @@ function generateProductHTML(product) {
                 <!-- Reviews and Rating -->
                 <div class="review-section text-center mb-2">
                     <span class="rating-stars">
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star text-warning"></i>
-                        <i class="fa fa-star-half-alt text-warning"></i>
+                        ${generateStars(averageRating)}
                     </span>
-                    <span class="review-count">(57 Reviews)</span>
+                    <span class="review-count">(${reviewCount} Reviews)</span>
                 </div>
 
                 <!-- Price -->
@@ -448,21 +466,17 @@ function generateProductHTML(product) {
                     ${product.colorListItemDtos.map(color => `<span class="color-circle" style="background-color: ${color.code};"></span>`).join('')}
                 </div>
 
-                <!-- Monthly Payment Section -->
-               
-
                 <!-- Action Buttons -->
                 <div class="action-buttons text-center">
-<!-- Add to Basket Button -->
-<a class="btn btn-add-to-basket w-100 mb-2">
-    <i class="fa fa-shopping-cart"></i> 1 Kliklə Al
-</a>
+                    <a class="btn btn-add-to-basket w-100 mb-2">
+                        <i class="fa fa-shopping-cart"></i> 1 Kliklə Al
+                    </a>
                 </div>
             </div>
         </div>
-
     `;
 }
+
 
 
 function GetTheMostViewedOnes() {

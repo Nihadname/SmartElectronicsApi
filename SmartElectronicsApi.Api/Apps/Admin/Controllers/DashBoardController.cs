@@ -37,5 +37,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
             var salesData = await dashboardService.GetYearlySalesAsync();
             return Ok(salesData);
         }
+        [HttpGet("UserStatistics")]
+        public async Task<IActionResult> GetUserStatisticsAsync()
+        {
+            return Ok(await dashboardService.GetUserStatisticsAsync()); 
+        }
     }
 }

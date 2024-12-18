@@ -31,7 +31,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<ProductCreateDto> Create(ProductCreateDto productCreateDto)
+        public async Task<ProductReturnDto> Create(ProductCreateDto productCreateDto)
         {
             // Check if product name already exists
             
@@ -93,10 +93,9 @@ namespace SmartElectronicsApi.Application.Implementations
                         throw new CustomException(400, "Color", "Invalid color selected.");
                     }
                 }
-
-              
+                productCreateDto.CreatedTime=DateTime.Now;
                 var mappedProduct = _mapper.Map<Product>(productCreateDto);
-
+               
                 await _unitOfWork.productRepository.Create(mappedProduct);
 
                 _unitOfWork.Commit();
@@ -127,8 +126,8 @@ namespace SmartElectronicsApi.Application.Implementations
 
 
                 _unitOfWork.Commit();
-
-                return productCreateDto;
+            var product=await GetById(mappedProduct.Id);
+                return product;
             
             
         }
@@ -244,7 +243,8 @@ namespace SmartElectronicsApi.Application.Implementations
         {
             var products = await _unitOfWork.productRepository.GetAll(s => s.IsDeleted == false && s.isNew == true, 0,8, includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
  {
-        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color).Include(s=>s.parametricGroups).ThenInclude(s=>s.parametrValues)
+        query => query.Include(p => p.Category).Include(s=>s.productImages).Include(s=>s.productColors).ThenInclude(s=>s.Color).Include(s=>s.parametricGroups).ThenInclude(s=>s.parametrValues).Include(s=>s.comments).ThenInclude(s=>s.AppUser)
+    .Include(s => s.comments).ThenInclude(s => s.commentImages)
  });
 
             var MappedProducts=_mapper.Map<List<ProdutListItemDto>>(products);
@@ -259,6 +259,9 @@ namespace SmartElectronicsApi.Application.Implementations
       .Include(s => s.productImages)
       .Include(s => s.productColors).ThenInclude(s => s.Color)
       .Include(s => s.parametricGroups).ThenInclude(s => s.parametrValues)
+      .Include(s=>s.comments).ThenInclude(s=>s.AppUser)
+    .Include(s => s.comments).ThenInclude(s => s.commentImages)
+
       .OrderByDescending(s => s.ViewCount) 
       .Take(top)  
       .ToListAsync();
@@ -280,6 +283,8 @@ namespace SmartElectronicsApi.Application.Implementations
                           .Include(s => s.productImages)
                           .Include(s => s.productColors).ThenInclude(s => s.Color)
                           .Include(s => s.parametricGroups)
+                           .Include(s=>s.comments).ThenInclude(s=>s.AppUser)
+    .Include(s => s.comments).ThenInclude(s => s.commentImages)
                 }
             );
 
@@ -521,34 +526,9 @@ return MappedProducts;
                 throw new CustomException(404, "Product", "Product not found.");
             }
 
-            // Validate category
-            var category = await _unitOfWork.categoryRepository.GetEntity(s => s.Id == productUpdateDto.CategoryId, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
-            {
-        query => query.Include(p => p.SubCategories)
-            });
-            if (category == null)
-            {
-                throw new CustomException(400, "Category", "Invalid category selected.");
-            }
+            
+          
 
-            // Validate subcategory
-            var subcategory = await _unitOfWork.subCategoryRepository.GetEntity(s => s.Id == productUpdateDto.SubcategoryId, includes: new Func<IQueryable<SubCategory>, IQueryable<SubCategory>>[]
-            {
-        query => query.Include(sc => sc.brandSubCategories).ThenInclude(s => s.Brand)
-            });
-            if (subcategory == null || !category.SubCategories.Any(sc => sc.Id == productUpdateDto.SubcategoryId))
-            {
-                throw new CustomException(400, "SubCategory", "The selected subcategory does not belong to the chosen category.");
-            }
-
-            // Validate brand
-            if (!subcategory.brandSubCategories.Select(s => s.Brand).Any(s => s.Id == productUpdateDto.BrandId))
-            {
-                var availableBrands = subcategory.brandSubCategories.Select(b => b.Id).ToList();
-                throw new CustomException(400, "Brand", $"The selected brand ID {productUpdateDto.BrandId} is not associated with the chosen subcategory. Available brands: {string.Join(", ", availableBrands)}");
-            }
-
-            // Handle discount and discounted price
             if (productUpdateDto.DiscountPercentage != 0)
             {
                 existingProduct.DiscountedPrice = productUpdateDto.Price - (productUpdateDto.Price * productUpdateDto.DiscountPercentage) / 100;
@@ -565,8 +545,8 @@ return MappedProducts;
             productUpdateDto.ProductCode = productUpdateDto.Name.Length >= 5
                    ? productUpdateDto.Name.Substring(0, 5) + Guid.NewGuid().ToString().Substring(0, 15)
                    : productUpdateDto.Name + Guid.NewGuid().ToString().Substring(0, 15);
-            // Handle colors
-            existingProduct.productColors.Clear(); // Clear existing product colors
+  
+            existingProduct.productColors.Clear();
             foreach (var colorId in productUpdateDto.ColorIds)
             {
                 if (!await _unitOfWork.colorRepository.isExists(s => s.Id == colorId))
@@ -582,23 +562,30 @@ return MappedProducts;
                 existingProduct.productColors.Add(productColor);
             }
 
-            // Handle image updates
-            existingProduct.productImages.Clear();
-            bool isFirstImage = true;
-            foreach (var image in productUpdateDto.Images)
+            
+         if(productUpdateDto.Images != null && productUpdateDto.Images.Any())
             {
-                var imagePath = image.Save(Directory.GetCurrentDirectory(), "img");
-                var productImage = new ProductImage
+                existingProduct.productImages.Clear();
+                bool isFirstImage = true;
+                foreach (var image in productUpdateDto.Images)
                 {
-                    Name = Path.GetFileName(imagePath),
-                    IsMain = isFirstImage,
-                    ProductId = existingProduct.Id,
-                };
-                existingProduct.productImages.Add(productImage);
-                isFirstImage = false;
+                    var imagePath = image.Save(Directory.GetCurrentDirectory(), "img");
+                    var productImage = new ProductImage
+                    {
+                        Name = Path.GetFileName(imagePath),
+                        IsMain = isFirstImage,
+                        ProductId = existingProduct.Id,
+                    };
+                    existingProduct.productImages.Add(productImage);
+                    isFirstImage = false;
+                }
+            }
+            else
+            {
+
             }
 
-          
+      
             _mapper.Map(productUpdateDto, existingProduct);
 
            
@@ -609,7 +596,7 @@ return MappedProducts;
         }
         public async Task MakeMain(int productId, int imageId)
         {
-            // Fetch the product with its images
+           
             var product = await _unitOfWork.productRepository.GetEntity(
                 p => p.Id == productId && p.IsDeleted == false,
                 includes: new Func<IQueryable<Product>, IQueryable<Product>>[]
@@ -671,5 +658,6 @@ return MappedProducts;
             await _unitOfWork.productRepository.Update(product);
             _unitOfWork.Commit();
         }
+  
     }
 }

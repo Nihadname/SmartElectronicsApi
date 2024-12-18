@@ -55,12 +55,7 @@ namespace SmartElectronicsApi.Application.Validators.ProductValidators
 
             RuleFor(x => x.IsFeatured)
                 .NotNull().WithMessage("IsFeatured is required.");
-            RuleFor(x => x.CategoryId)
-                .NotNull();
-            RuleFor(x => x.BrandId)
-               .NotNull();
-            RuleFor(x => x.SubcategoryId)
-               .NotNull();
+           
             RuleFor(x => x.StockQuantity)
                 .GreaterThanOrEqualTo(0).WithMessage("Stock quantity must be at least 0.");
 
@@ -101,10 +96,7 @@ namespace SmartElectronicsApi.Application.Validators.ProductValidators
                         }
                     }
                 }
-                else
-                {
-                    context.AddFailure("Images", "At least one image must be uploaded.");
-                }
+               
             });
         }
     }

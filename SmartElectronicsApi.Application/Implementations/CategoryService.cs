@@ -161,5 +161,12 @@ namespace SmartElectronicsApi.Application.Implementations
 
 
         }
+        public async Task<List<CategoryListItemDto>> GetForLandingPage()
+        {
+            var categories =( await _unitOfWork.categoryRepository.GetAll()).Take(4);
+            var MappedCategories=_mapper.Map<List<CategoryListItemDto>>(categories);
+            return MappedCategories;
+           
+        }
     }
 }

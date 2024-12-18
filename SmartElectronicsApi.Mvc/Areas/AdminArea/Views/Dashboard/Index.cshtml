@@ -8,11 +8,12 @@
         <nav aria-label="breadcrumb">
             <ul class="breadcrumb">
                 <li class="breadcrumb-item active" aria-current="page">
-                    <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+                    Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
                 </li>
             </ul>
         </nav>
     </div>
+
     <div class="row">
         <div class="col-md-4 stretch-card grid-margin">
             <div class="card bg-gradient-danger card-img-holder text-white">
@@ -53,23 +54,22 @@
     </div>
 
     <div class="row">
+        <!-- Visit And Sales Statistics Chart -->
         <div class="col-md-7 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <div class="clearfix">
-                        <h4 class="card-title float-left">Visit And Sales Statistics</h4>
-                        <div id="visit-sale-chart-legend" class="rounded-legend legend-horizontal legend-top-right float-right"></div>
-                    </div>
+                    <h4 class="card-title">Visit And Sales Statistics</h4>
                     <canvas id="visit-sale-chart" class="mt-4"></canvas>
                 </div>
             </div>
         </div>
+
+        <!-- User Growth Over Time Chart -->
         <div class="col-md-5 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Traffic Sources</h4>
-                    <canvas id="traffic-chart"></canvas>
-                    <div id="traffic-chart-legend" class="rounded-legend legend-vertical legend-bottom-left pt-4"></div>
+                    <h4 class="card-title">User Growth Over Time</h4>
+                    <canvas id="user-growth-chart"></canvas>
                 </div>
             </div>
         </div>
@@ -79,45 +79,32 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    // Function to fetch and update weekly sales
+    // Fetch and update weekly sales data
     async function updateWeeklySalesChart() {
         try {
             const response = await fetch('http://localhost:5246/api/DashBoard/weekly');
             const data = await response.json();
+            document.getElementById('weekly-sales').textContent = `$ ${data.totalSales}`;
+            document.getElementById('weekly-sales-change').textContent = `Increased by ${data.percentageChange}%`;
 
-            // Update the chart with data
-            const weeklySalesChart = new Chart(document.getElementById('visit-sale-chart'), {
+            new Chart(document.getElementById('visit-sale-chart'), {
                 type: 'bar',
                 data: {
                     labels: ['This Week', 'Previous Week'],
-                    datasets: [{
-                        label: 'Sales',
-                        data: [data.totalSales, data.previousPeriodSales],
-                        backgroundColor: ['#4caf50', '#f44336']
-                    }]
+                    datasets: [{ label: 'Sales', data: [data.totalSales, data.previousPeriodSales], backgroundColor: ['#4caf50', '#f44336'] }]
                 },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
+                options: { scales: { y: { beginAtZero: true } } }
             });
-
-            document.getElementById('weekly-sales').textContent = `$ ${data.totalSales}`;
-            document.getElementById('weekly-sales-change').textContent = `Increased by ${data.percentageChange}%`;
         } catch (error) {
             console.error('Error fetching weekly sales data:', error);
         }
     }
 
-    // Function to fetch and update monthly sales
+    // Fetch and update monthly sales data
     async function updateMonthlySalesChart() {
         try {
             const response = await fetch('http://localhost:5246/api/DashBoard/monthly');
             const data = await response.json();
-
             document.getElementById('monthly-sales').textContent = `$ ${data.totalSales}`;
             document.getElementById('monthly-sales-change').textContent = `Increased by ${data.percentageChange}%`;
         } catch (error) {
@@ -125,12 +112,11 @@
         }
     }
 
-    // Function to fetch and update yearly sales
+    // Fetch and update yearly sales data
     async function updateYearlySalesChart() {
         try {
             const response = await fetch('http://localhost:5246/api/DashBoard/yearly');
             const data = await response.json();
-
             document.getElementById('yearly-sales').textContent = `$ ${data.totalSales}`;
             document.getElementById('yearly-sales-change').textContent = `Increased by ${data.percentageChange}%`;
         } catch (error) {
@@ -138,10 +124,30 @@
         }
     }
 
-    // Call the functions when the page loads
+    // Fetch and update user growth data
+    async function updateUserGrowthChart() {
+        try {
+            const response = await fetch('http://localhost:5246/api/DashBoard/UserStatistics');
+            const data = await response.json();
+
+            new Chart(document.getElementById('user-growth-chart'), {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],  // Adjust based on actual data
+                    datasets: [{ label: 'New Users', data: [data.newUsersThisMonth, data.newUsersThisWeek, data.totalUsers], borderColor: '#36a2eb', fill: false }]
+                },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+        } catch (error) {
+            console.error('Error fetching user growth data:', error);
+        }
+    }
+
+    // Initialize charts on page load
     document.addEventListener('DOMContentLoaded', () => {
         updateWeeklySalesChart();
         updateMonthlySalesChart();
         updateYearlySalesChart();
+        updateUserGrowthChart();
     });
 </script>

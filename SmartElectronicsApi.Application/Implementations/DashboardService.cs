@@ -82,6 +82,26 @@ namespace SmartElectronicsApi.Application.Implementations
                 PercentageChange = CalculatePercentageChange(previousYearSales, currentYearSales)
             };
         }
+        public async Task<UserStatisticsDto> GetUserStatisticsAsync()
+        {
+            var totalUsers = await _context.Users.CountAsync();
+            var currentMonthStart = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            var newUsersThisMonth = await _context.Users
+                .Where(u => u.CreatedTime >= currentMonthStart)
+                .CountAsync();
+
+            var currentWeekStart = DateTime.Now.StartOfWeek(DayOfWeek.Monday);
+            var newUsersThisWeek = await _context.Users
+                .Where(u => u.CreatedTime >= currentWeekStart)
+                .CountAsync();
+
+            return new UserStatisticsDto
+            {
+                TotalUsers = totalUsers,
+                NewUsersThisWeek = newUsersThisWeek,
+                NewUsersThisMonth = newUsersThisMonth
+            };
+        }
 
         private decimal CalculatePercentageChange(decimal previousPeriodSales, decimal currentPeriodSales)
         {

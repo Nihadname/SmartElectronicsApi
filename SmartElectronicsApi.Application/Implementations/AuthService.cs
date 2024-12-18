@@ -185,7 +185,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 smtpPort: 587,
                 enableSsl: true,
                 smtpUser: "nihadmi@code.edu.az\r\n",
-                smtpPass: "jytx krmh ngqj vdnc\r\n"
+                smtpPass: "wmgd lwju ehhs aoaq\r\n"
             );
             var MappedUser = _mapper.Map<UserGetDto>(appUser);
             return MappedUser;
@@ -399,7 +399,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     smtpPort: 587,
                     enableSsl: true,
                     smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "jytx krmh ngqj vdnc\r\n"
+                    smtpPass: "wmgd lwju ehhs aoaq\r\n"
                 );
             }
             await _userManager.UpdateAsync(user);
