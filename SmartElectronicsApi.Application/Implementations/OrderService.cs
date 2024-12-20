@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using QRCoder;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.Order;
@@ -14,10 +15,14 @@ using SmartElectronicsApi.DataAccess.Data.Implementations;
 using Stripe;
 using Stripe.Checkout;
 using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using Color = System.Drawing.Color;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -92,7 +97,6 @@ namespace SmartElectronicsApi.Application.Implementations
                     var tax = totalAmount * 0.1m;
                     var shippingCost = 15.00m;
 
-                    // Apply loyalty points discount
                     if (user.loyalPoints >= 100 && user.loyalPoints <= 500)
                     {
                         totalAmount -= (totalAmount * 5) / 100;
@@ -126,14 +130,12 @@ namespace SmartElectronicsApi.Application.Implementations
                         _unitOfWork.Commit();
                     }
                    
-                    // Delete basket products
                     foreach (var basketProduct in basketProducts)
                     {
                         await _unitOfWork.BasketProductRepository.Delete(basketProduct);
                     }
                     _unitOfWork.Commit();
 
-                    // Create Stripe checkout session
                     var lineItems = orderItems.Select(item => new SessionLineItemOptions
                     {
                         PriceData = new SessionLineItemPriceDataOptions
@@ -302,6 +304,37 @@ namespace SmartElectronicsApi.Application.Implementations
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
+        }
+        public async Task<string> ShippingOrder(int? Id)
+        {
+            if (Id is null) throw new CustomException(400, "Id", "id can't be null");
+            var existedOrder=await _unitOfWork.OrderRepository.GetEntity(s=>s.Id==Id&&s.IsDeleted==false);  
+            if (existedOrder == null)
+            {
+                throw new CustomException(400, "existedOrder", "existedOrder can't be null");
+            }
+            if (existedOrder.Status == OrderStatus.Completed)
+            {
+                var guid = Guid.NewGuid().ToString();
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode("https://smartelectronics.az/az/" + "\r\n" + guid, QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                Bitmap logoImage = new Bitmap(@"wwwroot/img/logo size-02.png");
+                using (Bitmap qrCodeAsBitmap = qrCode.GetGraphic(20, Color.Black, Color.WhiteSmoke, logoImage))
+                {
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        qrCodeAsBitmap.Save(ms, ImageFormat.Png);
+                        string base64String = Convert.ToBase64String(ms.ToArray());
+                        var data = "data:image/png;base64," + base64String;
+                        return data;
+                    }
+                }
+
+            }
+            return "empty";
+
         }
     }
 }

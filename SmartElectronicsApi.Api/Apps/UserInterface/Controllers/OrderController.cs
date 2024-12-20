@@ -51,5 +51,10 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await orderService.GetAllForUser(pageNumber, pageSize));
         }
+        [HttpGet("AcceptanceOfBeingShipped")]
+        public async Task<IActionResult> ShippingOrder(int id)
+        {
+            return Ok(await orderService.ShippingOrder(id));
+        }
     }
 }

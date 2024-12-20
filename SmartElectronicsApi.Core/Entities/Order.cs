@@ -19,6 +19,7 @@ namespace SmartElectronicsApi.Core.Entities
         public OrderStatus Status { get; set; }
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
+        public string? ShippedToken { get; set; }
         public ICollection<OrderItem> Items { get; set; }
     }
     public enum OrderStatus
