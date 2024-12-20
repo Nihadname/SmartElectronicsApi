@@ -222,7 +222,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 smtpPort: 587,
                 enableSsl: true,
                 smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "wmgd lwju ehhs aoaq\r\n"
+                    smtpPass: "eise hosy kfne qhnm"
             );
 
                 TempData["EmailSendingSuccess"] = "An email with instructions has been sent to the provided address.";

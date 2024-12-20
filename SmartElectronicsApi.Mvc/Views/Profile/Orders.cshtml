@@ -225,10 +225,10 @@
                     <tr>
                         <th>Sifariş nömrəsi</th>
                         <th>Sifariş tarixi</th>
+                        <th>Status</th>
                         <th>Məbləğ</th>
                         <th>Ödəniş növü</th>
                         <th>Çatdırılma</th>
-                        <th class="SpecialOne">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -237,8 +237,9 @@
                         <tr>
                             <td>@order.Id</td>
                             <td>@order.OrderDate.ToShortDateString()</td>
-                            <td>@order.TotalAmount.ToString("C2")</td>
                             <td>@order.Status</td>
+                            <td>@order.TotalAmount.ToString("C2")</td>
+
                             <td>@order.ShippingAddress</td>
                             <td class="SpecialOne">
                                 <div class="status-box">
@@ -248,7 +249,7 @@
                                         {
                                             <div class="product-row">
                                                 <div>
-                                                    <strong>@(item.ProductName.Length > 50 ? item.ProductName.Substring(0, 50) + "..." : item.ProductName)</strong>
+                                                    <strong>@(item.ProductName.Length > 40 ? item.ProductName.Substring(0, 40) + "..." : item.ProductName)</strong>
 
                                                     <span>@(item.ProductVariationId.HasValue ? "Variation ID: " + item.ProductVariationId : "No variation")</span>
                                                     <span>(@item.Quantity ədəd)</span>

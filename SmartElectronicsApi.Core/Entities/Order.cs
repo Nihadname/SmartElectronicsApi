@@ -28,6 +28,7 @@ namespace SmartElectronicsApi.Core.Entities
         Completed,
         Shipped,
         Cancelled,
-        Failed
+        Failed,
+        Delivered
     }
 }

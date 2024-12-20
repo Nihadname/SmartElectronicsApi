@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using QRCoder;
 using SmartElectronicsApi.Application.Dtos;
-using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.Order;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
@@ -14,14 +12,10 @@ using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
 using Stripe;
 using Stripe.Checkout;
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 using Color = System.Drawing.Color;
 
 namespace SmartElectronicsApi.Application.Implementations
@@ -30,18 +24,19 @@ namespace SmartElectronicsApi.Application.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private UserManager<AppUser> _userManager;
+        private UserManager<Core.Entities.AppUser> _userManager;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
-
+        private readonly ICodeGeneratorService _codegenService;
         public OrderService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
             IHttpContextAccessor httpContextAccessor,
             UserManager<AppUser> userManager,
             IConfiguration configuration,
-            IEmailService emailService)
+            IEmailService emailService,
+            ICodeGeneratorService codegenService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -50,6 +45,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _configuration = configuration;
             StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
             _emailService = emailService;
+            _codegenService = codegenService;
         }
 
         public async Task<string> CreateStripeCheckoutSessionAsync()
@@ -227,7 +223,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     smtpPort: 587,
                     enableSsl: true,
                     smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "wmgd lwju ehhs aoaq\r\n"
+                    smtpPass: "eise hosy kfne qhnm"
                     );
 
                     return session.Id;
@@ -308,33 +304,99 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<string> ShippingOrder(int? Id)
         {
             if (Id is null) throw new CustomException(400, "Id", "id can't be null");
-            var existedOrder=await _unitOfWork.OrderRepository.GetEntity(s=>s.Id==Id&&s.IsDeleted==false);  
+
+            var existedOrder = await _unitOfWork.OrderRepository.GetEntity(
+                s => s.Id == Id && s.IsDeleted == false,
+                includes: new Func<IQueryable<Order>, IQueryable<Order>>[]
+                {
+            query => query.Include(p => p.AppUser)
+                }
+            );
+
             if (existedOrder == null)
             {
                 throw new CustomException(400, "existedOrder", "existedOrder can't be null");
             }
+
             if (existedOrder.Status == OrderStatus.Completed)
             {
+                existedOrder.Status = OrderStatus.Shipped;
+                existedOrder.ShippedToken = _codegenService.GenerateCode();
+                await _unitOfWork.OrderRepository.Update(existedOrder);
+                _unitOfWork.Commit();
+
                 var guid = Guid.NewGuid().ToString();
                 QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode("https://smartelectronics.az/az/" + "\r\n" + guid, QRCodeGenerator.ECCLevel.Q);
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(
+                    ("Shipped Token: " + existedOrder.ShippedToken + " OrderId: " + existedOrder.Id) + "\r\n" + guid,
+                    QRCodeGenerator.ECCLevel.Q
+                );
                 QRCode qrCode = new QRCode(qrCodeData);
-                Bitmap qrCodeImage = qrCode.GetGraphic(20);
                 Bitmap logoImage = new Bitmap(@"wwwroot/img/logo size-02.png");
                 using (Bitmap qrCodeAsBitmap = qrCode.GetGraphic(20, Color.Black, Color.WhiteSmoke, logoImage))
                 {
                     using (MemoryStream ms = new MemoryStream())
                     {
                         qrCodeAsBitmap.Save(ms, ImageFormat.Png);
-                        string base64String = Convert.ToBase64String(ms.ToArray());
-                        var data = "data:image/png;base64," + base64String;
-                        return data;
+
+                        string emailBody = $@"
+                <html>
+                    <body>
+                        <h1>Order Shipped</h1>
+                        <p>Your order has been shipped. Below is the QR code for your reference:</p>
+                        <img src='cid:QRCodeImage' alt='QR Code' />
+                        <p>Order ID: {existedOrder.Id}</p>
+                        <p>Shipped Token: {existedOrder.ShippedToken}</p>
+                    </body>
+                </html>";
+
+                        var attachment = new System.Net.Mail.Attachment(new MemoryStream(ms.ToArray()), "QRCode.png");
+                        attachment.ContentId = "QRCodeImage";
+                        attachment.ContentDisposition.Inline = true;
+                        attachment.ContentDisposition.DispositionType = System.Net.Mime.DispositionTypeNames.Inline;
+
+                        var smtpClient = new System.Net.Mail.SmtpClient("smtp.gmail.com")
+                        {
+                            Port = 587,
+                            Credentials = new System.Net.NetworkCredential("nihadmi@code.edu.az", "eise hosy kfne qhnm"),
+                            EnableSsl = true,
+                        };
+
+                        var mailMessage = new System.Net.Mail.MailMessage
+                        {
+                            From = new System.Net.Mail.MailAddress("nihadmi@code.edu.az"),
+                            Subject = "Order Already Shipped",
+                            Body = emailBody,
+                            IsBodyHtml = true
+                        };
+
+                        mailMessage.To.Add(existedOrder.AppUser.Email);
+                        mailMessage.Attachments.Add(attachment);
+
+                        await smtpClient.SendMailAsync(mailMessage);
+
+                        return "Email sent successfully with QR code attached and embedded.";
                     }
                 }
-
             }
-            return "empty";
 
+            return "empty";
+        }
+        public async Task<string> VerifyOrderAsDelivered(OrderVerifyDto orderVerifyDto)
+        {
+            var existedUser = await _userManager.FindByNameAsync(orderVerifyDto.UserName);
+            if (existedUser == null) throw new CustomException(400, "User", "User can not be null");
+          var existedOrder=await _unitOfWork.OrderRepository.GetEntity(s=>s.Id== orderVerifyDto.Id&&s.IsDeleted==false);
+            if(existedOrder == null) throw new CustomException(400, "Order", "Order can not be null");
+            var isOrderExistedInUser=await _unitOfWork.OrderRepository.isExists(s=>s.Id == existedOrder.Id&&s.AppUserId==existedUser.Id&&s.IsDeleted==false);
+            if(!isOrderExistedInUser) throw new CustomException(400, "Order", "Order is not on the list of given user");
+            if (existedOrder.Status != OrderStatus.Shipped) throw new CustomException(400, "this order not shipped yet");
+            if(existedOrder.Status == OrderStatus.Delivered) throw new CustomException(400, "this order is already delivered ");
+            if (!existedOrder.ShippedToken.Equals(orderVerifyDto.ShippedToken)) throw new CustomException(400, "given ahipped token doesnt match ");
+            existedOrder.Status=OrderStatus.Delivered;
+            await _unitOfWork.OrderRepository.Update(existedOrder);
+            _unitOfWork.Commit();
+            return "Order delivery confirmed successfully.";
         }
     }
 }

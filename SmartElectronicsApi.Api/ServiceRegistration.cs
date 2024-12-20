@@ -116,6 +116,7 @@ public static class ServiceRegistration
         services.AddScoped<ISliderRepository, SliderRepository>();
         services.AddScoped<ISliderService, SliderService>();
         services.AddScoped<IQrCodeService, QRCode>();
+        services.AddScoped<ICodeGeneratorService, CodeGeneratorService>();
        services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
