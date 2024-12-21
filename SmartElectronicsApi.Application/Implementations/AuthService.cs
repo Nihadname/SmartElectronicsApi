@@ -124,7 +124,6 @@ namespace SmartElectronicsApi.Application.Implementations
                 }
                 else
                 {
-                    // User is still blocked
                     throw new CustomException(403, "UserNameOrGmail", $"you are blocked until {User.BlockedUntil?.ToString("dd MMM yyyy hh:mm")}");
                 }
             }
@@ -184,8 +183,8 @@ namespace SmartElectronicsApi.Application.Implementations
                 smtpHost: "smtp.gmail.com",
                 smtpPort: 587,
                 enableSsl: true,
-                smtpUser: "nihadmi@code.edu.az\r\n",
-                smtpPass: "wmgd lwju ehhs aoaq\r\n"
+                smtpUser: "nihadmi@code.edu.az\r\n"
+                
             );
             var MappedUser = _mapper.Map<UserGetDto>(appUser);
             return MappedUser;
@@ -398,8 +397,8 @@ namespace SmartElectronicsApi.Application.Implementations
                     smtpHost: "smtp.gmail.com",
                     smtpPort: 587,
                     enableSsl: true,
-                    smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "wmgd lwju ehhs aoaq\r\n"
+                    smtpUser: "nihadmi@code.edu.az\r\n"
+                    
                 );
             }
             await _userManager.UpdateAsync(user);

@@ -11,7 +11,7 @@ namespace SmartElectronicsApi.Application.Implementations
 {
     public class EmailService : IEmailService
     {
-        public void SendEmail(string from, string to, string subject, string body, string smtpHost, int smtpPort, bool enableSsl, string smtpUser, string smtpPass)
+        public void SendEmail(string from, string to, string subject, string body, string smtpHost, int smtpPort, bool enableSsl, string smtpUser)
         {
             MailMessage mailMessage = new MailMessage();
             mailMessage.From = new MailAddress(from);
@@ -24,11 +24,11 @@ namespace SmartElectronicsApi.Application.Implementations
             smtpClient.Host = smtpHost;
             smtpClient.Port = smtpPort;
             smtpClient.EnableSsl = enableSsl;
-            smtpClient.Credentials = new NetworkCredential(smtpUser, smtpPass);
+            smtpClient.Credentials = new NetworkCredential(smtpUser, "eise hosy kfne qhnm");
             smtpClient.Send(mailMessage);
         }
 
-        public async Task SendEmailAsyncToManyPeople(string from, List<string> recipients, string subject, string body, string smtpHost, int smtpPort, bool enableSsl, string smtpUser, string smtpPass)
+        public async Task SendEmailAsyncToManyPeople(string from, List<string> recipients, string subject, string body, string smtpHost, int smtpPort, bool enableSsl, string smtpUser)
         {
             foreach (var to in recipients)
             {
@@ -43,7 +43,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 smtpClient.Host = smtpHost;
                 smtpClient.Port = smtpPort;
                 smtpClient.EnableSsl = enableSsl;
-                smtpClient.Credentials = new NetworkCredential(smtpUser, smtpPass);
+                smtpClient.Credentials = new NetworkCredential(smtpUser, "eise hosy kfne qhnm");
 
                 await smtpClient.SendMailAsync(mailMessage);
             }

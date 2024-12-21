@@ -33,10 +33,27 @@
                                         <td>@item.Id</td>
                                         <td>@item.OrderDate.ToString("yyyy-MM-dd")</td>
                                         <td>@item.TotalAmount.ToString("C")</td>
-                                        <td>@item.Status</td>
+                                        <td class="OrderTableStatus" data-id="@item.Id">@item.Status</td>
                                         <td>@item.ShippingAddress</td>
                                         <td>@item.User.UserName</td>
-                                        
+                                        <td>
+                                            @if (item.Status == "Completed")
+                                            {
+                                                <form method="post" asp-action="AcceptanceOfBeingShipped" asp-controller="Order" asp-route-id="@item.Id">
+                                                    <button type="submit" class="btn btn-sm btn-primary">ChangeStatusAsShipped</button>
+                                                </form>
+                                            }
+                                            @if (item.Status == "Shipped")
+                                            {
+                                                <a asp-action="Update" asp-controller="Order" asp-route-id="@item.Id" class="btn btn-sm btn-danger">VerifyOrder</a>
+                                            }
+                                            <form method="post" asp-action="DeleteOrder" asp-controller="Order" asp-route-id="@item.Id" style="display:inline;">
+                                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
+                                        </td>
+
+
+
                                     </tr>
                                 }
                             }

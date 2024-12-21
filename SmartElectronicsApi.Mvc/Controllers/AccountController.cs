@@ -221,8 +221,8 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 smtpHost: "smtp.gmail.com",
                 smtpPort: 587,
                 enableSsl: true,
-                smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "eise hosy kfne qhnm"
+                smtpUser: "nihadmi@code.edu.az\r\n"
+                    
             );
 
                 TempData["EmailSendingSuccess"] = "An email with instructions has been sent to the provided address.";

@@ -473,3 +473,54 @@ function DeleteSubscriber(id) {
         }
     });
 }
+//function UpdateAsShippedForOrder(id) {
+//    var OrderTable = document.querySelector(`.OrderTableStatus[data-id="${id}"]`);
+//    var row = document.querySelector(`tr[data-id="${id}"]`);
+//    Swal.fire({
+//        title: 'Are you sure?',
+//        text: "You won't be able to revert this!",
+//        icon: 'warning',
+//        showCancelButton: true,
+//        confirmButtonColor: '#3085d6',
+//        cancelButtonColor: '#d33',
+//        confirmButtonText: 'Yes, delete it!',
+//        cancelButtonText: 'Cancel'
+//    }).then((result) => {
+//        if (result.isConfirmed) {
+        
+//            $.ajax({
+//                url: '/AdminArea/Order/AcceptanceOfBeingShipped/' + id,
+//                type: "POST",
+//                contentType: "application/json; charset=utf-8",
+//                dataType: "json",
+
+//                success: function (response) {
+//                    Swal.fire(
+//                        'Deleted!',
+//                        response.message,
+//                        'success'
+//                    );
+//                    if (OrderTable) {
+//                        OrderTable.textContent = "Shipped";
+//                    }
+
+//                    // Locate the VerifyOrder button and make it visible
+//                    var verifyButton = row.querySelector(`a[asp-action="Update"]`);
+//                    if (verifyButton) {
+//                        verifyButton.classList.remove("d-none"); // Show the button
+//                        console.log("Verify button updated and visible.");
+//                    } else {
+//                        console.error("Verify button not found in row:", row);
+//                    }
+//                },
+//                error: function (error) {
+//                    Swal.fire(
+//                        'Error!',
+//                        'Error: ' + error.responseText,
+//                        'error'
+//                    );
+//                }
+//            });
+//        }
+//    });
+//}

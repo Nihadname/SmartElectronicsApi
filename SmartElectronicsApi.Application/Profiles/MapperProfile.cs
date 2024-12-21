@@ -230,8 +230,8 @@ namespace SmartElectronicsApi.Application.Profiles
          ProductName = i.Product.Name,
          Quantity = i.Quantity,
          UnitPrice = (decimal)((i.ProductVariation != null && i.ProductVariation.DiscountedPrice > 0)
-             ? i.ProductVariation.DiscountedPrice // Use variation's discounted price if available
-             : (i.Product.DiscountedPrice > 0 ? i.Product.DiscountedPrice : i.UnitPrice)), // Fallback to product's discounted price or normal price
+             ? i.ProductVariation.DiscountedPrice 
+             : (i.Product.DiscountedPrice > 0 ? i.Product.DiscountedPrice : i.UnitPrice)), 
          ProductVariationId = i.ProductVariationId,
      }).ToList()));
                 CreateMap<Order, OrderAdminListItemDto>()
@@ -246,6 +246,18 @@ namespace SmartElectronicsApi.Application.Profiles
                 //.ForMember(dest => dest.TotalSalePrice, opt => opt.MapFrom(src => (src.Product.DiscountedPrice ?? src.Product.Price) * src.Quantity))
 
                 //.ForMember(dest => dest.Discount, opt => opt.MapFrom(src => src.Product.Price - (src.Product.DiscountedPrice ?? src.Product.Price)));
+                CreateMap<Order,OrderReturnDto>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.GetName(typeof(OrderStatus), src.Status)))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items.Select(i => new OrderItemSummaryDto
+                {
+                    ProductId = i.ProductId,
+                    ProductName = i.Product.Name,
+                    Quantity = i.Quantity,
+                    UnitPrice = (decimal)((i.ProductVariation != null && i.ProductVariation.DiscountedPrice > 0)
+             ? i.ProductVariation.DiscountedPrice
+             : (i.Product.DiscountedPrice > 0 ? i.Product.DiscountedPrice : i.UnitPrice)),
+                    ProductVariationId = i.ProductVariationId,
+                }).ToList()));
             });
             configuration.AssertConfigurationIsValid();
         }

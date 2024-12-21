@@ -222,8 +222,8 @@ namespace SmartElectronicsApi.Application.Implementations
                     smtpHost: "smtp.gmail.com",
                     smtpPort: 587,
                     enableSsl: true,
-                    smtpUser: "nihadmi@code.edu.az\r\n",
-                    smtpPass: "eise hosy kfne qhnm"
+                    smtpUser: "nihadmi@code.edu.az\r\n"
+            
                     );
 
                     return session.Id;
@@ -398,5 +398,61 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork.Commit();
             return "Order delivery confirmed successfully.";
         }
-    }
+        public async Task<OrderReturnDto> GetById(int? Id)
+        {
+            if (Id is null) throw new CustomException(400, "Id", "id can't be null");
+
+            var existedOrder = await _unitOfWork.OrderRepository.GetEntity(
+                s => s.Id == Id && s.IsDeleted == false,
+                includes: new Func<IQueryable<Order>, IQueryable<Order>>[]
+                {
+            query => query.Include(p => p.AppUser).Include(s=>s.Items)
+                }
+            );
+
+            if (existedOrder == null)
+            {
+                throw new CustomException(400, "existedOrder", "existedOrder can't be null");
+            }
+            var MappedOrder=_mapper.Map<OrderReturnDto>(existedOrder);
+            return MappedOrder;
+        }
+        public async Task<string> Delete(int? Id)
+        {
+          var existedOrder=  await GetOrder(Id);
+            await _unitOfWork.OrderRepository.Delete(existedOrder);
+            _unitOfWork.Commit();
+            return "deleted";
+        }
+        public async Task<string> DeleteOrderForUser(int? Id)
+        {
+            var userId = _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                throw new CustomException(400, "User ID cannot be null");
+            var existedOrder = await GetOrder(Id);
+            bool isExistedInUserOrder = await _unitOfWork.OrderRepository.isExists(s => s.Id == existedOrder.Id && s.AppUserId == userId);
+            if (!isExistedInUserOrder) throw new CustomException(400, "order ID cannot be deleted becuase it doesnt belong to  the user in the system");
+            await _unitOfWork.OrderRepository.Delete(existedOrder);
+            _unitOfWork.Commit();
+            return "deleted By User";
+        }
+        private async Task<Order> GetOrder(int? Id)
+        {
+            if (Id is null) throw new CustomException(400, "Id", "id can't be null");
+
+            var existedOrder = await _unitOfWork.OrderRepository.GetEntity(
+                s => s.Id == Id && s.IsDeleted == false,
+                includes: new Func<IQueryable<Order>, IQueryable<Order>>[]
+                {
+            query => query.Include(p => p.AppUser).Include(s=>s.Items)
+                }
+            );
+
+            if (existedOrder == null)
+            {
+                throw new CustomException(400, "existedOrder", "existedOrder can't be null");
+            }
+            return existedOrder;
+        }
+    } 
 }

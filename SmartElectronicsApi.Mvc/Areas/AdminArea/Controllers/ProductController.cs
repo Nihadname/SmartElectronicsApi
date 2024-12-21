@@ -366,8 +366,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                             smtpHost: "smtp.gmail.com",
                             smtpPort: 587,
                             enableSsl: true,
-                            smtpUser: "nihadmi@code.edu.az\r\n",
-                            smtpPass: "wmgd lwju ehhs aoaq\r\n"
+                            smtpUser: "nihadmi@code.edu.az\r\n"
                         );
                     }
 

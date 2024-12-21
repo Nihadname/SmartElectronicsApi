@@ -33,14 +33,12 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<ProductReturnDto> Create(ProductCreateDto productCreateDto)
         {
-            // Check if product name already exists
             
                 if (await _unitOfWork.productRepository.isExists(s => s.Name.ToLower() == productCreateDto.Name.ToLower()))
                 {
                     throw new CustomException(400, "Name", "This product name already exists.");
                 }
 
-                // Validate category
                 var category = await _unitOfWork.categoryRepository.GetEntity(s => s.Id == productCreateDto.CategoryId, includes: new Func<IQueryable<Category>, IQueryable<Category>>[]
                 {
         query => query.Include(p => p.SubCategories)
@@ -424,8 +422,8 @@ return MappedProducts;
     int? subCategoryId,
     int? brandId,
     List<int> colorIds,
-    int? minPrice,  // Add minPrice parameter
-    int? maxPrice,  // A
+    int? minPrice, 
+    int? maxPrice,  
     int pageNumber,
     int pageSize,
     string sortOrder = "name_asc") // Default to ascending

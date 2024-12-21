@@ -40,30 +40,18 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
                 return RedirectToAction("https://localhost:7170/Cancel");
             }
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles ="Admin")]
-        [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
-        {
-            return Ok(await  orderService.GetAll(pageNumber, pageSize));
-        }
+       
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("GetAllForUser")]
         public async Task<IActionResult> GetAllForUser(int pageNumber = 1, int pageSize = 10)
         {
             return Ok(await orderService.GetAllForUser(pageNumber, pageSize));
         }
-        [HttpGet("AcceptanceOfBeingShipped")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme,Roles = "Admin")]
-
-        public async Task<IActionResult> ShippingOrder(int id)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("DeleteForUser/{id}")]
+        public async Task<IActionResult> DeleteForUser(int id)
         {
-            return Ok(await orderService.ShippingOrder(id));
-        }
-        [HttpPost("VerifyOrder")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> VerifyDelivery(OrderVerifyDto orderVerifyDto)
-        {
-            return Ok(await orderService.VerifyOrderAsDelivered(orderVerifyDto));
+            return Ok(await orderService.DeleteOrderForUser(id));
         }
     }
 }
