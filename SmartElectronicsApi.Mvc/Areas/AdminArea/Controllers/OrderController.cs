@@ -5,6 +5,8 @@ using SmartElectronicsApi.Mvc.ViewModels.pagination;
 using System.Net.Http.Headers;
 using System.Net;
 using SmartElectronicsApi.Mvc.ViewModels;
+using SmartElectronicsApi.Mvc.ViewModels.Color;
+using System.Text;
 
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
@@ -105,6 +107,44 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                     return Json(new { success = false, message = errorResponse?.Message ?? "An unknown error occurred." });
                 }
             }
+        }
+        public async Task<IActionResult> VerifyOrder()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> VerifyOrder(OrderVerfiyVM orderVerfiyVM)
+        {
+            if (!ModelState.IsValid) return View(orderVerfiyVM);
+            using var client = new HttpClient();
+            new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            var stringData = JsonConvert.SerializeObject(orderVerfiyVM);
+            var content = new StringContent(stringData, Encoding.UTF8, "application/json");
+            using HttpResponseMessage httpResponseMessage = await client.PostAsync("http://localhost:5246/api/Order/VerifyOrder", content);
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                    TempData["CreatingOrdercolor"] = "Order  yaradildi";
+                    return RedirectToAction("Index");
+                
+            }
+            else
+            {
+                var errorResponseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+                return View(orderVerfiyVM);
+            }
+
         }
     }
 }

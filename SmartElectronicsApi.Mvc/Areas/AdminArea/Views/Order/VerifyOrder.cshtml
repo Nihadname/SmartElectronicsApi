@@ -1,0 +1,35 @@
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Order
+
+@model OrderVerfiyVM
+<row>
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Horizontal Form</h4>
+                <p class="card-description"> Brand Create Page </p>
+                <form asp-action="VerifyOrder" method="post" class="forms-sample" >
+                    <div class="form-group row">
+                        <label asp-for="UserName" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <input asp-for="UserName" class="form-control" placeholder="UserName">
+                            <span class="text-danger " asp-validation-for="UserName"></span>
+                        </div>
+                        <label asp-for="Id" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <input asp-for="Id" class="form-control" placeholder="Id">
+                            <span class="text-danger " asp-validation-for="Id"></span>
+                        </div>
+                        <label asp-for="ShippedToken" class="col-sm-3 col-form-label"></label>
+                        <div class="col-sm-9">
+                            <input asp-for="ShippedToken" class="form-control" placeholder="Image">
+                            <span class="text-danger " asp-validation-for="ShippedToken"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                    <button class="btn btn-light" asp-action="Index">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</row>
