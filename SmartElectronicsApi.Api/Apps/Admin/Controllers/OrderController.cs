@@ -45,10 +45,10 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         }
         [HttpDelete("{Id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async  Task<IActionResult> Delete(int? id)
+        public async  Task<IActionResult> Delete(int? Id)
         {
-            if (id == null) throw new CustomException(400, "Id", "it can not be null");
-            return Ok(await orderService.Delete(id));
+            if (Id == null) throw new CustomException(400, "Id", "it can not be null");
+            return Ok(await orderService.Delete(Id));
         }
        
     }

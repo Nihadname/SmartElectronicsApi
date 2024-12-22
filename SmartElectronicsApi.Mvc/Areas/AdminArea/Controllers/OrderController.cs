@@ -72,5 +72,39 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             }
 
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            using var client = new HttpClient();
+
+            if (id is null) return RedirectToAction("Index", "Order");
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            var jwtToken = Request.Cookies["JwtToken"];
+            if (string.IsNullOrEmpty(jwtToken))
+            {
+                return Json(new { success = false, message = "User not authenticated." });
+            }
+            client.DefaultRequestHeaders.Authorization =
+         new AuthenticationHeaderValue("Bearer", jwtToken);
+            using HttpResponseMessage httpResponseMessage = await client.DeleteAsync($"Order/{id}");
+            if (httpResponseMessage.IsSuccessStatusCode)
+            {
+                return Json(new { success = true, message = "Order successfully deleted." });
+            }
+            else
+            {
+                var errorResponseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+
+                if (errorResponse?.Errors != null && errorResponse?.Errors.Count() != 0)
+                {
+                    return Json(new { success = false, errors = errorResponse.Errors });
+                }
+                else
+                {
+                    return Json(new { success = false, message = errorResponse?.Message ?? "An unknown error occurred." });
+                }
+            }
+        }
     }
 }
