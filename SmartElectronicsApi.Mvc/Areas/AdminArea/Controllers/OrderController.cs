@@ -117,7 +117,8 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
         {
             if (!ModelState.IsValid) return View(orderVerfiyVM);
             using var client = new HttpClient();
-            new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            client.DefaultRequestHeaders.Authorization =
+                   new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
             var stringData = JsonConvert.SerializeObject(orderVerfiyVM);
             var content = new StringContent(stringData, Encoding.UTF8, "application/json");
             using HttpResponseMessage httpResponseMessage = await client.PostAsync("http://localhost:5246/api/Order/VerifyOrder", content);

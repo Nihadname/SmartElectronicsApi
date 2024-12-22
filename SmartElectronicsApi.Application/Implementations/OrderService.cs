@@ -390,9 +390,9 @@ namespace SmartElectronicsApi.Application.Implementations
             if(existedOrder == null) throw new CustomException(400, "Order", "Order can not be null");
             var isOrderExistedInUser=await _unitOfWork.OrderRepository.isExists(s=>s.Id == existedOrder.Id&&s.AppUserId==existedUser.Id&&s.IsDeleted==false);
             if(!isOrderExistedInUser) throw new CustomException(400, "Order", "Order is not on the list of given user");
-            if (existedOrder.Status != OrderStatus.Shipped) throw new CustomException(400, "this order not shipped yet");
-            if(existedOrder.Status == OrderStatus.Delivered) throw new CustomException(400, "this order is already delivered ");
-            if (!existedOrder.ShippedToken.Equals(orderVerifyDto.ShippedToken)) throw new CustomException(400, "given ahipped token doesnt match ");
+            if (existedOrder.Status != OrderStatus.Shipped&&existedOrder.Status==OrderStatus.Delivered) throw new CustomException(400, "Order", "this order is already delivered ");
+            if(existedOrder.Status != OrderStatus.Shipped) throw new CustomException(400, "Order","this order is not shipped");
+            if (!existedOrder.ShippedToken.Equals(orderVerifyDto.ShippedToken)) throw new CustomException(400, "Order", "given shipped token doesnt match ");
             existedOrder.Status=OrderStatus.Delivered;
             await _unitOfWork.OrderRepository.Update(existedOrder);
             _unitOfWork.Commit();
