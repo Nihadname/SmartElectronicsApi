@@ -200,7 +200,6 @@ namespace SmartElectronicsApi.Application.Implementations
                              .Replace("{{Tax}}", tax.ToString("C"))
                              .Replace("{{Total}}", order.TotalAmount.ToString("C"));
 
-                    // Generate order items for email
                     StringBuilder orderItemsBuilder = new StringBuilder();
                     foreach (var item in orderItems)
                     {
