@@ -117,10 +117,13 @@ public static class ServiceRegistration
         services.AddScoped<ISliderService, SliderService>();
         services.AddScoped<IQrCodeService, QRCode>();
         services.AddScoped<ICodeGeneratorService, CodeGeneratorService>();
+        services.AddScoped<IGuestOrderRepository, GuestOrderRepository>();
+        services.AddScoped<IGuestOrderService, GuestOrderService>();
+       
        services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "JWTToken_Auth_API",
+                Title = "SmartEccommerceApi",
                 Version = "v1"
             });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

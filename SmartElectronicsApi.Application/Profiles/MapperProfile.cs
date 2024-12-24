@@ -10,6 +10,7 @@ using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Color;
 using SmartElectronicsApi.Application.Dtos.Comment;
 using SmartElectronicsApi.Application.Dtos.Contact;
+using SmartElectronicsApi.Application.Dtos.GuestOrder;
 using SmartElectronicsApi.Application.Dtos.Order;
 using SmartElectronicsApi.Application.Dtos.ParametrGroup;
 using SmartElectronicsApi.Application.Dtos.ParametrValue;
@@ -258,6 +259,7 @@ namespace SmartElectronicsApi.Application.Profiles
              : (i.Product.DiscountedPrice > 0 ? i.Product.DiscountedPrice : i.UnitPrice)),
                     ProductVariationId = i.ProductVariationId,
                 }).ToList()));
+                CreateMap<GuestOrderCreateDto,GuestOrder>();
             });
             configuration.AssertConfigurationIsValid();
         }
