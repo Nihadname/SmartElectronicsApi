@@ -12,12 +12,10 @@ namespace SmartElectronicsApi.Application.Validators.GuestOrderValidators
     {
         public GuestOrderCreateDtoValidator()
         {
-            RuleFor(x => x.Name)
+            RuleFor(x => x.FullName)
                 .NotEmpty().WithMessage("GuestOrder name is required.")
                 .Length(3, 200).WithMessage("GuestOrder name must be between 3 and 200 characters long.");
-            RuleFor(x => x.SurName)
-                .NotEmpty().WithMessage("GuestOrder SurName is required.")
-                .Length(3, 200).WithMessage("GuestOrder SurName must be between 3 and 200 characters long.");
+           
             RuleFor(x => x.Age)
                 .GreaterThan(18).NotEmpty();
             RuleFor(x => x.Address)

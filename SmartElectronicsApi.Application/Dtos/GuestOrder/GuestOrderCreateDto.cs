@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SmartElectronicsApi.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Dtos.GuestOrder
@@ -17,5 +19,7 @@ namespace SmartElectronicsApi.Application.Dtos.GuestOrder
         public string ExtraInformation { get; set; }
         public bool IsGottenFromStore { get; set; }
         public int PurchasedProductId { get; set; }
+        [JsonIgnore]
+        public OrderStatus OrderStatus { get; set; }
     }
 }

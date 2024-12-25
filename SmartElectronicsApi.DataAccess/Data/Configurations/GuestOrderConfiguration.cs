@@ -17,12 +17,13 @@ namespace SmartElectronicsApi.DataAccess.Data.Configurations
             builder.Property(s => s.CreatedTime).HasDefaultValueSql("GETDATE()");
             builder.Property(s => s.UpdatedTime).HasDefaultValueSql("GETDATE()");
             builder.HasKey(e => e.Id);
-            builder.HasIndex(p => p.Name)
+            builder.Property(s => s.PurchasedProductId).IsRequired(false);
+            builder.Property(s => s.PurchasedProducVariationtId).IsRequired(false);
+            builder.HasIndex(p => p.FullName)
             .IsUnique();
             builder.HasIndex(p => p.PhoneNumber)
             .IsUnique();
-            builder.HasIndex(p => p.SurName)
-            .IsUnique();
+            builder.Property(s => s.ProductPrice).IsRequired(true).HasColumnType("decimal(18, 2)");
             builder.HasIndex(p => p.EmailAdress)
             .IsUnique();
         }
