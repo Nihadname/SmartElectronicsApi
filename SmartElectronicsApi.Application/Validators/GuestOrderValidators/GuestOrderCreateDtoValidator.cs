@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using SmartElectronicsApi.Application.Dtos.GuestOrder;
 using SmartElectronicsApi.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Validators.GuestOrderValidators
 {
-    public class GuestOrderCreateDtoValidator : AbstractValidator<GuestOrder>
+    public class GuestOrderCreateDtoValidator : AbstractValidator<GuestOrderCreateDto>
     {
         public GuestOrderCreateDtoValidator()
         {
@@ -32,8 +33,11 @@ namespace SmartElectronicsApi.Application.Validators.GuestOrderValidators
            .Matches(@"^(\+?\d{1,4}?)[\s.-]?\(?\d{1,4}?\)?[\s.-]?\d{1,4}[\s.-]?\d{1,9}$")
            .WithMessage("Invalid phone number format.");
             RuleFor(x => x.ExtraInformation)
-            .NotEmpty().WithMessage("GuestOrder ExtraInformation is required.")
-            .Length(3, 200).WithMessage("GuestOrder ExtraInformation must be between 3 and 200 characters long.");
+     .Length(3, 200)
+     .WithMessage("GuestOrder name must be between 3 and 200 characters long.")
+     .When(x => !string.IsNullOrEmpty(x.ExtraInformation));
+
+
             RuleFor(x => x.PurchasedProductId)
                 .GreaterThan(18).NotEmpty();
         }

@@ -75,7 +75,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
             var result = await _productService.GetFilteredProducts(categoryId, subCategoryId, brandId, colorIds, minPrice, maxPrice, pageNumber, pageSize, sortOrder);
             return Ok(result);
         }
-
+       
 
 
     }

@@ -10,8 +10,7 @@ namespace SmartElectronicsApi.Application.Dtos.GuestOrder
 {
     public class GuestOrderCreateDto
     {
-        public string Name { get; set; }
-        public string SurName { get; set; }
+        public string FullName { get; set; }
         public int Age { get; set; }
         public string Address { get; set; }
         public string EmailAdress { get; set; }
@@ -19,6 +18,11 @@ namespace SmartElectronicsApi.Application.Dtos.GuestOrder
         public string ExtraInformation { get; set; }
         public bool IsGottenFromStore { get; set; }
         public int PurchasedProductId { get; set; }
+        public int? PurchasedProducVariationtId { get; set; }
+        [JsonIgnore]
+        public string? ProductName { get; set; }
+        [JsonIgnore]
+        public decimal? ProductPrice { get; set; }
         [JsonIgnore]
         public OrderStatus OrderStatus { get; set; }
     }

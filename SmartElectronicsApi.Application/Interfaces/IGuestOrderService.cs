@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SmartElectronicsApi.Application.Dtos.GuestOrder;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace SmartElectronicsApi.Application.Interfaces
 {
     public interface IGuestOrderService
     {
+        Task<string> Create(GuestOrderCreateDto guestOrderCreateDto);
     }
 }
