@@ -24,7 +24,7 @@ namespace SmartElectronicsApi.Application.Implementations
             var mappedGuestOrder = _mapper.Map<GuestOrder>(guestOrderCreateDto);
             await _unitOfWork.GuestOrderRepository.Create(mappedGuestOrder);
             _unitOfWork.Commit();
-            return "";
+            return "Created GuestOrder";
         }
         private  async Task ValidatProductDetails(GuestOrderCreateDto guestOrderCreateDto)
         {

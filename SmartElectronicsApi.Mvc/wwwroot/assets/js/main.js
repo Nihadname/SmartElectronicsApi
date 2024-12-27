@@ -522,7 +522,167 @@ function GetTheOnesWithDiscount() {
 //document.getElementById('seeMoreButton').addEventListener('click', function () {
 //        window.location.href = '/Product'; // Redirect to the product page
 //});
-var BuyAsGuestOrders = document.querySelectorAll(".BuyAsGuestOrder")
-BuyAsGuestOrders.forEach(s => {
-    console.log(s)
-})
+const formModal = document.getElementById('BuyAsGuestOrderModal');
+formModal.addEventListener('show.bs.modal', function (event) {
+    const button = event.relatedTarget;
+    const productId = button.getAttribute("data-Id");
+    document.getElementById('purchasedProductId').value = productId;
+});
+document.addEventListener('DOMContentLoaded', function () {
+    // Initialize phone input
+    const phoneInputField = document.querySelector("#phoneNumber");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        preferredCountries: ["us", "gb", "de"], // Adjust preferred countries
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+        separateDialCode: true,
+        formatOnDisplay: true,
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            // Auto-detect user's country
+            fetch("https://ipapi.co/json")
+                .then(res => res.json())
+                .then(data => callback(data.country_code))
+                .catch(() => callback("us"));
+        }
+    });
+
+    // Validation on input
+    phoneInputField.addEventListener("input", function () {
+        const isValid = phoneInput.isValidNumber();
+        const errorMsg = document.getElementById('phone-error');
+
+        if (isValid) {
+            phoneInputField.classList.remove('is-invalid');
+            phoneInputField.classList.add('is-valid');
+            errorMsg.textContent = '';
+        } else {
+            phoneInputField.classList.add('is-invalid');
+            phoneInputField.classList.remove('is-valid');
+            errorMsg.textContent = 'Please enter a valid phone number';
+        }
+    });
+
+    // Handle form submission
+    document.getElementById('OrderPurchaseForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (phoneInput.isValidNumber()) {
+            const phoneNumber = phoneInput.getNumber(); // Get formatted number with country code
+            console.log('Valid phone number:', phoneNumber);
+            // Continue with form submission
+        } else {
+            console.log('Invalid phone number');
+            phoneInputField.classList.add('is-invalid');
+        }
+    });
+});
+function submitForm() {
+    const form = document.getElementById('OrderPurchaseForm');
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+    }
+    const submitBtn = document.querySelector('.SubmitButton');
+    submitBtn.disabled = true;
+    const formData = {
+        fullName: document.getElementById('fullName').value,
+        age: parseInt(document.getElementById('age').value),
+        address: document.getElementById('address').value,
+        EmailAdress: document.getElementById('emailAddress').value,
+        phoneNumber: document.getElementById('phoneNumber').value,
+        extraInformation: document.getElementById('extraInformation').value,
+        isGottenFromStore: document.getElementById('isGottenFromStore').value,
+        purchasedProductId: parseInt(document.getElementById('purchasedProductId').value),
+        purchasedProducVariationtId: null
+    };
+    fetch('http://localhost:5246/api/GuestOrder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+    })
+        .then(async response => {
+            const text = await response.text();
+            let json;
+            try {
+                json = JSON.parse(text);
+            } catch (e) {
+                json = text;
+            }
+
+            if (!response.ok) {
+                if (response.status === 400) {
+                    // Handle validation errors
+                    submitBtn.disabled = false;
+                    if (json.errors) {
+                        // Create error message list
+                        const errorMessages = Object.entries(json.errors)
+                            .map(([field, message]) => `<li>${message}</li>`)
+                            .join('');
+
+                        Swal.fire({
+                            title: 'Validation Error',
+                            html: `
+                            <div class="text-left">
+                                <ul class="list-unstyled text-danger">
+                                    ${errorMessages}
+                                </ul>
+                            </div>
+                        `,
+                            icon: 'error',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#dc3545',
+                            customClass: {
+                                container: 'my-swal'
+                            }
+                        });
+
+                        // Also highlight the invalid fields in the form
+                        Object.keys(json.errors).forEach(field => {
+                            const inputElement = document.getElementById(field.toLowerCase());
+                            if (inputElement) {
+                                inputElement.classList.add('is-invalid');
+                            }
+                        });
+                    }
+                    throw new Error('Validation failed');
+                } else {
+                    // Handle other errors
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An unexpected error occurred. Please try again later.',
+                        icon: 'error',
+                        confirmButtonColor: '#dc3545'
+                    });
+                    throw new Error('Server error');
+                }
+            }
+            return json;
+        })
+        .then(data => {
+            // Handle success
+            const modal = bootstrap.Modal.getInstance(formModal);
+            modal.hide();
+
+            // Show success message
+            Swal.fire({
+                title: 'Success!',
+                text: 'Your order has been submitted successfully.',
+                icon: 'success',
+                confirmButtonColor: '#28a745'
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Re-enable the submit button in case of an error
+            if (submitBtn && spinner) {
+                submitBtn.disabled = false;
+                spinner.classList.add('d-none');
+            }
+        })
+        .finally(() => {
+           
+        });
+
+}
