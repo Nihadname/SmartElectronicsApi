@@ -181,9 +181,9 @@
                                 </div>
                             </div>
                             <div class="card-footer bg-transparent border-top-0">
-                                <a class="btn btn-add-to-basket w-100 mb-2" >
-                                    <i  class="fa fa-shopping-cart"></i> 1 Kliklə Al
-                                </a>
+                                <button class="btn btn-add-to-basket w-100 mb-2 BuyAsGuestOrder" data-bs-toggle="modal" data-bs-target="#BuyAsGuestOrderModal">
+                                    <i class="fa fa-shopping-cart" ></i> 1 Kliklə Al
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -210,6 +210,77 @@
         </li>
     </ul>
 </nav>
+<!-- Trigger Button with icon -->
+<button type="button" class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#formModal">
+    <i class="fas fa-envelope me-2"></i>Contact Us
+</button>
+
+<!-- Enhanced Modal -->
+<div class="modal fade" id="BuyAsGuestOrderModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient">
+                <h5 class="modal-title text-white" id="formModalLabel">
+                    <i class="fas fa-paper-plane me-2"></i>Get In Touch
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="welcome-text text-center mb-4">
+                    <h4 class="text-gradient">We'd Love To Hear From You!</h4>
+                    <p class="text-muted">Please fill out the form below and we'll get back to you shortly.</p>
+                </div>
+                <form id="contactForm" class="needs-validation" novalidate>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control custom-input" id="name" placeholder="Your Name" required>
+                        <label for="name"><i class="fas fa-user me-2"></i>Your Name</label>
+                        <div class="invalid-feedback">Please enter your name</div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control custom-input" id="email" placeholder="name@example.com" required>
+                        <label for="email"><i class="fas fa-envelope me-2"></i>Email Address</label>
+                        <div class="invalid-feedback">Please enter a valid email</div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <select class="form-select custom-input" id="subject" required>
+                            <option value="" selected disabled>Select a subject</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="support">Technical Support</option>
+                            <option value="billing">Billing Question</option>
+                        </select>
+                        <label for="subject"><i class="fas fa-tag me-2"></i>Subject</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control custom-input" id="message" style="height: 120px" placeholder="Your message" required></textarea>
+                        <label for="message"><i class="fas fa-comment me-2"></i>Your Message</label>
+                        <div class="invalid-feedback">Please enter your message</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="newsletter" checked>
+                            <label class="form-check-label text-muted" for="newsletter">
+                                Subscribe to our newsletter
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Close
+                </button>
+                <button type="button" class="btn btn-gradient" onclick="submitForm()">
+                    <i class="fas fa-paper-plane me-2"></i>Submit
+                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     // Function to show the loader
     function showLoader() {

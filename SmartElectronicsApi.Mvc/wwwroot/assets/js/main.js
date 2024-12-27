@@ -522,3 +522,7 @@ function GetTheOnesWithDiscount() {
 //document.getElementById('seeMoreButton').addEventListener('click', function () {
 //        window.location.href = '/Product'; // Redirect to the product page
 //});
+var BuyAsGuestOrders = document.querySelectorAll(".BuyAsGuestOrder")
+BuyAsGuestOrders.forEach(s => {
+    console.log(s)
+})
