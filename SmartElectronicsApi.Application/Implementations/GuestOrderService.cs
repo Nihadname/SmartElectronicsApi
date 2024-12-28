@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using SmartElectronicsApi.Application.Dtos.GuestOrder;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
+using SmartElectronicsApi.DataAccess.Migrations;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
@@ -11,20 +14,62 @@ namespace SmartElectronicsApi.Application.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public GuestOrderService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly LinkGenerator _linkGenerator;
+        private readonly IEmailService _emailService;
+        public GuestOrderService(IUnitOfWork unitOfWork, IMapper mapper, LinkGenerator linkGenerator, IHttpContextAccessor contextAccessor, IEmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _linkGenerator = linkGenerator;
+            _contextAccessor = contextAccessor;
+            _emailService = emailService;
         }
         public async Task<string> Create(GuestOrderCreateDto guestOrderCreateDto)
         {
            await ValidateGuestOrder(guestOrderCreateDto);
             await ValidatProductDetails(guestOrderCreateDto);
-            guestOrderCreateDto.OrderStatus = OrderStatus.Completed;
+            guestOrderCreateDto.OrderStatus = OrderStatus.Pending;
             var mappedGuestOrder = _mapper.Map<GuestOrder>(guestOrderCreateDto);
             await _unitOfWork.GuestOrderRepository.Create(mappedGuestOrder);
             _unitOfWork.Commit();
+            string link = _linkGenerator.GetUriByAction(
+                httpContext: _contextAccessor.HttpContext,
+                action: "VerifyGuestOrder",
+            controller: "GuestOrder",
+                values: new { id = mappedGuestOrder.Id},
+                scheme: _contextAccessor.HttpContext.Request.Scheme,
+                host: _contextAccessor.HttpContext.Request.Host
+            );
+            string body;
+            using (StreamReader sr = new StreamReader("wwwroot/Template/emailConfirm.html"))
+            {
+                body = sr.ReadToEnd();
+            }
+            body = body.Replace("{{link}}", link).Replace("{{UserName}}", mappedGuestOrder.FullName);
+
+            _emailService.SendEmail(
+                from: "nihadmi@code.edu.az\r\n",
+                to: mappedGuestOrder.EmailAdress,
+                subject: "Verify Email",
+                body: body,
+                smtpHost: "smtp.gmail.com",
+                smtpPort: 587,
+                enableSsl: true,
+                smtpUser: "nihadmi@code.edu.az\r\n"
+
+            );
             return "Created GuestOrder";
+        }
+        public async Task<string> VerifyEmail(int? id)
+        {
+            if (id is null) throw new CustomException(400, "Id", "id cant be null");
+            var guestOrder = await _unitOfWork.GuestOrderRepository.GetEntity(s => s.Id == id && s.IsDeleted == false);
+            if (guestOrder is null) throw new CustomException(404, "Not found");
+            if (guestOrder.OrderStatus != OrderStatus.Pending) throw new CustomException(400, "Order", "this order is already compeleted or in diffrent status ");
+            guestOrder.OrderStatus = OrderStatus.Completed;
+            _unitOfWork.Commit();
+            return "it is completed";
         }
         private  async Task ValidatProductDetails(GuestOrderCreateDto guestOrderCreateDto)
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartElectronicsApi.Application.Dtos.GuestOrder;
+using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
 
 namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
@@ -20,5 +21,23 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             return Ok(await _guestOrderService.Create(guestOrderCreateDto));
         }
+        [HttpGet("VerifyGuestOrder/{id}")]
+        public async Task<IActionResult> VerifyGuestOrder(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest("Invalid order ID.");
+            }
+
+            var result = await _guestOrderService.VerifyEmail(id);
+
+            if (result == "it is completed")
+            {
+                return Redirect("https://localhost:7170/");
+            }
+
+            throw new CustomException(400, "GuestOrder", "GuestOrder failed");
+        }
+
     }
 }

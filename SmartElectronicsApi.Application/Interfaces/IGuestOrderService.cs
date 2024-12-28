@@ -10,5 +10,6 @@ namespace SmartElectronicsApi.Application.Interfaces
     public interface IGuestOrderService
     {
         Task<string> Create(GuestOrderCreateDto guestOrderCreateDto);
+        Task<string> VerifyEmail(int? id);
     }
 }
