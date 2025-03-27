@@ -23,7 +23,6 @@ namespace SmartElectronicsApi.Application.Dtos.GuestOrder
         public string? ProductName { get; set; }
         [JsonIgnore]
         public decimal? ProductPrice { get; set; }
-        [JsonIgnore]
-        public OrderStatus OrderStatus { get; set; }
+        public OrderStatus? OrderStatus { get; set; }
     }
 }

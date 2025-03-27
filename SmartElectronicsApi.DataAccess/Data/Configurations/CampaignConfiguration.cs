@@ -4,20 +4,15 @@ using SmartElectronicsApi.Core.Entities;
 
 namespace SmartElectronicsApi.DataAccess.Data.Configurations
 {
-    public class GuestOrderConfiguration : IEntityTypeConfiguration<GuestOrder>
+    public class CampaignConfiguration : IEntityTypeConfiguration<Campaign>
     {
-        public void Configure(EntityTypeBuilder<GuestOrder> builder)
+        public void Configure(EntityTypeBuilder<Campaign> builder)
         {
             builder.Property(s => s.IsDeleted).HasDefaultValue(false);
             builder.Property(s => s.CreatedTime).HasDefaultValueSql("GETDATE()");
             builder.Property(s => s.UpdatedTime).HasDefaultValueSql("GETDATE()");
+            builder.Property(s => s.DiscountPercentage).IsRequired(true).HasColumnType("decimal(18, 2)");
             builder.HasKey(e => e.Id);
-            builder.Property(s => s.PurchasedProductId).IsRequired(false);
-            builder.Property(s => s.PurchasedProducVariationtId).IsRequired(false);
-            
-            
-            builder.Property(s => s.ProductPrice).IsRequired(true).HasColumnType("decimal(18, 2)");
-           
         }
     }
 }

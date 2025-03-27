@@ -27,10 +27,28 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<string> Create(GuestOrderCreateDto guestOrderCreateDto)
         {
-           await ValidateGuestOrder(guestOrderCreateDto);
+          
             await ValidatProductDetails(guestOrderCreateDto);
             guestOrderCreateDto.OrderStatus = OrderStatus.Pending;
-            var mappedGuestOrder = _mapper.Map<GuestOrder>(guestOrderCreateDto);
+
+            var mappedGuestOrder = new GuestOrder
+            {
+                 FullName=guestOrderCreateDto.FullName,
+                 Address=guestOrderCreateDto.Address,
+                 Age=guestOrderCreateDto.Age,
+                 EmailAdress=guestOrderCreateDto.EmailAdress,
+                 ExtraInformation=guestOrderCreateDto.ExtraInformation,
+                 IsGottenFromStore=guestOrderCreateDto.IsGottenFromStore,
+                 OrderStatus= (OrderStatus)guestOrderCreateDto.OrderStatus,
+                 PhoneNumber=guestOrderCreateDto.PhoneNumber,
+                 ProductName=guestOrderCreateDto.ProductName,
+                 ProductPrice= (decimal)guestOrderCreateDto.ProductPrice,
+                 PurchasedProductId=guestOrderCreateDto.PurchasedProductId,
+                 PurchasedProducVariationtId=guestOrderCreateDto.PurchasedProducVariationtId??null,
+               
+                
+
+            };
             await _unitOfWork.GuestOrderRepository.Create(mappedGuestOrder);
             _unitOfWork.Commit();
             string link = _linkGenerator.GetUriByAction(

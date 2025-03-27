@@ -14,7 +14,7 @@ namespace SmartElectronicsApi.Application.Implementations
         public void SendEmail(string from, string to, string subject, string body, string smtpHost, int smtpPort, bool enableSsl, string smtpUser)
         {
             MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(from);
+            mailMessage.From = new MailAddress("nihadcoding@gmail.com\r\n");
             mailMessage.To.Add(new MailAddress(to));
             mailMessage.Subject = subject;
             mailMessage.IsBodyHtml = true;
@@ -24,7 +24,7 @@ namespace SmartElectronicsApi.Application.Implementations
             smtpClient.Host = smtpHost;
             smtpClient.Port = smtpPort;
             smtpClient.EnableSsl = enableSsl;
-            smtpClient.Credentials = new NetworkCredential(smtpUser, "eise hosy kfne qhnm");
+            smtpClient.Credentials = new NetworkCredential("nihadcoding@gmail.com", "kixx kxou qgdj wgmx");
             smtpClient.Send(mailMessage);
         }
 
@@ -43,7 +43,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 smtpClient.Host = smtpHost;
                 smtpClient.Port = smtpPort;
                 smtpClient.EnableSsl = enableSsl;
-                smtpClient.Credentials = new NetworkCredential(smtpUser, "eise hosy kfne qhnm");
+                smtpClient.Credentials = new NetworkCredential(smtpUser, "kixx kxou qgdj wgmx");
 
                 await smtpClient.SendMailAsync(mailMessage);
             }

@@ -3,22 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SmartElectronicsApi.Application.Dtos;
-using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Dtos.Comment;
-using SmartElectronicsApi.Application.Dtos.Product;
-using SmartElectronicsApi.Application.Dtos.ProductVariation;
-using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.Implementations
 {
