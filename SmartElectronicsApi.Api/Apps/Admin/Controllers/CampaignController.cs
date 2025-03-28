@@ -20,7 +20,7 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
             _campaignService = campaignService;
         }
         [HttpPost]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> Create([FromForm]CreateCampaignDto createCampaignDto)
         {
             return Ok(await _campaignService.CreateCampaign(createCampaignDto));

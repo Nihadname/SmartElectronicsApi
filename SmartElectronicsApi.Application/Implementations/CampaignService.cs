@@ -25,17 +25,7 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 var mappedImage = createCampaignDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
                 var productList = new List<Product>();
-                if (createCampaignDto.ProductIds.Any())
-                {
-
-                    foreach(var  productId in createCampaignDto.ProductIds)
-                    {
-                        var existedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
-                        if(existedProduct is null)
-                            throw new CustomException(400, $"Could not find product id {productId}");
-                        productList.Add(existedProduct);
-                    }
-                }
+                
                 var newCampaign = new Campaign()
                 {
                     Title = createCampaignDto.Title.Trim(),
@@ -48,6 +38,23 @@ namespace SmartElectronicsApi.Application.Implementations
                 };
                 await _unitOfWork.CampaignRepository.Create(newCampaign);
                 _unitOfWork.Commit();
+                if (createCampaignDto.ProductIds.Any())
+                {
+
+                    foreach (var productId in createCampaignDto.ProductIds)
+                    {
+                        var existedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
+                        if (existedProduct is null)
+                            throw new CustomException(400, $"Could not find product id {productId}");
+                        var newCampaignProduct = new CampaignProduct()
+                        {
+                            ProductId = productId,
+                            CampaignId = newCampaign.Id,
+                        };
+                        productList.Add(existedProduct);
+                    }
+                   
+                }
                 await _unitOfWork.CampaignRepository.CommitTransactionAsync();
                 return "succesfully created";
             }
