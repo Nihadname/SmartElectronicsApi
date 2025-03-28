@@ -11,7 +11,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Configurations
             builder.Property(s => s.IsDeleted).HasDefaultValue(false);
             builder.Property(s => s.CreatedTime).HasDefaultValueSql("GETDATE()");
             builder.Property(s => s.UpdatedTime).HasDefaultValueSql("GETDATE()");
-            builder.Property(s => s.DiscountPercentage).IsRequired(true).HasColumnType("decimal(18, 2)");
+            builder.Property(s => s.DiscountPercentageValue).IsRequired(true).HasColumnType("decimal(18, 2)");
             builder.HasKey(e => e.Id);
         }
     }

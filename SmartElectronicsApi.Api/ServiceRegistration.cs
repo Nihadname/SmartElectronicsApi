@@ -119,6 +119,8 @@ public static class ServiceRegistration
         services.AddScoped<ICodeGeneratorService, CodeGeneratorService>();
         services.AddScoped<IGuestOrderRepository, GuestOrderRepository>();
         services.AddScoped<IGuestOrderService, GuestOrderService>();
+        services.AddScoped<ICampaignRepository, CampaignRepository>();
+        services.AddScoped<ICampaignService, CampaignService>();
        
        services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo

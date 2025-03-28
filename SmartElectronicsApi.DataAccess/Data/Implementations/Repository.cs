@@ -199,5 +199,21 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
                 throw new Exception(ex.Message);
             }
         }
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            var transaction = _context.Database.CurrentTransaction;
+            if (transaction != null)
+            {
+                await transaction.RollbackAsync();
+            }
+        }
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            var transaction = _context.Database.CurrentTransaction;
+            if (transaction != null)
+            {
+                await transaction.CommitAsync();
+            }
+        }
     }
 }

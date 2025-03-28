@@ -1,0 +1,59 @@
+﻿using SmartElectronicsApi.Application.Dtos.Campaign;
+using SmartElectronicsApi.Application.Exceptions;
+using SmartElectronicsApi.Application.Extensions;
+using SmartElectronicsApi.Application.Interfaces;
+using SmartElectronicsApi.Core.Entities;
+using SmartElectronicsApi.DataAccess.Data.Implementations;
+
+namespace SmartElectronicsApi.Application.Implementations
+{
+    public class CampaignService: ICampaignService
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CampaignService(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+        public async Task<string> CreateCampaign(CreateCampaignDto createCampaignDto)
+        {
+            await _unitOfWork.CampaignRepository.BeginTransactionAsync();
+            try
+            {
+                var mappedImage = createCampaignDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
+                var productList = new List<Product>();
+                if (createCampaignDto.ProductIds.Any())
+                {
+
+                    foreach(var  productId in createCampaignDto.ProductIds)
+                    {
+                        var existedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
+                        if(existedProduct is null)
+                            throw new CustomException(400, $"Could not find product id {productId}");
+                        productList.Add(existedProduct);
+                    }
+                }
+                var newCampaign = new Campaign()
+                {
+                    Title = createCampaignDto.Title.Trim(),
+                    Description = createCampaignDto.Description ?? null,
+                    StartDate = createCampaignDto.StartDate,
+                    EndDate = createCampaignDto.EndDate,
+                    ImageUrl = mappedImage,
+                    DiscountPercentageValue = createCampaignDto.DiscountPercentage ?? null,
+                    Products= productList??null,
+                };
+                await _unitOfWork.CampaignRepository.Create(newCampaign);
+                _unitOfWork.Commit();
+                await _unitOfWork.CampaignRepository.CommitTransactionAsync();
+                return "succesfully created";
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.CampaignRepository.RollbackTransactionAsync();
+                throw new CustomException(500, $"System error:{ex.Message} or {ex.InnerException?.Message ?? "None"}");
+            }
+
+        }
+    }
+}

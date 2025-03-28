@@ -1,0 +1,14 @@
+﻿using SmartElectronicsApi.Application.Dtos.Campaign;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SmartElectronicsApi.Application.Interfaces
+{
+    public interface ICampaignService
+    {
+        Task<string> CreateCampaign(CreateCampaignDto createCampaignDto);
+    }
+}

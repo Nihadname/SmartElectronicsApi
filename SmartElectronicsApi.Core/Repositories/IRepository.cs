@@ -20,7 +20,10 @@ namespace SmartElectronicsApi.Core.Repositories
         Task Commit();
         Task<IQueryable<T>> GetQuery(Expression<Func<T, bool>> predicate = null);
         Task<IDbContextTransaction> BeginTransactionAsync();
-        
+        Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
+        Task CommitTransactionAsync(CancellationToken cancellationToken = default);
+
+
 
     }
 }
