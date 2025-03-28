@@ -38,7 +38,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 };
                 await _unitOfWork.CampaignRepository.Create(newCampaign);
                 _unitOfWork.Commit();
-                if (createCampaignDto.ProductIds.Any())
+                if (createCampaignDto?.ProductIds?.Count != 0)
                 {
 
                     foreach (var productId in createCampaignDto.ProductIds)
@@ -51,9 +51,9 @@ namespace SmartElectronicsApi.Application.Implementations
                             ProductId = productId,
                             CampaignId = newCampaign.Id,
                         };
-                        productList.Add(existedProduct);
+                        await _unitOfWork.CampaignProductRepository.Create(newCampaignProduct);
                     }
-                   
+                    _unitOfWork.Commit();
                 }
                 await _unitOfWork.CampaignRepository.CommitTransactionAsync();
                 return "succesfully created";

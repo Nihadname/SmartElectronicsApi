@@ -35,6 +35,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public ICommentImageRepository CommentImageRepository { get; }
         public IGuestOrderRepository GuestOrderRepository { get; }
         public ICampaignRepository CampaignRepository { get; }
+        public ICampaignProductRepository CampaignProductRepository { get; }
         public void Commit();
 
     }

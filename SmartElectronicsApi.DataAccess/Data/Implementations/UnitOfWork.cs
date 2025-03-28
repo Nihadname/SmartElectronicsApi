@@ -40,6 +40,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public ICommentImageRepository CommentImageRepository { get; private set; }
         public IGuestOrderRepository GuestOrderRepository { get; private set; }
         public ICampaignRepository CampaignRepository { get; private set; }
+        public ICampaignProductRepository CampaignProductRepository { get; private set; }
         public UnitOfWork(SmartElectronicsDbContext smartElectronicsDbContext)
         {
             categoryRepository= new CategoryRepository(smartElectronicsDbContext);
@@ -68,6 +69,7 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             CommentImageRepository= new CommentImageRepository( smartElectronicsDbContext);
             GuestOrderRepository= new GuestOrderRepository( smartElectronicsDbContext);
             CampaignRepository= new CampaignRepository( smartElectronicsDbContext);
+            CampaignProductRepository= new CampaignProductRepository(smartElectronicsDbContext);
         _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 
