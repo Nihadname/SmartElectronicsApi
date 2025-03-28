@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartElectronicsApi.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using SmartElectronicsApi.DataAccess.Data;
 namespace SmartElectronicsApi.DataAccess.Migrations
 {
     [DbContext(typeof(SmartElectronicsDbContext))]
-    partial class SmartElectronicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250328131033_NewEntityBranch")]
+    partial class NewEntityBranch
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -547,41 +550,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.ToTable("campaigns");
                 });
 
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.CampaignProduct", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CampaignId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DeletedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampaignId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("campaignProducts");
-                });
-
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -1048,6 +1016,9 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CampaignId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -1108,6 +1079,8 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId");
+
+                    b.HasIndex("CampaignId");
 
                     b.HasIndex("CategoryId");
 
@@ -1625,25 +1598,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Navigation("SubCategory");
                 });
 
-            modelBuilder.Entity("SmartElectronicsApi.Core.Entities.CampaignProduct", b =>
-                {
-                    b.HasOne("SmartElectronicsApi.Core.Entities.Campaign", "Campaign")
-                        .WithMany("CampaignProducts")
-                        .HasForeignKey("CampaignId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SmartElectronicsApi.Core.Entities.Product", "Product")
-                        .WithMany("CampaignProducts")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Campaign");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Comment", b =>
                 {
                     b.HasOne("SmartElectronicsApi.Core.Entities.AppUser", "AppUser")
@@ -1734,6 +1688,10 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("SmartElectronicsApi.Core.Entities.Campaign", "campaign")
+                        .WithMany("Products")
+                        .HasForeignKey("CampaignId");
+
                     b.HasOne("SmartElectronicsApi.Core.Entities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
@@ -1751,6 +1709,8 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("SubCategory");
+
+                    b.Navigation("campaign");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.ProductColor", b =>
@@ -1887,7 +1847,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Campaign", b =>
                 {
-                    b.Navigation("CampaignProducts");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Category", b =>
@@ -1922,8 +1882,6 @@ namespace SmartElectronicsApi.DataAccess.Migrations
             modelBuilder.Entity("SmartElectronicsApi.Core.Entities.Product", b =>
                 {
                     b.Navigation("BasketProducts");
-
-                    b.Navigation("CampaignProducts");
 
                     b.Navigation("Variations");
 

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartElectronicsApi.Application.Dtos.Campaign;
 using SmartElectronicsApi.Application.Dtos.Category;
@@ -18,6 +20,7 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
             _campaignService = campaignService;
         }
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> Create([FromForm]CreateCampaignDto createCampaignDto)
         {
             return Ok(await _campaignService.CreateCampaign(createCampaignDto));

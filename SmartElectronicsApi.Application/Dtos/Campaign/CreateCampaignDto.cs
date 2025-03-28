@@ -9,7 +9,7 @@ namespace SmartElectronicsApi.Application.Dtos.Campaign
 {
     public class CreateCampaignDto
     {
-        public required IFormFile formFile;
+        public required IFormFile formFile { get; set; }
         public required string Title { get; set; }
         public string? Description { get; set; }
         public required DateTimeOffset StartDate { get; set; }

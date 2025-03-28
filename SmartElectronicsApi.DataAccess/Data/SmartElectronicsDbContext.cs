@@ -43,6 +43,8 @@ namespace SmartElectronicsApi.DataAccess.Data
         public DbSet<CommentImage> commentImages { get; set; }
         public DbSet<GuestOrder> guestOrders { get; set; }
         public DbSet<Campaign> campaigns { get; set; }
+        public DbSet<Branch> branchs { get; set; }
+        public DbSet<CampaignProduct> campaignProducts { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Order>()

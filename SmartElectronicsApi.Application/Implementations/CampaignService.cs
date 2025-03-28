@@ -1,4 +1,7 @@
-﻿using SmartElectronicsApi.Application.Dtos.Campaign;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using SmartElectronicsApi.Application.Dtos;
+using SmartElectronicsApi.Application.Dtos.Campaign;
+using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Interfaces;
@@ -41,7 +44,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     EndDate = createCampaignDto.EndDate,
                     ImageUrl = mappedImage,
                     DiscountPercentageValue = createCampaignDto.DiscountPercentage ?? null,
-                    Products= productList??null,
+                    
                 };
                 await _unitOfWork.CampaignRepository.Create(newCampaign);
                 _unitOfWork.Commit();
@@ -54,6 +57,10 @@ namespace SmartElectronicsApi.Application.Implementations
                 throw new CustomException(500, $"System error:{ex.Message} or {ex.InnerException?.Message ?? "None"}");
             }
 
+        }
+        public async Task<PaginatedResponse<CampaignListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10)
+        {
+            return new PaginatedResponse<CampaignListItemDto>();
         }
     }
 }
