@@ -67,7 +67,26 @@ namespace SmartElectronicsApi.Application.Implementations
         }
         public async Task<PaginatedResponse<CampaignListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10)
         {
-            return new PaginatedResponse<CampaignListItemDto>();
+            var totalCount = (await _unitOfWork.CampaignRepository.GetAll()).Count();
+            var allCampaigns = await _unitOfWork.CampaignRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize);
+            var mappedCampaignlistItemDto = allCampaigns.Select(allCampaigns => new CampaignListItemDto() {
+                Title = allCampaigns.Title,
+                Description= allCampaigns.Description,
+                DiscountPercentageValue=allCampaigns.DiscountPercentageValue,
+                EndDate = allCampaigns.EndDate,
+                ImageUrl = allCampaigns.ImageUrl,
+                StartDate = allCampaigns.StartDate,
+                
+            }).ToList();
+            var paginatedResult = new PaginatedResponse<CampaignListItemDto>
+            {
+                Data = mappedCampaignlistItemDto,
+                TotalRecords = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+
+             return paginatedResult; ;
         }
     }
 }
