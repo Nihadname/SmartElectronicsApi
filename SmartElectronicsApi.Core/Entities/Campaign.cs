@@ -11,6 +11,7 @@ namespace SmartElectronicsApi.Core.Entities
         public DateTimeOffset EndDate { get;  set; }
         public decimal? DiscountPercentageValue { get; set; }
         public ICollection<CampaignProduct> CampaignProducts { get; set; }
+        public ICollection<BranchCampaign> branchCampaigns { get; set; }
 
     }
     public enum Status

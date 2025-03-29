@@ -56,8 +56,8 @@ namespace SmartElectronicsApi.Application.Implementations
 
                     foreach (var productId in productIds)
                     {
-                        var existedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
-                        if (existedProduct is null)
+                        var isProductExist = await _unitOfWork.productRepository.isExists(s => s.Id == productId);
+                        if (!isProductExist)
                             throw new CustomException(400, $"Could not find product id {productId}");
                         var newCampaignProduct = new CampaignProduct()
                         {
@@ -65,6 +65,23 @@ namespace SmartElectronicsApi.Application.Implementations
                             CampaignId = newCampaign.Id,
                         };
                         await _unitOfWork.CampaignProductRepository.Create(newCampaignProduct);
+                    }
+                    _unitOfWork.Commit();
+                }
+                if(createCampaignDto?.BranchIds?.Count!=0&&createCampaignDto?.BranchIds is not null)
+                {
+                    var branchIds=createCampaignDto?.BranchIds?.Distinct().ToList();
+                    foreach(var branchId in branchIds)
+                    {
+                        var isBranchExist = await _unitOfWork.BranchRepository.isExists(s => s.Id == branchId);
+                        if (!isBranchExist)
+                            throw new CustomException(400, $"Could not find branch id {branchId}");
+                        var newBranchCampaign = new BranchCampaign()
+                        {
+                            BranchId = branchId,
+                            CampaignId = newCampaign.Id,
+                        };
+                        await _unitOfWork.BranchCampaignRepository.Create(newBranchCampaign);
                     }
                     _unitOfWork.Commit();
                 }

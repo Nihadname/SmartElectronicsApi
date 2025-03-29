@@ -10,6 +10,7 @@ namespace SmartElectronicsApi.Core.Entities
     public class Branch:BaseEntity
     {
         public string Name { get; set; }
+        public ICollection<BranchCampaign> branchCampaigns { get; set; }
 
     }
 }

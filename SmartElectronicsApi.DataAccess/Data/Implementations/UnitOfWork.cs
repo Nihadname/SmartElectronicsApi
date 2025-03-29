@@ -41,6 +41,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
         public IGuestOrderRepository GuestOrderRepository { get; private set; }
         public ICampaignRepository CampaignRepository { get; private set; }
         public ICampaignProductRepository CampaignProductRepository { get; private set; }
+        public IBranchRepository BranchRepository { get; private set; }
+        public IBranchCampaignRepository BranchCampaignRepository { get; private set; }
         public UnitOfWork(SmartElectronicsDbContext smartElectronicsDbContext)
         {
             categoryRepository= new CategoryRepository(smartElectronicsDbContext);
@@ -70,6 +72,8 @@ namespace SmartElectronicsApi.DataAccess.Data.Implementations
             GuestOrderRepository= new GuestOrderRepository( smartElectronicsDbContext);
             CampaignRepository= new CampaignRepository( smartElectronicsDbContext);
             CampaignProductRepository= new CampaignProductRepository(smartElectronicsDbContext);
+            BranchRepository= new BranchRepository( smartElectronicsDbContext);
+            BranchCampaignRepository= new BranchCampaignRepository( smartElectronicsDbContext);
         _smartElectronicsDbContext = smartElectronicsDbContext;
         }
 

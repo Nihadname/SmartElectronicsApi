@@ -16,5 +16,6 @@ namespace SmartElectronicsApi.Application.Dtos.Campaign
         public required DateTimeOffset EndDate { get; init; }
         public decimal? DiscountPercentage { get; init; }
         public List<int>? ProductIds { get; init; }
+        public List<int>? BranchIds { get; init; }
     }
 }
