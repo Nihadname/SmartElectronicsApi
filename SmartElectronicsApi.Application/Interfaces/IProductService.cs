@@ -44,5 +44,6 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<ProductUpdateDto> Update(int productId, ProductUpdateDto productUpdateDto);
         Task MakeMain(int productId, int imageId);
          Task DeleteColorOfProduct(int productId, int colorId);
+        Task<IEnumerable<ProductSelectDto>> GetSelectProducts();
     }
 }

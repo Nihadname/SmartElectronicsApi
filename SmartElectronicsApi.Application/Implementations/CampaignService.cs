@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Campaign;
-using SmartElectronicsApi.Application.Dtos.Category;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Interfaces;
@@ -13,16 +12,28 @@ namespace SmartElectronicsApi.Application.Implementations
     public class CampaignService: ICampaignService
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public CampaignService(IUnitOfWork unitOfWork)
+        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly string Url;
+        public CampaignService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
+            _contextAccessor = contextAccessor;
+            var uriBuilder = new UriBuilder(_contextAccessor.HttpContext.Request.Scheme,
+                           _contextAccessor.HttpContext.Request.Host.Host,
+                           _contextAccessor.HttpContext.Request.Host.Port.Value);
+            var url = uriBuilder.Uri.AbsoluteUri;
+            Url = url;
         }
+
         public async Task<string> CreateCampaign(CreateCampaignDto createCampaignDto)
         {
+            
             await _unitOfWork.CampaignRepository.BeginTransactionAsync();
             try
             {
+                var isTitleExist=await _unitOfWork.CampaignRepository.isExists(s=>s.Title.ToLower()==createCampaignDto.Title.ToLower());
+                if (isTitleExist)
+                    throw new CustomException(400, "Name already exisits");
                 var mappedImage = createCampaignDto.formFile.Save(Directory.GetCurrentDirectory(), "img");
                 var productList = new List<Product>();
                 
@@ -33,13 +44,13 @@ namespace SmartElectronicsApi.Application.Implementations
                     Description = createCampaignDto.Description ?? null,
                     StartDate = createCampaignDto.StartDate,
                     EndDate = createCampaignDto.EndDate,
-                    ImageUrl = mappedImage,
+                    ImageUrl = Url + "img/"+ mappedImage,
                     DiscountPercentageValue = createCampaignDto.DiscountPercentage ?? 0m,
                     
                 };
                 await _unitOfWork.CampaignRepository.Create(newCampaign);
                 _unitOfWork.Commit();
-                if (createCampaignDto?.ProductIds?.Count != 0)
+                if (createCampaignDto?.ProductIds?.Count != 0&&createCampaignDto.ProductIds is not null)
                 {
                     var productIds = createCampaignDto?.ProductIds?.Distinct().ToList();
 

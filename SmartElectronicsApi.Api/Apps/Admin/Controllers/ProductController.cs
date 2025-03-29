@@ -19,6 +19,7 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         }
 
         [HttpPost]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> Create( ProductCreateDto productCreateDto)
         {
            
@@ -27,6 +28,7 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
             
         }
         [HttpDelete("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             
@@ -53,20 +55,30 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
             return Ok(await _productService.Get());
         }
         [HttpPut("{productId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> Update(int productId, ProductUpdateDto productUpdateDto)
         {
             return Ok(await _productService.Update(productId, productUpdateDto));
         }
         [HttpPatch]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> MakeMain(int productId, int imageId)
         {
             var method =  _productService.MakeMain(productId, imageId);
             return Ok(method);
         }
         [HttpDelete("Color/{colorId}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteColorOfProduct(int productId, int colorId)
         {
             return Ok( _productService.DeleteColorOfProduct(productId, colorId));
         }
+        [HttpGet("GetAllForSelect")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        public async Task<IActionResult> GetAllForSelect()
+        {
+            return Ok(await _productService.GetSelectProducts());
+        }
+
     }
 }

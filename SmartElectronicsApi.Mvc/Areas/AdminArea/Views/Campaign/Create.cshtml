@@ -1,6 +1,90 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using SmartElectronicsApi.Mvc.ViewModels.Campaign
+
+@model CreateCampaignVM
+
 <h1>Salam</h1>
+
+<div class="row">
+    <div class="col-md-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Horizontal Form</h4>
+                <p class="card-description">Brand Create Page</p>
+                <form asp-action="Create" method="post" class="forms-sample" enctype="multipart/form-data">
+
+                    <!-- Title -->
+                    <div class="form-group row">
+                        <label asp-for="Title" class="col-sm-3 col-form-label">Title</label>
+                        <div class="col-sm-9">
+                            <input asp-for="Title" class="form-control" placeholder="Title" />
+                            <span class="text-danger" asp-validation-for="Title"></span>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group row">
+                        <label asp-for="Description" class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <input asp-for="Description" class="form-control" placeholder="Description" />
+                            <span class="text-danger" asp-validation-for="Description"></span>
+                        </div>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div class="form-group row">
+                        <label asp-for="StartDate" class="col-sm-3 col-form-label">Start Date</label>
+                        <div class="col-sm-9">
+                            <input asp-for="StartDate" class="form-control" type="datetime-local" />
+                            <span class="text-danger" asp-validation-for="StartDate"></span>
+                        </div>
+                    </div>
+
+                    <!-- End Date -->
+                    <div class="form-group row">
+                        <label asp-for="EndDate" class="col-sm-3 col-form-label">End Date</label>
+                        <div class="col-sm-9">
+                            <input asp-for="EndDate" class="form-control" type="datetime-local" />
+                            <span class="text-danger" asp-validation-for="EndDate"></span>
+                        </div>
+                    </div>
+
+                    <!-- Discount Percentage -->
+                    <div class="form-group row">
+                        <label asp-for="DiscountPercentage" class="col-sm-3 col-form-label">Discount Percentage</label>
+                        <div class="col-sm-9">
+                            <input asp-for="DiscountPercentage" class="form-control" placeholder="Discount Percentage" />
+                            <span class="text-danger" asp-validation-for="DiscountPercentage"></span>
+                        </div>
+                    </div>
+
+                    <!-- Product IDs (Multiple Inputs) -->
+                    <div class="form-group row">
+                        <label asp-for="ProductIds" class="col-sm-3 col-form-label">products</label>
+                        <div class="col-sm-9">
+                            <select asp-for="ProductIds" class="form-control">
+                                <option value="">Select Colors</option>
+                                @foreach (var category in ViewBag.Products)
+                                {
+                                    <option value="@category.Value">@category.Text</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="ProductIds"></span>
+                        </div>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="form-group row">
+                        <label asp-for="formFile" class="col-sm-3 col-form-label">Upload File</label>
+                        <div class="col-sm-9">
+                            <input asp-for="formFile" class="form-control" type="file" />
+                            <span class="text-danger" asp-validation-for="formFile"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-gradient-primary me-2">Submit</button>
+                    <button class="btn btn-light" asp-action="Index">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

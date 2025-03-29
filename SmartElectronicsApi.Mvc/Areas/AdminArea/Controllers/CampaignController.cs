@@ -8,6 +8,9 @@ using SmartElectronicsApi.Mvc.ViewModels.Campaign;
 using System;
 using System.Text;
 using SmartElectronicsApi.Mvc.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using SmartElectronicsApi.Mvc.ViewModels.Category;
+using SmartElectronicsApi.Mvc.ViewModels.Product;
 
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
@@ -64,6 +67,13 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             {
                 return RedirectToAction("Error404", "Home", new { area = "" });
             }
+            using HttpResponseMessage productResponse = await client.GetAsync("http://localhost:5246/api/Product/GetAllForSelect");
+            if (productResponse.IsSuccessStatusCode)
+            {
+                string contentStream = await productResponse.Content.ReadAsStringAsync();
+                var products = JsonConvert.DeserializeObject<List<ProductSelectVM>>(contentStream);
+                ViewBag.Products = new SelectList(products, "Id", "Name");
+            }
             return View();
         }
         [HttpPost]
@@ -72,13 +82,15 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
         {
             if (!ModelState.IsValid)
             {
+                await LoadViewBagData();
                 return View(createCampaignVM);
+
             }
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
             var content = new MultipartFormDataContent();
-            content.Add(new StringContent(createCampaignVM.Title), "Name");
+            content.Add(new StringContent(createCampaignVM.Title), "Title");
             if (!string.IsNullOrWhiteSpace(createCampaignVM.Description))
             {
                 content.Add(new StringContent(createCampaignVM.Description), "Description");
@@ -98,7 +110,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue(createCampaignVM.formFile.ContentType);
                 content.Add(fileContent, nameof(BrandCreateVM.formFile), createCampaignVM.formFile.FileName);
             }
-            if (createCampaignVM.ProductIds.Count != 0)
+            if (createCampaignVM.ProductIds is not null)
             {
                 foreach (int number in createCampaignVM.ProductIds)
                 {
@@ -125,10 +137,23 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 {
                     ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
+                await LoadViewBagData();
                 return View(createCampaignVM);
             }
 
         }
-
+        private async Task LoadViewBagData()
+        {
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization =
+                 new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            using HttpResponseMessage productResponse = await client.GetAsync("http://localhost:5246/api/Product/GetAllForSelect");
+            if (productResponse.IsSuccessStatusCode)
+            {
+                string contentStream = await productResponse.Content.ReadAsStringAsync();
+                var products = JsonConvert.DeserializeObject<List<ProductSelectVM>>(contentStream);
+                ViewBag.Products = new SelectList(products, "Id", "Name");
+            }
+        }
     }
 }

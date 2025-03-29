@@ -92,8 +92,9 @@ namespace SmartElectronicsApi.Application.Implementations
                     }
                 }
                 productCreateDto.CreatedTime=DateTime.Now;
+                productCreateDto.Name=productCreateDto.Name.Trim();
                 var mappedProduct = _mapper.Map<Product>(productCreateDto);
-               
+                
                 await _unitOfWork.productRepository.Create(mappedProduct);
 
                 _unitOfWork.Commit();
@@ -656,6 +657,14 @@ return MappedProducts;
             await _unitOfWork.productRepository.Update(product);
             _unitOfWork.Commit();
         }
-  
+        public async Task<IEnumerable<ProductSelectDto>> GetSelectProducts()
+        {
+            var products= (await _unitOfWork.productRepository.GetAll()).Select(s=> new ProductSelectDto()
+            {
+                Id=s.Id,
+                Name=s.Name.Trim(),    
+            });
+            return products;
+        }
     }
 }
