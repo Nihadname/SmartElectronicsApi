@@ -4,6 +4,10 @@ using SmartElectronicsApi.Mvc.ViewModels.Brand;
 using SmartElectronicsApi.Mvc.ViewModels.pagination;
 using System.Net.Http.Headers;
 using System.Net;
+using SmartElectronicsApi.Mvc.ViewModels.Campaign;
+using System;
+using System.Text;
+using SmartElectronicsApi.Mvc.ViewModels;
 
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
@@ -19,7 +23,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 string ContentStream = await httpResponseMessage.Content.ReadAsStringAsync();
-                var data = JsonConvert.DeserializeObject<PaginatedResponseVM<BrandAdminReturnVM>>(ContentStream);
+                var data = JsonConvert.DeserializeObject<PaginatedResponseVM<CampaignListItemVM>>(ContentStream);
                 return View(data);
             }
             else if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
@@ -35,5 +39,96 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 return RedirectToAction("Error404", "Home", new { area = "" });
             }
         }
+
+        public async Task<IActionResult> Create()
+        {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            client.DefaultRequestHeaders.Authorization =
+                  new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+
+            using HttpResponseMessage AuthCheck = await client.GetAsync("http://localhost:5246/api/Auth/CheckAdmin");
+            if (AuthCheck.IsSuccessStatusCode)
+            {
+
+            }
+            else if (AuthCheck.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return RedirectToAction("Login", "Account", new { area = "" });
+            }
+            else if (AuthCheck.StatusCode == HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction("AccessDenied", "Account", new { area = "" });
+            }
+            else
+            {
+                return RedirectToAction("Error404", "Home", new { area = "" });
+            }
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateCampaignVM createCampaignVM)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(createCampaignVM);
+            }
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+            var content = new MultipartFormDataContent();
+            content.Add(new StringContent(createCampaignVM.Title), "Name");
+            if (!string.IsNullOrWhiteSpace(createCampaignVM.Description))
+            {
+                content.Add(new StringContent(createCampaignVM.Description), "Description");
+            }
+            string startDateTimeString = createCampaignVM.StartDate.ToString("yyyy-MM-ddTHH:mm:ss");
+            string endDateTimeString = createCampaignVM.EndDate.ToString("yyyy-MM-ddTHH:mm:ss");
+            content.Add(new StringContent(startDateTimeString), "StartDate");
+            content.Add(new StringContent(endDateTimeString), "EndDate");
+            if (createCampaignVM.DiscountPercentage != null)
+            {
+                string? decimalString = createCampaignVM.DiscountPercentage?.ToString("F2");
+                content.Add(new StringContent(endDateTimeString), "DiscountPercentage");
+            }
+            if (createCampaignVM.formFile != null)
+            {
+                var fileContent = new StreamContent(createCampaignVM.formFile.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(createCampaignVM.formFile.ContentType);
+                content.Add(fileContent, nameof(BrandCreateVM.formFile), createCampaignVM.formFile.FileName);
+            }
+            if (createCampaignVM.ProductIds.Count != 0)
+            {
+                foreach (int number in createCampaignVM.ProductIds)
+                {
+                    content.Add(new StringContent(number.ToString(), Encoding.UTF8, "text/plain"), "ProductIds");
+                }
+            }
+            var response = await client.PostAsync("Campaign", content);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorResponseString = await response.Content.ReadAsStringAsync();
+                var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(errorResponseString);
+                if (errorResponse?.Errors != null)
+                {
+                    foreach (var error in errorResponse.Errors)
+                    {
+                        ModelState.AddModelError(error.Key, error.Value);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
+                }
+                return View(createCampaignVM);
+            }
+
+        }
+
     }
 }

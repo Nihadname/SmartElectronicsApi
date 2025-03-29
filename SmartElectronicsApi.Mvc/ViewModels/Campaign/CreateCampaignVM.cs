@@ -1,13 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SmartElectronicsApi.Application.Dtos.Campaign
+﻿namespace SmartElectronicsApi.Mvc.ViewModels.Campaign
 {
-    public sealed record CreateCampaignDto
+    public sealed record CreateCampaignVM
     {
         public required IFormFile formFile { get; init; }
         public required string Title { get; init; }

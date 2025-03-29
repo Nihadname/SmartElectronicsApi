@@ -28,6 +28,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 
                 var newCampaign = new Campaign()
                 {
+                   
                     Title = createCampaignDto.Title.Trim(),
                     Description = createCampaignDto.Description ?? null,
                     StartDate = createCampaignDto.StartDate,
@@ -40,8 +41,9 @@ namespace SmartElectronicsApi.Application.Implementations
                 _unitOfWork.Commit();
                 if (createCampaignDto?.ProductIds?.Count != 0)
                 {
+                    var productIds = createCampaignDto?.ProductIds?.Distinct().ToList();
 
-                    foreach (var productId in createCampaignDto.ProductIds)
+                    foreach (var productId in productIds)
                     {
                         var existedProduct = await _unitOfWork.productRepository.GetEntity(s => s.Id == productId);
                         if (existedProduct is null)
@@ -71,6 +73,7 @@ namespace SmartElectronicsApi.Application.Implementations
 
             var allCampaigns = await _unitOfWork.CampaignRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize);
             var mappedCampaignlistItemDto = allCampaigns.Select(allCampaigns => new CampaignListItemDto() {
+                Id = allCampaigns.Id,
                 Title = allCampaigns.Title,
                 Description= allCampaigns.Description,
                 DiscountPercentageValue=allCampaigns.DiscountPercentageValue,
