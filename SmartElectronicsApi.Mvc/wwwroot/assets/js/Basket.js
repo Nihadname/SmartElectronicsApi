@@ -12,7 +12,7 @@
         url: `/Basket/Add?productId=${data.productId}${data.variationId ? `&variationId=${data.variationId}` : ''}`,
         type: 'POST',
         contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify(data), // Use JSON.stringify instead of json.stringify
+        data: JSON.stringify(data), 
         success: function (response) {
             console.log(response);
             if (response.success) {

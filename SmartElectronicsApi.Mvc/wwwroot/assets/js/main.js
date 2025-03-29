@@ -523,11 +523,13 @@ function GetTheOnesWithDiscount() {
 //        window.location.href = '/Product'; // Redirect to the product page
 //});
 const formModal = document.getElementById('BuyAsGuestOrderModal');
-formModal.addEventListener('show.bs.modal', function (event) {
-    const button = event.relatedTarget;
-    const productId = button.getAttribute("data-Id");
-    document.getElementById('purchasedProductId').value = productId;
-});
+if (formModal != null) {
+    formModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const productId = button.getAttribute("data-Id");
+        document.getElementById('purchasedProductId').value = productId;
+    });
+}
 document.addEventListener('DOMContentLoaded', function () {
     // Initialize phone input
     const phoneInputField = document.querySelector("#phoneNumber");

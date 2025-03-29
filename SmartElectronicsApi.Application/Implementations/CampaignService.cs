@@ -33,7 +33,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     StartDate = createCampaignDto.StartDate,
                     EndDate = createCampaignDto.EndDate,
                     ImageUrl = mappedImage,
-                    DiscountPercentageValue = createCampaignDto.DiscountPercentage ?? null,
+                    DiscountPercentageValue = createCampaignDto.DiscountPercentage ?? 0m,
                     
                 };
                 await _unitOfWork.CampaignRepository.Create(newCampaign);
@@ -68,6 +68,7 @@ namespace SmartElectronicsApi.Application.Implementations
         public async Task<PaginatedResponse<CampaignListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10)
         {
             var totalCount = (await _unitOfWork.CampaignRepository.GetAll()).Count();
+
             var allCampaigns = await _unitOfWork.CampaignRepository.GetAll(s => s.IsDeleted == false, (pageNumber - 1) * pageSize, pageSize);
             var mappedCampaignlistItemDto = allCampaigns.Select(allCampaigns => new CampaignListItemDto() {
                 Title = allCampaigns.Title,
