@@ -41,7 +41,7 @@ app.UseRouting();
 
 app.UseCors("AllowAllOrigins");
 app.UseMiddleware<CustomExceptionMiddleware>();
-
+app.
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -13,5 +13,6 @@ namespace SmartElectronicsApi.Application.Interfaces
     {
         Task<string> CreateCampaign(CreateCampaignDto createCampaignDto);
         Task<PaginatedResponse<CampaignListItemDto>> GetAllForAdmin(int pageNumber = 1, int pageSize = 10);
+        Task ApplyDiscountPriceToProduct(int? Id);
     }
 }

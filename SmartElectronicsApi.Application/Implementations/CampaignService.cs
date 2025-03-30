@@ -120,5 +120,27 @@ namespace SmartElectronicsApi.Application.Implementations
 
              return paginatedResult; ;
         }
+        public async Task ApplyDiscountPriceToProduct(int? Id)
+        {
+            if(Id == null) throw new ArgumentNullException(nameof(Id));
+            var existedCampaign=await _unitOfWork.CampaignRepository.GetEntity(s=>s.Id==Id);
+            if(existedCampaign == null)
+                throw new CustomException(404,nameof(existedCampaign));
+            if(existedCampaign.DiscountPercentageValue == 0m)
+            {
+                throw new Exception("Campaign does not have a discount percentage");
+            }
+            decimal discountPercentage = existedCampaign.DiscountPercentageValue.Value;
+            if(existedCampaign.CampaignProducts.Count == 0&&existedCampaign.CampaignProducts is null)
+            {
+                foreach (var product in existedCampaign.CampaignProducts.Select(s=>s.Product))
+                {
+                    product.DiscountPercentage = discountPercentage;
+                    product.DiscountedPrice = product.Price - (product.Price * (discountPercentage / 100));
+                    await _unitOfWork.productRepository.Update(product);
+                }
+                _unitOfWork.Commit();
+            }
+        }
     }
 }

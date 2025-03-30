@@ -20,6 +20,7 @@ using SmartElectronicsApi.Core.Entities;
 using FluentValidation;
 using AutoMapper;
 using Microsoft.OpenApi.Models;
+using SmartElectronicsApi.Application.BackgroundServices;
 
 public static class ServiceRegistration
 {
@@ -123,6 +124,7 @@ public static class ServiceRegistration
         services.AddScoped<ICampaignService, CampaignService>();
         services.AddScoped<IBranchService, BranchService>();
         services.AddScoped<IBranchRepository, BranchRepository>();
+        services.AddHostedService<CampaignDiscountBackgroundService>();
        
        services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo
