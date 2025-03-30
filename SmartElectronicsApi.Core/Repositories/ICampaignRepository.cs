@@ -10,5 +10,6 @@ namespace SmartElectronicsApi.Core.Repositories
 {
     public interface ICampaignRepository:IRepository<Campaign>
     {
+        IEnumerable<Campaign> GetNonAppliedCampaigns();
     }
 }

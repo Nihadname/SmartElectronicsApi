@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using SmartElectronicsApi.Application.Dtos;
 using SmartElectronicsApi.Application.Dtos.Category;
-using SmartElectronicsApi.Application.Dtos.Slider;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Extensions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
-using SmartElectronicsApi.Core.Repositories;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
-using System.Diagnostics;
 
 namespace SmartElectronicsApi.Application.Implementations
 {

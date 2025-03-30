@@ -62,16 +62,28 @@
                         <label asp-for="ProductIds" class="col-sm-3 col-form-label">products</label>
                         <div class="col-sm-9">
                             <select asp-for="ProductIds" class="form-control">
-                                <option value="">Select Colors</option>
-                                @foreach (var category in ViewBag.Products)
+                                <option value="">Select Branches</option>
+                                @foreach (var product in ViewBag.Products)
                                 {
-                                    <option value="@category.Value">@category.Text</option>
+                                    <option value="@product.Value">@product.Text</option>
                                 }
                             </select>
                             <span class="text-danger" asp-validation-for="ProductIds"></span>
                         </div>
                     </div>
-
+                    <div class="form-group row">
+                        <label asp-for="BranchIds" class="col-sm-3 col-form-label">Branches</label>
+                        <div class="col-sm-9">
+                            <select asp-for="BranchIds" class="form-control">
+                                <option value="">Select Branches</option>
+                                @foreach (var branch in ViewBag.Branches)
+                                {
+                                    <option value="@branch.Value">@branch.Text</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="BranchIds"></span>
+                        </div>
+                    </div>
                     <!-- File Upload -->
                     <div class="form-group row">
                         <label asp-for="formFile" class="col-sm-3 col-form-label">Upload File</label>

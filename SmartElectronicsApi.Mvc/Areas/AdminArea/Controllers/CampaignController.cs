@@ -11,6 +11,7 @@ using SmartElectronicsApi.Mvc.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SmartElectronicsApi.Mvc.ViewModels.Category;
 using SmartElectronicsApi.Mvc.ViewModels.Product;
+using SmartElectronicsApi.Mvc.ViewModels.Branch;
 
 namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
 {
@@ -67,26 +68,20 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             {
                 return RedirectToAction("Error404", "Home", new { area = "" });
             }
-            using HttpResponseMessage productResponse = await client.GetAsync("http://localhost:5246/api/Product/GetAllForSelect");
-            if (productResponse.IsSuccessStatusCode)
-            {
-                string contentStream = await productResponse.Content.ReadAsStringAsync();
-                var products = JsonConvert.DeserializeObject<List<ProductSelectVM>>(contentStream);
-                ViewBag.Products = new SelectList(products, "Id", "Name");
-            }
+            await LoadViewBagData(client);
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateCampaignVM createCampaignVM)
         {
+            using var client = new HttpClient();
             if (!ModelState.IsValid)
             {
-                await LoadViewBagData();
+                await LoadViewBagData(client);
                 return View(createCampaignVM);
-
             }
-            using var client = new HttpClient();
+            
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
             var content = new MultipartFormDataContent();
@@ -117,6 +112,13 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                     content.Add(new StringContent(number.ToString(), Encoding.UTF8, "text/plain"), "ProductIds");
                 }
             }
+            if (createCampaignVM.BranchIds is not null)
+            {
+                foreach (int number in createCampaignVM.BranchIds)
+                {
+                    content.Add(new StringContent(number.ToString(), Encoding.UTF8, "text/plain"), "BranchIds");
+                }
+            }
             var response = await client.PostAsync("Campaign", content);
             if (response.IsSuccessStatusCode)
             {
@@ -137,14 +139,13 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 {
                     ModelState.AddModelError(string.Empty, errorResponse?.Message ?? "An unknown error occurred.");
                 }
-                await LoadViewBagData();
+                await LoadViewBagData(client);
                 return View(createCampaignVM);
             }
 
         }
-        private async Task LoadViewBagData()
+        private async Task LoadViewBagData(HttpClient client)
         {
-            using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
                  new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
             using HttpResponseMessage productResponse = await client.GetAsync("http://localhost:5246/api/Product/GetAllForSelect");
@@ -153,6 +154,13 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
                 string contentStream = await productResponse.Content.ReadAsStringAsync();
                 var products = JsonConvert.DeserializeObject<List<ProductSelectVM>>(contentStream);
                 ViewBag.Products = new SelectList(products, "Id", "Name");
+            }
+            using HttpResponseMessage branchResponse = await client.GetAsync("http://localhost:5246/api/Branch/GetForSelect");
+            if (productResponse.IsSuccessStatusCode)
+            {
+                string contentStream = await branchResponse.Content.ReadAsStringAsync();
+                var branches = JsonConvert.DeserializeObject<List<BranchSelectVM>>(contentStream);
+                ViewBag.Branches = new SelectList(branches, "Id", "Name");
             }
         }
     }
