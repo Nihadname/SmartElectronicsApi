@@ -46,6 +46,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     EndDate = createCampaignDto.EndDate,
                     ImageUrl = Url + "img/"+ mappedImage,
                     DiscountPercentageValue = createCampaignDto.DiscountPercentage ?? 0m,
+                    CreatedTime=DateTime.Now,
                     
                 };
                 await _unitOfWork.CampaignRepository.Create(newCampaign);

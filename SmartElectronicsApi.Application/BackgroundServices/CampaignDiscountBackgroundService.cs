@@ -14,7 +14,6 @@ namespace SmartElectronicsApi.Application.BackgroundServices
     public class CampaignDiscountBackgroundService : BackgroundService
     {
         private readonly IServiceProvider _serviceProvider;
-
         public CampaignDiscountBackgroundService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
