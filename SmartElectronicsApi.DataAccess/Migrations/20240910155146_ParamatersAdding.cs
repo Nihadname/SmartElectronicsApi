@@ -36,7 +36,7 @@ namespace SmartElectronicsApi.DataAccess.Migrations
                         column: x => x.ProductVariationId,
                         principalTable: "ProductVariations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_parametrGroups_products_ProductId",
                         column: x => x.ProductId,
