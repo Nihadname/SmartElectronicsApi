@@ -43,7 +43,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
        
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("GetAllForUser")]
-        public async Task<IActionResult> GetAllForUser(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllForUser(int pageNumber = 1, int pageSize = 2)
         {
             return Ok(await orderService.GetAllForUser(pageNumber, pageSize));
         }
