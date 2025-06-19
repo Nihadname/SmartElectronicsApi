@@ -1,18 +1,11 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using SmartElectronicsApi.Application.Dtos;
-using SmartElectronicsApi.Application.Dtos.Brand;
 using SmartElectronicsApi.Application.Dtos.Color;
-using SmartElectronicsApi.Application.Dtos.Setting;
 using SmartElectronicsApi.Application.Exceptions;
 using SmartElectronicsApi.Application.Interfaces;
 using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace SmartElectronicsApi.Application.Implementations
 {

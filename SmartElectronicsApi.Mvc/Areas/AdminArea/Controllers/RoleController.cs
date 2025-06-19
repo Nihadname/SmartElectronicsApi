@@ -233,7 +233,7 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             if (string.IsNullOrEmpty(jwtToken))
             {
                 ModelState.AddModelError("", "User not authenticated.");
-                return View(NewRoles);
+                return View();
             }
 
             client.DefaultRequestHeaders.Authorization =

@@ -42,8 +42,7 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         {
             var token = await _authService.GoogleResponse();
 
-            return Redirect($"https://localhost:7170/Account/GoogleResponse?token={token}");
-
+            return Redirect($"http://localhost:5041/Account/GoogleResponse?token={token}");
         }
         [HttpPost]
         public async Task<IActionResult> Register(RegisterDto registerDto)
@@ -135,9 +134,16 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         }
         [HttpGet("CheckingAuth")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> Check()
+        public IActionResult Check()
         {
             return Ok();
-        }   
+        }
+
+        [HttpGet("CheckingAuthForMember")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult CheckAuthForMember()
+        {
+            return Ok();
+        }
     }
 }

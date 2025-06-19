@@ -397,7 +397,7 @@ namespace SmartElectronicsApi.Application.Implementations
             _unitOfWork.Commit();
             return "Order delivery confirmed successfully.";
         }
-        public async Task<OrderReturnDto> GetById(int? Id)
+        public async Task<UserOrderReturnDto> GetById(int? Id)
         {
             if (Id is null) throw new CustomException(400, "Id", "id can't be null");
 
@@ -405,7 +405,7 @@ namespace SmartElectronicsApi.Application.Implementations
                 s => s.Id == Id && s.IsDeleted == false,
                 includes: new Func<IQueryable<Order>, IQueryable<Order>>[]
                 {
-            query => query.Include(p => p.AppUser).Include(s=>s.Items)
+            query => query.Include(p => p.AppUser).Include(s=>s.Items).ThenInclude(s=>s.Product)
                 }
             );
 
@@ -413,7 +413,34 @@ namespace SmartElectronicsApi.Application.Implementations
             {
                 throw new CustomException(400, "existedOrder", "existedOrder can't be null");
             }
-            var MappedOrder=_mapper.Map<OrderReturnDto>(existedOrder);
+            var MappedOrder=new UserOrderReturnDto()
+            {
+                Id = existedOrder.Id,
+                OrderDate= existedOrder.OrderDate,
+                ShippingAddress= existedOrder.ShippingAddress,
+                TotalAmount = existedOrder.TotalAmount,
+                UserOrder = new UserOrderSummary()
+                {
+                    FullName = existedOrder.AppUser.fullName,
+                    Email = existedOrder.AppUser.Email,
+                },
+                Items=existedOrder.Items.Select(s=>new OrderItemSummaryDto()
+                {
+                    ProductId = s.ProductId,
+                    Quantity=s.Quantity,
+                    ProductName= s.Product.Name,
+                    ProductVariationId = s.ProductVariationId,
+                    UnitPrice=s.UnitPrice,
+                    
+                    
+                    
+                    
+                    
+                    
+                }).ToList(),    
+                
+                
+            };
             return MappedOrder;
         }
         public async Task<string> Delete(int? Id)

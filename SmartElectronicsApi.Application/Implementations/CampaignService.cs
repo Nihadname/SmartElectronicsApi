@@ -13,18 +13,24 @@ namespace SmartElectronicsApi.Application.Implementations
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly string Url;
         public CampaignService(IUnitOfWork unitOfWork, IHttpContextAccessor contextAccessor)
         {
             _unitOfWork = unitOfWork;
             _contextAccessor = contextAccessor;
-            var uriBuilder = new UriBuilder(_contextAccessor.HttpContext.Request.Scheme,
-                           _contextAccessor.HttpContext.Request.Host.Host,
-                           _contextAccessor.HttpContext.Request.Host.Port.Value);
-            var url = uriBuilder.Uri.AbsoluteUri;
-            Url = url;
+           
         }
+        private string GetBaseUrl()
+        {
+            var httpContext = _contextAccessor.HttpContext;
+            if (httpContext == null)
+                throw new InvalidOperationException("No HTTP context available");
 
+            var request = httpContext.Request;
+            var uriBuilder = new UriBuilder(request.Scheme,
+                request.Host.Host,
+                request.Host.Port ?? -1);
+            return uriBuilder.Uri.AbsoluteUri;
+        }
         public async Task<string> CreateCampaign(CreateCampaignDto createCampaignDto)
         {
             
@@ -44,7 +50,7 @@ namespace SmartElectronicsApi.Application.Implementations
                     Description = createCampaignDto.Description ?? null,
                     StartDate = createCampaignDto.StartDate,
                     EndDate = createCampaignDto.EndDate,
-                    ImageUrl = Url + "img/"+ mappedImage,
+                    ImageUrl = GetBaseUrl() + "img/"+ mappedImage,
                     DiscountPercentageValue = createCampaignDto.DiscountPercentage ?? 0m,
                     CreatedTime=DateTime.Now,
                     

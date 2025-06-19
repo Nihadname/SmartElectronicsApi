@@ -147,14 +147,28 @@ namespace SmartElectronicsApi.Mvc.Controllers
         }
 
         [HttpGet]
-        public IActionResult GoogleResponse(string token)
+        public async Task<IActionResult> GoogleResponse(string token)
         {
             if (!string.IsNullOrEmpty(token))
             {
-                Response.Cookies.Append("JwtToken", token);
+                using var client = new HttpClient();
+                client.BaseAddress = new Uri("http://localhost:5246/api/");
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", token);
 
-                TempData["LoginSuccess"] = true;
-                return RedirectToAction("Index", "Home");
+                using HttpResponseMessage AuthCheck = await client.GetAsync("http://localhost:5246/api/Auth/CheckingAuthForMember");
+                if (AuthCheck.IsSuccessStatusCode)
+                {
+                    Response.Cookies.Append("JwtToken", token);
+
+                    TempData["LoginSuccess"] = true;
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Account", new { area = "" });
+                }
+               
             }
             else
             {

@@ -301,7 +301,7 @@ namespace SmartElectronicsApi.Mvc.Controllers
             client.BaseAddress = new Uri("http://localhost:5246/api/");
             client.DefaultRequestHeaders.Authorization =
           new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
-            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Order/GetAllForUser?pageNumber={pageNumber}&pageSize=4");
+            using HttpResponseMessage httpResponseMessage = await client.GetAsync($"http://localhost:5246/api/Order/GetAllForUser?pageNumber={pageNumber}&pageSize={pageSize}");
             if (httpResponseMessage.IsSuccessStatusCode)
             {
                 string ContentStream = await httpResponseMessage.Content.ReadAsStringAsync();
@@ -321,6 +321,14 @@ namespace SmartElectronicsApi.Mvc.Controllers
                 return RedirectToAction("Error404", "Home", new { area = "" });
             }
        
+        }
+
+        public async Task<IActionResult> GetOrderById(int orderId)
+        {
+            if(orderId ==0) return RedirectToAction("Index", "Home", new { area = "" }); 
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            return Json(new { success = true, message = "Order not found." });
         }
     }
 }

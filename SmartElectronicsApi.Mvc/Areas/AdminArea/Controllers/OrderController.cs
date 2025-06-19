@@ -147,5 +147,11 @@ namespace SmartElectronicsApi.Mvc.Areas.AdminArea.Controllers
             }
 
         }
+
+        
+        public IActionResult VerifyOrderWithQrCode()
+        {
+            return View();
+        }
     }
 }

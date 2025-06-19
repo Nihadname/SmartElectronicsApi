@@ -18,6 +18,22 @@ public class SettingHeaderViewComponent : ViewComponent
 
         if (!string.IsNullOrEmpty(token))
         {
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5246/api/");
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", Request.Cookies["JwtToken"]);
+
+            using HttpResponseMessage AuthCheck = await client.GetAsync("http://localhost:5246/api/Auth/CheckingAuthForMember");
+            if (!AuthCheck.IsSuccessStatusCode)
+            {
+                HttpContext.Response.Cookies.Delete("jwtToken");
+                ViewBag.ExistenceOfIcon = false;
+                ViewBag.FullName = null;
+                ViewBag.Count = 0;
+                ViewBag.CountWish = 0;
+                return View();
+            }
+
             var handler = new JwtSecurityTokenHandler();
 
             try
@@ -50,10 +66,7 @@ public class SettingHeaderViewComponent : ViewComponent
                     ViewBag.FullName = fullName;
                 }
 
-                using var client = new HttpClient();
-                client.BaseAddress = new Uri("http://localhost:5246/api/");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
+               
                 using HttpResponseMessage httpResponseMessage = await client.GetAsync("http://localhost:5246/api/Basket");
 
                 if (httpResponseMessage.IsSuccessStatusCode)

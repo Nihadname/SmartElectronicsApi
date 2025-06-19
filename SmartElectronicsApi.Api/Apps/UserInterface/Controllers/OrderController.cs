@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using SmartElectronicsApi.Application.Dtos.Order;
 using SmartElectronicsApi.Application.Interfaces;
 using System.Threading.Tasks;
+using SmartElectronicsApi.Application.Exceptions;
 
 namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
 {
@@ -52,6 +53,16 @@ namespace SmartElectronicsApi.Api.Apps.UserInterface.Controllers
         public async Task<IActionResult> DeleteForUser(int id)
         {
             return Ok(await orderService.DeleteOrderForUser(id));
+        }
+
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            if(id==0)
+                throw new CustomException(400,"id cant be null");
+                
+            return Ok(await orderService.GetById(id));
         }
     }
 }

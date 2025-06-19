@@ -1,0 +1,116 @@
+@{
+    ViewBag.Title = "QR Kodu Tarayıcı";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Adjust if needed
+}
+
+<style>
+    .scanner-wrapper {
+        max-width: 400px;
+        margin: 60px auto;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    #reader {
+        width: 100%;
+        margin-top: 20px;
+        border: 1px solid #ccc;
+        border-radius: 12px;
+    }
+
+    #result {
+        margin-top: 20px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    #statusBox {
+        margin-top: 20px;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    h2 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="scanner-wrapper">
+    <h2>📷 QR Kodu Tarayıcı</h2>
+
+    <div id="reader"></div>
+    <p id="result">QR kod okutulmayı bekliyor...</p>
+    <div id="statusBox" style="display: none;"></div>
+</div>
+
+<!-- JS Libraries -->
+<script src="https://unpkg.com/html5-qrcode@2.3.10/html5-qrcode.min.js"></script>
+
+<script>
+    function showStatus(message, isSuccess) {
+        const box = document.getElementById('statusBox');
+        box.style.display = "block";
+        box.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
+        box.style.color = isSuccess ? "#155724" : "#721c24";
+        box.innerText = message;
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        document.getElementById('result').innerText = `Okunan Veri: ${decodedText}`;
+
+        let data;
+        try {
+            data = JSON.parse(decodedText);
+            console.log(data);
+        } catch (e) {
+            showStatus("QR kod verisi geçerli bir JSON değil.", false);
+            return;
+        }
+
+        fetch('http://localhost:5246/api/Order/VerifyOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (response.success) {
+                showStatus("✅ Kargo doğrulandı!", true);
+            } else {
+                showStatus("❌ Doğrulama başarısız. Bilgiler eşleşmiyor.", false);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showStatus("❌ Sunucu hatası oluştu.", false);
+        });
+    }
+
+    const html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode.start(
+        { facingMode: "environment" },
+        {
+            fps: 10,
+            qrbox: { width: 250, height: 250 }
+        },
+        onScanSuccess,
+        (error) => {
+            // Optionally show scanning errors
+        }
+    ).catch(err => {
+        showStatus("Kamera başlatılamadı: " + err, false);
+    });
+</script>

@@ -17,7 +17,7 @@ namespace SmartElectronicsApi.Application.Interfaces
         Task<PaginatedResponse<OrderListItemDto>> GetAllForUser(int pageNumber = 1, int pageSize = 10);
         Task<string> ShippingOrder(int? Id);
         Task<string> VerifyOrderAsDelivered(OrderVerifyDto orderVerifyDto);
-        Task<OrderReturnDto> GetById(int? Id);
+        Task<UserOrderReturnDto> GetById(int? Id);
         Task<string> Delete(int? Id);
         Task<string> DeleteOrderForUser(int? Id);
     }

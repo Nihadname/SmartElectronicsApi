@@ -37,12 +37,12 @@ namespace SmartElectronicsApi.Api.Apps.Admin.Controllers
         {
             return Ok(await orderService.VerifyOrderAsDelivered(orderVerifyDto));
         }
-        [HttpGet("{Id}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
-        public async Task<IActionResult> Get(int? Id)
-        {
-            return Ok(await orderService.GetById(Id));
-        }
+        // [HttpGet("{Id}")]
+        // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+        // public async Task<IActionResult> Get(int? Id)
+        // {
+        //     return Ok(await orderService.GetById(Id));
+        // }
         [HttpDelete("{Id}")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async  Task<IActionResult> Delete(int? Id)

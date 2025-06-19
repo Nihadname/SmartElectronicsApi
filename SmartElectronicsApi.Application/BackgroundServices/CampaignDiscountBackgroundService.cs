@@ -1,13 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SmartElectronicsApi.Application.Interfaces;
-using SmartElectronicsApi.Core.Entities;
 using SmartElectronicsApi.DataAccess.Data.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartElectronicsApi.Application.BackgroundServices
 {
@@ -22,17 +16,32 @@ namespace SmartElectronicsApi.Application.BackgroundServices
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
-            using (var scope = _serviceProvider.CreateScope())
+            while (!stoppingToken.IsCancellationRequested)
             {
-                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-                var campaignService = scope.ServiceProvider.GetRequiredService<ICampaignService>();
-                var nonApliedCampaigns= unitOfWork.CampaignRepository.GetNonAppliedCampaigns();
-                foreach (var campaign in nonApliedCampaigns)
+                try
                 {
-                    if (campaign.DiscountPercentageValue.HasValue)
+                    using (var scope = _serviceProvider.CreateScope())
                     {
-                        await campaignService.ApplyDiscountPriceToProduct(campaign.Id);
+                        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+                        var campaignService = scope.ServiceProvider.GetRequiredService<ICampaignService>();
+                        var nonApliedCampaigns = unitOfWork.CampaignRepository.GetNonAppliedCampaigns();
+                        foreach (var campaign in nonApliedCampaigns)
+                        {
+                            if (campaign.DiscountPercentageValue.HasValue)
+                            {
+                                await campaignService.ApplyDiscountPriceToProduct(campaign.Id);
+                            }
+                        }
                     }
+                    await Task.Delay(TimeSpan.FromSeconds(105), stoppingToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    
+                }
+                catch (Exception ex)
+                {
+                    
                 }
             }
 
